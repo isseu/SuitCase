@@ -1,2 +1,2 @@
-# CaseFollow
+# SuitCase
 Sistema de seguimiento de causas del sistema judicial chileno
