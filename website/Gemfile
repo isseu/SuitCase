@@ -48,6 +48,9 @@ gem 'cancan'
 # Base de datos
 gem 'mysql2'
 
+# Para verificar rut
+gem 'rut_validation'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

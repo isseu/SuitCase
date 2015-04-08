@@ -29,13 +29,6 @@
       <%= error_span(@user[:lastnames]) %>
     </div>
     <div class="control-group">
-      <%= f.label :password_judicial, :class => 'control-label' %>
-      <div class="controls">
-        <%= f.text_field :password_judicial, :class => 'form-control' %>
-      </div>
-      <%= error_span(@user[:password_judicial]) %>
-    </div>
-    <div class="control-group">
       <%= f.label :telephone, :class => 'control-label' %>
       <div class="controls">
         <%= f.text_field :telephone, :class => 'form-control' %>
@@ -49,13 +42,17 @@
     </div>
     <%= error_span(@user[:email]) %>
   </div>
-  <div class="control-group">
+<%
+=begin %>
+    <div class="control-group">
     <%= f.label :encrypted_password, :class => 'control-label' %>
     <div class="controls">
       <%= f.text_field :encrypted_password, :class => 'form-control' %>
     </div>
     <%= error_span(@user[:encrypted_password]) %>
   </div>
+<%
+=end %>
   <div class="control-group">
     <%= f.label :role, :class => 'control-label' %>
     <div class="controls">

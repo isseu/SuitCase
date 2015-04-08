@@ -28,6 +28,7 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+  validates :rut, rut: { message: 'no es valido'}
 
   # Posibles roles de cada usuario
   ROLES = %w[guest secretary lawyer admin]

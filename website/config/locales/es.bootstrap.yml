@@ -8,7 +8,7 @@ es:
     pages:
       pages: "Paginas"
   helpers:
-    actions: "Actiones"
+    actions: "Acciones"
     links:
       back: "Atrás"
       cancel: "Cancelar"
