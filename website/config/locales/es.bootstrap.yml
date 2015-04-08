@@ -12,7 +12,7 @@ es:
     links:
       back: "Atrás"
       cancel: "Cancelar"
-      confirm: "Estás seguro?"
+      confirm: "¿Estás seguro?"
       destroy: "Borrar"
       new: "Nuevo"
       edit: "Editar"

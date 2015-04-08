@@ -318,3 +318,13 @@ es:
       next: Siguiente &raquo;
       previous: "&laquo; Anterior"
       truncate: "…"
+# Desde aqui partes de la aplicación
+  activerecord:
+    models:
+      user: Usuario
+    attributes:
+      user:
+        name: "Nombre"
+        telephone: "Telefono"
+        password_judicial: "Contraseña Judicial"
+        role: "Rol"
