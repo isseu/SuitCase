@@ -42,17 +42,6 @@
     </div>
     <%= error_span(@user[:email]) %>
   </div>
-<%
-=begin %>
-    <div class="control-group">
-    <%= f.label :encrypted_password, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :encrypted_password, :class => 'form-control' %>
-    </div>
-    <%= error_span(@user[:encrypted_password]) %>
-  </div>
-<%
-=end %>
   <div class="control-group">
     <%= f.label :role, :class => 'control-label' %>
     <div class="controls">
