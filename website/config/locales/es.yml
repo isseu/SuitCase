@@ -1,0 +1,320 @@
+es:
+  date:
+    abbr_day_names:
+    - dom
+    - lun
+    - mar
+    - mié
+    - jue
+    - vie
+    - sáb
+    abbr_month_names:
+    -
+    - ene
+    - feb
+    - mar
+    - abr
+    - may
+    - jun
+    - jul
+    - ago
+    - sep
+    - oct
+    - nov
+    - dic
+    day_names:
+    - domingo
+    - lunes
+    - martes
+    - miércoles
+    - jueves
+    - viernes
+    - sábado
+    formats:
+      default: ! '%d/%m/%Y'
+      long: ! '%d de %B de %Y'
+      short: ! '%d de %b'
+    month_names:
+    -
+    - enero
+    - febrero
+    - marzo
+    - abril
+    - mayo
+    - junio
+    - julio
+    - agosto
+    - septiembre
+    - octubre
+    - noviembre
+    - diciembre
+    order:
+    - :day
+    - :month
+    - :year
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: alrededor de 1 hora
+        other: alrededor de %{count} horas
+      about_x_months:
+        one: alrededor de 1 mes
+        other: alrededor de %{count} meses
+      about_x_years:
+        one: alrededor de 1 año
+        other: alrededor de %{count} años
+      almost_x_years:
+        one: casi 1 año
+        other: casi %{count} años
+      half_a_minute: medio minuto
+      less_than_x_minutes:
+        one: menos de 1 minuto
+        other: menos de %{count} minutos
+      less_than_x_seconds:
+        one: menos de 1 segundo
+        other: menos de %{count} segundos
+      over_x_years:
+        one: más de 1 año
+        other: más de %{count} años
+      x_days:
+        one: 1 día
+        other: ! '%{count} días'
+      x_minutes:
+        one: 1 minuto
+        other: ! '%{count} minutos'
+      x_months:
+        one: 1 mes
+        other: ! '%{count} meses'
+      x_seconds:
+        one: 1 segundo
+        other: ! '%{count} segundos'
+    prompts:
+      day: Día
+      hour: Hora
+      minute: Minutos
+      month: Mes
+      second: Segundos
+      year: Año
+  errors:
+    format: ! '%{attribute} %{message}'
+    messages:
+      accepted: debe ser aceptado
+      blank: no puede estar en blanco
+      confirmation: no coincide con la confirmación
+      empty: no puede estar vacío
+      equal_to: debe ser igual a %{count}
+      even: debe ser par
+      exclusion: está reservado
+      greater_than: debe ser mayor que %{count}
+      greater_than_or_equal_to: debe ser mayor que o igual a %{count}
+      inclusion: no está incluido en la lista
+      invalid: no es válido
+      less_than: debe ser menor que %{count}
+      less_than_or_equal_to: debe ser menor que o igual a %{count}
+      not_a_number: no es un número
+      not_an_integer: debe ser un entero
+      odd: debe ser impar
+      record_invalid: ! 'La validación falló: %{errors}'
+      taken: ya está en uso
+      too_long: es demasiado largo (%{count} caracteres máximo)
+      too_short: es demasiado corto (%{count} caracteres mínimo)
+      wrong_length: no tiene la longitud correcta (%{count} caracteres exactos)
+    template:
+      body: ! 'Se encontraron problemas con los siguientes campos:'
+      header:
+        one: No se pudo guardar este/a %{model} porque se encontró 1 error
+        other: No se pudo guardar este/a %{model} porque se encontraron %{count} errores
+  helpers:
+    select:
+      prompt: Por favor seleccione
+    submit:
+      create: Crear %{model}
+      submit: Guardar %{model}
+      update: Actualizar %{model}
+  number:
+    currency:
+      format:
+        delimiter: .
+        format: ! '%n %u'
+        precision: 2
+        separator: ! ','
+        significant: false
+        strip_insignificant_zeros: false
+        unit: €
+    format:
+      delimiter: .
+      precision: 3
+      separator: ! ','
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: ! '%n %u'
+        units:
+          billion: mil millones
+          million: millón
+          quadrillion: mil billones
+          thousand: mil
+          trillion: billón
+          unit: ''
+      format:
+        delimiter: ''
+        precision: 1
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: ! '%n %u'
+        units:
+          byte:
+            one: Byte
+            other: Bytes
+          gb: GB
+          kb: KB
+          mb: MB
+          tb: TB
+    percentage:
+      format:
+        delimiter: ''
+    precision:
+      format:
+        delimiter: ''
+  support:
+    array:
+      last_word_connector: ! ', y '
+      two_words_connector: ! ' y '
+      words_connector: ! ', '
+  time:
+    am: am
+    formats:
+      default: ! '%A, %d de %B de %Y %H:%M:%S %z'
+      long: ! '%d de %B de %Y %H:%M'
+      short: ! '%d de %b %H:%M'
+    pm: pm
+  admin:
+    actions:
+      bulk_delete:
+        breadcrumb: Eliminación Múltiple
+        bulk_link: Eliminar los %{model_label_plural} seleccionados
+        menu: Eliminación Múltiple
+        title: Eliminar %{model_label_plural}
+      dashboard:
+        breadcrumb: Panel de control
+        menu: Panel de control
+        title: Administración del Sitio
+      delete:
+        breadcrumb: Eliminar
+        done: Eliminado
+        link: Eliminar  '%{object_label}'
+        menu: Eliminar
+        title: Eliminar %{model_label} '%{object_label}'
+      edit:
+        breadcrumb: Editar
+        done: Actualizado
+        link: Editar este  %{model_label}
+        menu: Editar
+        title: Editar %{model_label} '%{object_label}'
+      export:
+        breadcrumb: Exportar
+        bulk_link: Exportar Seleccionados %{model_label_plural}
+        done: exportado
+        link: Exportar   %{model_label_plural}  encontrados
+        menu: Exportar
+        title: Exportar %{model_label_plural}
+      history_index:
+        breadcrumb: Historial
+        menu: Historial
+        title: Historial para %{model_label_plural}
+      history_show:
+        breadcrumb: Historial
+        menu: Historial
+        title: Historial para %{model_label} '%{object_label}'
+      index:
+        breadcrumb: "%{model_label_plural}"
+        menu: Lista
+        title: Lista de %{model_label_plural}
+      new:
+        breadcrumb: Nuevo
+        done: creado
+        link: Adicionar un nuevo  %{model_label}
+        menu: Adicionar Nuevo
+        title: Nuevo  %{model_label}
+      show:
+        breadcrumb: "%{object_label}"
+        menu: Ver
+        title: Detalles para  %{model_label} "%{object_label}"
+      show_in_app:
+        menu: Ver en la aplicación
+    export:
+      click_to_reverse_selection: Haga click para invertir la selección
+      confirmation: Exportar a %{name}
+      csv:
+        col_sep: Separador de columnas
+        col_sep_help: Deje en blanco para el de defecto ('%{value}')
+        default_col_sep: ","
+        encoding_to: Codificar a
+        encoding_to_help: 'Elija la codificación de salida. Deje en blanco para no cambiar la codificación actual: (%{name})'
+        header_for_association_methods: "%{name} [%{association}]"
+        header_for_root_methods: "%{name}"
+        skip_header: Sin cabecera
+        skip_header_help: No incluir un encabezado (sin descripción de los campos)
+      display: 'Mostrar %{name}: %{type}'
+      empty_value_for_associated_objects: "<vacío>"
+      fields_from: Campos de %{name}
+      fields_from_associated: Campos del %{name} asociado
+      options_for: Opciones para %{name}
+      select: Seleccione los campos a exportar
+    flash:
+      error: "%{name} no se ha %{action}"
+      model_not_found: El modelo '%{model}' no se pudo encontrar
+      noaction: No se llevó a cabo ninguna acción
+      object_not_found: "%{model} con id '%{id}' no se pudo encontrar"
+      successful: "%{name} %{action} con éxito"
+    form:
+      all_of_the_following_related_items_will_be_deleted: "? Los siguientes elementos relacionados pueden ser eliminados o quedar huérfanos:"
+      are_you_sure_you_want_to_delete_the_object: "¿Está seguro de que quiere eliminar este %{model_name}"
+      basic_info: Información Básica
+      bulk_delete: 'Los siguientes objetos serán eliminados, lo cual puede eliminar o dejar huérfanas algunas de sus dependencias relacionadas:'
+      cancel: Cancelar
+      char_length_of: longitud de
+      char_length_up_to: longitud de hasta
+      confirmation: Si, estoy seguro
+      new_model: "%{name} (nuevo)"
+      one_char: carácter
+      optional: Opcional
+      required: Requerido
+      save: Guardar
+      save_and_add_another: Guardar y añadir otro
+      save_and_edit: Guardar y editar
+    misc:
+      add_filter: Añadir filtro
+      add_new: Agregar nuevo
+      ago: atrás
+      bulk_menu_title: Elementos seleccionados
+      chose_all: Elegir todos
+      chosen: Elegido %{name}
+      clear_all: Borrar todos
+      down: Abajo
+      filter: Filtrar
+      filter_date_format: dd/mm/yy
+      log_out: Desconectar
+      navigation: Navegación
+      refresh: Actualizar
+      remove: Quitar
+      search: Buscar
+      show_all: Mostrar todo
+      up: Arriba
+    table_headers:
+      changes: Cambios
+      created_at: Fecha/Hora
+      item: Elemento
+      last_used: "Último uso"
+      message: Mensaje
+      model_name: Nombre del modelo
+      records: Registros
+      username: Usuario
+    home:
+      name: Inicio
+    pagination:
+      next: Siguiente &raquo;
+      previous: "&laquo; Anterior"
+      truncate: "…"
