@@ -2,6 +2,9 @@
 <div class="page-header">
   <h1><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h1>
 </div>
+<%= link_to t('.new', :default => t("helpers.links.new")),
+            new_user_path,
+            :class => 'btn btn-primary boton-agregar'%>
 <table class="table table-striped">
   <thead>
     <tr>
@@ -26,6 +29,8 @@
         <td><%= user.role %></td>
         <td><%= user.telephone %></td>
         <td>
+          <%= link_to t('.show', :default => t("helpers.links.show")),
+                      user_path(user), :class => 'btn btn-default btn-xs' %>
           <%= link_to t('.edit', :default => t("helpers.links.edit")),
                       edit_user_path(user), :class => 'btn btn-default btn-xs' %>
           <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
@@ -38,7 +43,3 @@
     <% end %>
   </tbody>
 </table>
-
-<%= link_to t('.new', :default => t("helpers.links.new")),
-            new_user_path,
-            :class => 'btn btn-primary' %>

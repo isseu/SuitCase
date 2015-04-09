@@ -23,11 +23,7 @@
       </a>
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-      <li><a href="#">Link</a></li>
-      </ul>
-      <ul class="nav navbar-nav login navbar-right">
+      <ul class="nav navbar-nav navbar-right">
       <li class="notificacionesAlert has-tooltip" data-toggle="tooltip" title="Notificaciones" data-placement="bottom"><a href="#"><span class="fa fa-bell fa-fw" aria-hidden="true"></span>&nbsp;0</a></li>
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><%= current_user.inspect %> <span class="caret"></span></a>
@@ -40,7 +36,25 @@
     </div>
   </div>
 </nav>
-<div class="container-fluid wrapper col-md-10 col-md-offset-1">
+<div class="container-fluid wrapper">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+          <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+          <li><a href="#"><i class="fa fa-users fa-fw"></i>&nbsp;Clientes</a></li>
+          <li><a href="#">Analytics</a></li>
+          <li><a href="#"><i class="fa fa-cog fa-fw"></i>&nbsp;Crawler</a></li>
+        </ul>
+        <% if current_user.role? :admin%>
+        <hr>
+        <ul class="nav nav-sidebar">
+          <li><a href="<%= users_path %>"><i class="fa fa-user fa-fw"></i>&nbsp;Usuarios</a></a></li>
+          <li><a href="">Nav item again</a></li>
+        </ul>
+        <% end %>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
 <% end %>
 <% if notice %>
     <p class="alert alert-success"><%= notice %></p>
@@ -50,6 +64,8 @@
 <% end %>
 <%= yield %>
 <% if user_signed_in? %>
+        </div>
+    </div>
 </div>
 <% end %>
 </body>

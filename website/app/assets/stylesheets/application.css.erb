@@ -23,6 +23,9 @@ body {
     background-color: #f0f0f0;
     overflow-x: hidden;
 }
+.navbar-fixed-top {
+    border-color: #222;
+}
 .navbar-brand {
     padding-left: 50px;
     background-image: url(<%= image_path('briefcase_32.png') %>);
@@ -37,11 +40,20 @@ body {
 .page-header {
     margin-top: 0px;
 }
+.login {
+    width: 60%;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin: -25% 0 0 -30%;
+}
 .titleFront {
-    @import url(http://fonts.googleapis.com/css?family=Pacifico);
+    @import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);
     font-size: 7.5em;
-    font-family: 'Pacifico';
+    font-family: 'Open Sans Condensed', sans-serif;
     color: #ffffff;
+    text-shadow: 0px 0px 14px rgba(150, 150, 150, 1);
+    margin-bottom: 40px;
 }
 .bg {
     position: absolute;
@@ -55,5 +67,45 @@ body {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+}
 
+@media (min-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 51px;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        display: block;
+        padding: 20px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background-color: #2e2e2e;
+        border-right: 1px solid #eee;
+        color: #ffffff;
+    }
+}
+.sidebar > ul > li > a {
+    color: #ffffff;
+}
+.nav-sidebar {
+    margin-right: -21px;
+    margin-bottom: 20px;
+    margin-left: -20px;
+}
+.nav-sidebar > .active > a {
+    color: #000;
+    background-color: #ffffff;
+}
+.nav-sidebar a:hover, .nav-sidebar a:focus {
+    color: #000;
+    background-color: #ffffff;
+}
+.nav-sidebar > li > a {
+    padding-right: 20px;
+    padding-left: 20px;
+}
+.boton-agregar {
+    float: right;
+    margin-right: 50px;
 }
