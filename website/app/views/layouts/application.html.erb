@@ -1,12 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Website</title>
+  <meta charset="utf-8">
+  <title>SuitCase | Sistema se seguimiento de casos del poder judicial</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <%= favicon_link_tag 'briefcase_32.png' %>
 </head>
 <body>
+<% if user_signed_in? %>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">
+        SuitCase
+      </a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+      <li><a href="#">Link</a></li>
+      </ul>
+      <ul class="nav navbar-nav login navbar-right">
+      <li class="notificacionesAlert has-tooltip" data-toggle="tooltip" title="Notificaciones" data-placement="bottom"><a href="#"><span class="fa fa-bell fa-fw" aria-hidden="true"></span>&nbsp;0</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><%= current_user.inspect %> <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+          <li><%= link_to('<i class="fa fa-user fw"></i>&nbsp;Mi Perfil'.html_safe, current_user)%></li>
+          <li><%= link_to('<i class="fa fa-sign-out fw"></i>&nbsp;Cerrar Sesión'.html_safe, destroy_user_session_path, :method => :delete)%></li>
+        </ul>
+      </li>
+    </ul>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid wrapper col-md-10 col-md-offset-1">
+<% end %>
 <% if notice %>
     <p class="alert alert-success"><%= notice %></p>
 <% end %>
@@ -14,6 +49,8 @@
     <p class="alert alert-danger"><%= alert %></p>
 <% end %>
 <%= yield %>
-
+<% if user_signed_in? %>
+</div>
+<% end %>
 </body>
 </html>

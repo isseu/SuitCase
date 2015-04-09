@@ -324,8 +324,10 @@ es:
       user: Usuario
     attributes:
       user:
-        name: "Nombre"
-        telephone: "Telefono"
-        password_judicial: "Contraseña Judicial"
-        role: "Rol"
-        lastnames: "Apellidos"
+        name: Nombre
+        telephone: Telefono
+        password_judicial: Contraseña Judicial
+        password: Contraseña
+        remember_me: Recordarme
+        role: Rol
+        lastnames: Apellidos

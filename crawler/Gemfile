@@ -1,5 +1,0 @@
-source 'https://rubygems.org'
-# Dependencias del crawler
-
-gem 'wombat' # Crawler de manera más sencilla
-gem 'mysql2' # Conexion a base de datos

@@ -26,8 +26,8 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :recoverable,
+         :rememberable, :trackable, :validatable #,registerable
   validates :rut, rut: { message: 'no es valido'}
 
   # Posibles roles de cada usuario
@@ -35,5 +35,9 @@ class User < ActiveRecord::Base
 
   def role?(base_role)
     ROLES.index(base_role.to_s) == ROLES.index(role)
+  end
+
+  def inspect
+    self.name.titleize + " " + self.lastnames.titleize
   end
 end

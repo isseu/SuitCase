@@ -37,7 +37,7 @@ es:
         sign_up: Registrarse
     sessions:
       new:
-        sign_in: Iniciar sésion
+        sign_in: Iniciar sesión
     shared:
       links:
         didn_t_receive_confirmation_instructions: ¿No ha recibido las instrucciones de confirmación?
