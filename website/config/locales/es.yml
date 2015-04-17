@@ -331,3 +331,8 @@ es:
         remember_me: Recordarme
         role: Rol
         lastnames: Apellidos
+      client:
+        name: Nombre
+        first_lastname: Primer apellido
+        second_lastname: Segundo apellido
+        company: Compañia
