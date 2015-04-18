@@ -22,11 +22,18 @@
       <%= error_span(@user[:name]) %>
     </div>
     <div class="control-group">
-      <%= f.label :lastnames, :class => 'control-label' %>
+      <%= f.label :first_lastname, :class => 'control-label' %>
       <div class="controls">
-        <%= f.text_field :lastnames, :class => 'form-control' %>
+        <%= f.text_field :first_lastname, :class => 'form-control' %>
       </div>
-      <%= error_span(@user[:lastnames]) %>
+      <%= error_span(@user[:first_lastname]) %>
+    </div>
+    <div class="control-group">
+      <%= f.label :second_lastname, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.text_field :second_lastname, :class => 'form-control' %>
+      </div>
+      <%= error_span(@user[:second_lastname]) %>
     </div>
     <div class="control-group">
       <%= f.label :telephone, :class => 'control-label' %>
@@ -45,7 +52,7 @@
   <div class="control-group">
     <%= f.label :role, :class => 'control-label' %>
     <div class="controls">
-      <%= f.select :role, User::ROLES.map { |x| x.capitalize }, {}, :class => 'form-control' %>
+      <%= f.select :role, User::ROLES.collect { |x| [x.capitalize, x] }, {}, :class => 'form-control' %>
     </div>
     <%= error_span(@user[:role]) %>
   </div>

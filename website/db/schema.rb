@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20150417134658) do
     t.string   "rut"
     t.string   "first_lastname"
     t.string   "second_lastname"
-    t.boolean  "company",         default: false
+    t.boolean  "is_company",      default: false
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
   end
@@ -39,7 +39,8 @@ ActiveRecord::Schema.define(version: 20150417134658) do
     t.string   "role"
     t.string   "rut",                    default: "", null: false
     t.string   "name",                   default: "", null: false
-    t.string   "lastnames",              default: "", null: false
+    t.string   "first_lastname",         default: "", null: false
+    t.string   "second_lastname",        default: "", null: false
     t.string   "password_judicial"
     t.string   "telephone"
   end

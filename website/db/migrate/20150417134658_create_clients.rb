@@ -5,7 +5,7 @@ class CreateClients < ActiveRecord::Migration
       t.string :rut
       t.string :first_lastname
       t.string :second_lastname
-      t.boolean :company, default: false
+      t.boolean :is_company, default: false
 
       t.timestamps null: false
     end

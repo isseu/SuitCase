@@ -10,8 +10,7 @@
       <th><%= model_class.human_attribute_name(:rut) %></th>
       <th><%= model_class.human_attribute_name(:first_lastname) %></th>
       <th><%= model_class.human_attribute_name(:second_lastname) %></th>
-      <th><%= model_class.human_attribute_name(:company) %></th>
-      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%= model_class.human_attribute_name(:is_company) %></th>
       <th><%=t '.actions', :default => t("helpers.actions") %></th>
     </tr>
   </thead>
@@ -23,8 +22,7 @@
         <td><%= client.rut %></td>
         <td><%= client.first_lastname %></td>
         <td><%= client.second_lastname %></td>
-        <td><%= client.company %></td>
-        <td><%=l client.created_at %></td>
+        <td><%= client.is_company %></td>
         <td>
           <%= link_to t('.edit', :default => t("helpers.links.edit")),
                       edit_client_path(client), :class => 'btn btn-default btn-xs' %>

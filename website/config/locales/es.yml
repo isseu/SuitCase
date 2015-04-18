@@ -322,6 +322,7 @@ es:
   activerecord:
     models:
       user: Usuario
+      client: Cliente
     attributes:
       user:
         name: Nombre
@@ -329,10 +330,12 @@ es:
         password_judicial: Contraseña Judicial
         password: Contraseña
         remember_me: Recordarme
+        first_lastname: Primer apellido
+        second_lastname: Segundo apellido
         role: Rol
         lastnames: Apellidos
       client:
         name: Nombre
         first_lastname: Primer apellido
         second_lastname: Segundo apellido
-        company: Compañia
+        is_company: Compañia

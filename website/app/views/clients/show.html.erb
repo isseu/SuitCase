@@ -12,8 +12,8 @@
   <dd><%= @client.first_lastname %></dd>
   <dt><strong><%= model_class.human_attribute_name(:second_lastname) %>:</strong></dt>
   <dd><%= @client.second_lastname %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:company) %>:</strong></dt>
-  <dd><%= @client.company %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:is_company) %>:</strong></dt>
+  <dd><%= @client.is_company %></dd>
 </dl>
 
 <%= link_to t('.back', :default => t("helpers.links.back")),

@@ -34,10 +34,10 @@ class User < ActiveRecord::Base
   ROLES = %w[guest secretary lawyer admin]
 
   def role?(base_role)
-    ROLES.index(base_role.to_s) == ROLES.index(role)
+    ROLES.index(base_role.to_s) == ROLES.index(self.role)
   end
 
   def inspect
-    self.name.titleize + " " + self.lastnames.titleize
+    self.name.titleize + ' ' + self.first_lastname.titleize + ' ' + self.second_lastname
   end
 end
