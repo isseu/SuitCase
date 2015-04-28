@@ -5,75 +5,98 @@
 # suprema.poderjudicial.com
 # civil.poderjudicial.com
 require 'nokogiri'
-require 'net/http'
-$uri = URI("http://laboral.poderjudicial.cl/SITLAPORWEB/AtPublicoDAction.do")
-$http = Net::HTTP.new("laboral.poderjudicial.cl", 80)
+require 'rest-client'
+include RestClient
+
+# Aqui guardaremos las cookies
 $cookies = {}
 
 def guardarCookies(response)
-    all_cookies = response.get_fields('set-cookie')
-    cookies_array = Array.new
-    all_cookies.each { | cookie |
-        cookies_array.push((cookie.split('; ')[0]))
-        cook = (cookie.split('; ')[0]).split('=').map { |e| e.strip }
-        $cookies[cook[0]] = cook[1]
+    response.cookies.each { | k, v |
+    	$cookies[k] = v
     }
 end 
 
-def recuperarCookies(request)
-	request['Cookie'] = $cookies.map{ |k , v| "#{k}=#{v}" }.join('; ')
-end 
-
-def getLoginPortal
-	request = Net::HTTP::Get.new(URI("http://laboral.poderjudicial.cl/SITLAPORWEB/jsp/LoginPortal/LoginPortal.jsp"))
-	response = $http.request(request)
-	puts response.body
-	if (response.code == '200')
-		guardarCookies(response)
-	end
-end
-
-def getSessionCookies
-	request = Net::HTTP::Post.new(URI("http://laboral.poderjudicial.cl/SITLAPORWEB/InicioAplicacionPortal.do "))
-	request.content_type = 'application/x-www-form-urlencoded'
-	request.set_form_data( { 'FLG_Autoconsulta' => 1 } )
-	response = $http.request(request)
-	puts response.body
-	if (response.code == '200')
+# Esta consulta podria ser innecesaria
+def getCookiesIniciales
+	puts '[+] Obteniendo cookies'
+	response = RestClient.get "http://civil.poderjudicial.cl/CIVILPORWEB/"
+	puts response.to_s
+	if (response.code == 200)
+		puts '[-] Cookies obtenidas: ' + response.cookies.to_s
 	    guardarCookies(response)
+	else
+		puts 'Error'
 	end
 end
 
-getLoginPortal
-getSessionCookies
+# Actualizamos informacion de la session al lado del servidor
+def actualizarSession
+	puts '[+] Segunda consulta'
+	response = RestClient.get(
+		'http://civil.poderjudicial.cl/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1', 
+		{ :cookies => $cookies }
+	)
+	puts response.to_s
+	if (response.code == 200)
+		puts '[-] Cookies obtenidas: ' + response.cookies.to_s
+	    guardarCookies(response)
+	else
+		puts 'Error'
+	end
+end
 
-request = Net::HTTP::Post.new($uri)
-recuperarCookies(request)
-puts $cookies
+begin
+	# Obtenemos cookies iniciales
+	getCookiesIniciales
 
-request.content_type = 'application/x-www-form-urlencoded'
-request.set_form_data({   
-	    "TIP_Consulta" => 3,
-		"TIP_Lengueta" => "tdCuatro",
-		"SeleccionL" => "0",
-		"TIP_Causa" => "",
-		"ROL_Causa" => "",
-		"ERA_Causa" => 0,
-		"RUC_Era" => "",
-		"RUC_Tribunal" => 4,
-		"RUC_Numero" => "",
-		"RUC_Dv" => "",
-		"FEC_Desde" => "20%2F04%2F2015",
-		"FEC_Hasta" => "20%2F04%2F2015",
-		"SEL_Trabajadores" => 0,
-		"RUT_Consulta" => "",
-		"RUT_DvConsulta" => "",
-		"NOM_Consulta" => "ENRIQUE",
-		"APE_Paterno" => "",
-		"APE_Materno" => "",
-		"GLS_Razon" => "",
-		"COD_Tribunal" => 1336,
-		"irAccionAtPublico" => "Consulta" })
+	# Visitamos web para actualizar cookie session en servidor
+	actualizarSession
+rescue Exception => e
+	puts "[!] Error al intentar hacer consulta: " + e.response
+	exit
+end
 
-response = $http.request(request)
-puts response.body
+puts '[+] Ejecutando consulta nombre'
+puts "[-] Cookies:" + $cookies.to_s
+
+begin
+	response = Request.execute(:method => :post, :url => 
+	  'http://civil.poderjudicial.cl/CIVILPORWEB/AtPublicoDAction.do',
+	  :headers => {
+	  	'Referer' => 'http://civil.poderjudicial.cl/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1',
+	  	'User-Agent' =>'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'
+	  },
+	  :payload => {   
+		    "TIP_Consulta" => 3,
+			"TIP_Lengueta" => "tdCuatro",
+			"SeleccionL" => 0,
+			"TIP_Causa" => "",
+			"ROL_Causa" => "",
+			"ERA_Causa" => "",
+			"RUC_Era" => "",
+			"RUC_Tribunal" => 3,
+			"RUC_Numero" => "",
+			"RUC_Dv" => "",
+			"FEC_Desde" => "27/04/2015",
+			"FEC_Hasta" => "27/04/2015",
+			"SEL_Litigantes" => 0,
+			"RUT_Consulta" => "",
+			"RUT_DvConsulta" => " ",
+			"NOM_Consulta" => "ENRIQUE",
+			"APE_Paterno" => "CORREA",
+			"APE_Materno" => "",
+			"irAccionAtPublico" => "Consulta" },
+	  :cookies => $cookies,
+	  :timeout => 90000000 # Esto se puede demorar kleta
+	)
+rescue Exception => e
+	puts "[!] Error al intentar hacer consulta: " + e.response
+	exit
+end
+
+# Guardamos resultado
+puts "[+] Cookies devueltas: " + response.cookies.to_s
+
+# Guardamos en un archivo
+File.write('resultado.html', response.to_str)
