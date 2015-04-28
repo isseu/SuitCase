@@ -100,4 +100,5 @@ puts "[+] Cookies devueltas: " + response.cookies.to_s
 # Guardamos en un archivo
 # Porfavor dentro de la carpeta tmp
 puts "[+] Guardando resultado en tmp/resultado.html"
+Dir.mkdir('tmp') unless File.exists?('tmp')
 File.write('tmp/resultado.html', response.to_str)
