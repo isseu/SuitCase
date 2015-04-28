@@ -1,0 +1,52 @@
+<%= form_for @possible_name, :html => { :class => "form-horizontal possible_name" } do |f| %>
+
+    <% if @possible_name.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@possible_name.errors.count, "error") %> prohibited this possible_name from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @possible_name.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="control-group">
+    <%= f.label :user_id, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :user_id, :class => 'form-control' %>
+    </div>
+    <%= error_span(@possible_name[:user_id]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :name, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :name, :class => 'form-control' %>
+    </div>
+    <%= error_span(@possible_name[:name]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :first_lastname, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :first_lastname, :class => 'form-control' %>
+    </div>
+    <%= error_span(@possible_name[:first_lastname]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :second_lastname, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :second_lastname, :class => 'form-control' %>
+    </div>
+    <%= error_span(@possible_name[:second_lastname]) %>
+  </div>
+
+
+  <%= f.submit nil, :class => 'btn btn-primary' %>
+  <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+            possible_names_path, :class => 'btn btn-default' %>
+
+<% end %>

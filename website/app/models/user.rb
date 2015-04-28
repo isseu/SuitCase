@@ -18,7 +18,8 @@
 #  role                   :string
 #  rut                    :string           default(""), not null
 #  name                   :string           default(""), not null
-#  lastnames              :string           default(""), not null
+#  first_lastname         :string           default(""), not null
+#  second_lastname        :string           default(""), not null
 #  password_judicial      :string
 #  telephone              :string
 #
@@ -27,8 +28,17 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :recoverable,
-         :rememberable, :trackable, :validatable #,registerable
+         :rememberable, :trackable, :validatable #, registerable
   validates :rut, rut: { message: 'no es valido'}
+
+  has_many :possible_names
+  has_many :notifications
+  has_many :client_users
+  has_many :clients, through: :client_users
+  has_many :case_users
+  has_many :cases, through: :case_users
+  has_many :case_records
+  has_many :recorded_cases, through: :case_records, class_name: Case
 
   # Posibles roles de cada usuario
   ROLES = %w[guest secretary lawyer admin]

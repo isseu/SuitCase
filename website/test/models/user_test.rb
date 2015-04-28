@@ -18,7 +18,8 @@
 #  role                   :string
 #  rut                    :string           default(""), not null
 #  name                   :string           default(""), not null
-#  lastnames              :string           default(""), not null
+#  first_lastname         :string           default(""), not null
+#  second_lastname        :string           default(""), not null
 #  password_judicial      :string
 #  telephone              :string
 #

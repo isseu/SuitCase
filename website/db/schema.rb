@@ -11,7 +11,48 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150417134658) do
+ActiveRecord::Schema.define(version: 20150428135005) do
+
+  create_table "case_records", force: :cascade do |t|
+    t.integer  "case_id"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "case_records", ["case_id"], name: "index_case_records_on_case_id"
+  add_index "case_records", ["user_id"], name: "index_case_records_on_user_id"
+
+  create_table "case_users", force: :cascade do |t|
+    t.integer  "case_id"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "case_users", ["case_id"], name: "index_case_users_on_case_id"
+  add_index "case_users", ["user_id"], name: "index_case_users_on_user_id"
+
+  create_table "cases", force: :cascade do |t|
+    t.string   "rol"
+    t.datetime "fecha"
+    t.string   "tribunal"
+    t.text     "caratula"
+    t.integer  "info_id"
+    t.string   "info_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "client_users", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "client_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "client_users", ["client_id"], name: "index_client_users_on_client_id"
+  add_index "client_users", ["user_id"], name: "index_client_users_on_user_id"
 
   create_table "clients", force: :cascade do |t|
     t.string   "name",                            null: false
@@ -22,6 +63,40 @@ ActiveRecord::Schema.define(version: 20150417134658) do
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
   end
+
+  create_table "litigantes", force: :cascade do |t|
+    t.integer  "case_id"
+    t.string   "participante"
+    t.string   "rut"
+    t.string   "persona"
+    t.string   "nombre"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "litigantes", ["case_id"], name: "index_litigantes_on_case_id"
+
+  create_table "notifications", force: :cascade do |t|
+    t.integer  "user_id"
+    t.text     "text"
+    t.boolean  "read"
+    t.text     "url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "notifications", ["user_id"], name: "index_notifications_on_user_id"
+
+  create_table "possible_names", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.string   "first_lastname"
+    t.string   "second_lastname"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "possible_names", ["user_id"], name: "index_possible_names_on_user_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false

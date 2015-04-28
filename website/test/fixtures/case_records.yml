@@ -1,0 +1,20 @@
+# == Schema Information
+#
+# Table name: case_records
+#
+#  id         :integer          not null, primary key
+#  case_id    :integer
+#  user_id    :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  case_id: 
+  user_id: 
+
+two:
+  case_id: 
+  user_id: 

@@ -1,0 +1,2 @@
+module CaseRecordsHelper
+end

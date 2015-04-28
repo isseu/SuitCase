@@ -1,0 +1,29 @@
+# == Schema Information
+#
+# Table name: litigantes
+#
+#  id           :integer          not null, primary key
+#  case_id      :integer
+#  participante :string
+#  rut          :string
+#  persona      :string
+#  nombre       :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  case_id: 
+  participante: MyString
+  rut: MyString
+  persona: MyString
+  nombre: MyString
+
+two:
+  case_id: 
+  participante: MyString
+  rut: MyString
+  persona: MyString
+  nombre: MyString

@@ -1,0 +1,44 @@
+<%- model_class = Litigante -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:case_id) %></th>
+      <th><%= model_class.human_attribute_name(:participante) %></th>
+      <th><%= model_class.human_attribute_name(:rut) %></th>
+      <th><%= model_class.human_attribute_name(:persona) %></th>
+      <th><%= model_class.human_attribute_name(:nombre) %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @litigantes.each do |litigante| %>
+      <tr>
+        <td><%= link_to litigante.id, litigante_path(litigante) %></td>
+        <td><%= litigante.case_id %></td>
+        <td><%= litigante.participante %></td>
+        <td><%= litigante.rut %></td>
+        <td><%= litigante.persona %></td>
+        <td><%= litigante.nombre %></td>
+        <td><%=l litigante.created_at %></td>
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_litigante_path(litigante), :class => 'btn btn-default btn-xs' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      litigante_path(litigante),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+            new_litigante_path,
+            :class => 'btn btn-primary' %>

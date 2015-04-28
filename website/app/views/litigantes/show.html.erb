@@ -1,0 +1,27 @@
+<%- model_class = Litigante -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.titleize %></h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:case_id) %>:</strong></dt>
+  <dd><%= @litigante.case_id %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:participante) %>:</strong></dt>
+  <dd><%= @litigante.participante %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:rut) %>:</strong></dt>
+  <dd><%= @litigante.rut %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:persona) %>:</strong></dt>
+  <dd><%= @litigante.persona %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:nombre) %>:</strong></dt>
+  <dd><%= @litigante.nombre %></dd>
+</dl>
+
+<%= link_to t('.back', :default => t("helpers.links.back")),
+              litigantes_path, :class => 'btn btn-default'  %>
+<%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_litigante_path(@litigante), :class => 'btn btn-default' %>
+<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              litigante_path(@litigante),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>

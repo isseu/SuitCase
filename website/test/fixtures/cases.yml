@@ -1,0 +1,32 @@
+# == Schema Information
+#
+# Table name: cases
+#
+#  id         :integer          not null, primary key
+#  rol        :string
+#  fecha      :datetime
+#  tribunal   :string
+#  caratula   :text
+#  info_id    :integer
+#  info_type  :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  rol: MyString
+  fecha: 2015-04-28 10:40:36
+  tribunal: MyString
+  caratula: MyText
+  info_id: 1
+  info_type: MyString
+
+two:
+  rol: MyString
+  fecha: 2015-04-28 10:40:36
+  tribunal: MyString
+  caratula: MyText
+  info_id: 1
+  info_type: MyString

@@ -1,0 +1,66 @@
+<%= form_for @case, :html => { :class => "form-horizontal case" } do |f| %>
+
+    <% if @case.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@case.errors.count, "error") %> prohibited this case from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @case.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="control-group">
+    <%= f.label :rol, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :rol, :class => 'form-control' %>
+    </div>
+    <%= error_span(@case[:rol]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :fecha, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :fecha, :class => 'form-control' %>
+    </div>
+    <%= error_span(@case[:fecha]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :tribunal, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :tribunal, :class => 'form-control' %>
+    </div>
+    <%= error_span(@case[:tribunal]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :caratula, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :caratula, :class => 'form-control' %>
+    </div>
+    <%= error_span(@case[:caratula]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :info_id, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :info_id, :class => 'form-control' %>
+    </div>
+    <%= error_span(@case[:info_id]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :info_type, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :info_type, :class => 'form-control' %>
+    </div>
+    <%= error_span(@case[:info_type]) %>
+  </div>
+
+
+  <%= f.submit nil, :class => 'btn btn-primary' %>
+  <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+            cases_path, :class => 'btn btn-default' %>
+
+<% end %>

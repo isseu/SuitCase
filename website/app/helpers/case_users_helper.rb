@@ -1,0 +1,2 @@
+module CaseUsersHelper
+end

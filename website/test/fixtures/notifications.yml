@@ -1,0 +1,26 @@
+# == Schema Information
+#
+# Table name: notifications
+#
+#  id         :integer          not null, primary key
+#  user_id    :integer
+#  text       :text
+#  read       :boolean
+#  url        :text
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 
+  text: MyText
+  read: 
+  url: MyText
+
+two:
+  user_id: 
+  text: MyText
+  read: 
+  url: MyText

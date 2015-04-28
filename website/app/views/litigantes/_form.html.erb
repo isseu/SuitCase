@@ -1,0 +1,59 @@
+<%= form_for @litigante, :html => { :class => "form-horizontal litigante" } do |f| %>
+
+    <% if @litigante.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@litigante.errors.count, "error") %> prohibited this litigante from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @litigante.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="control-group">
+    <%= f.label :case_id, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :case_id, :class => 'form-control' %>
+    </div>
+    <%= error_span(@litigante[:case_id]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :participante, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :participante, :class => 'form-control' %>
+    </div>
+    <%= error_span(@litigante[:participante]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :rut, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :rut, :class => 'form-control' %>
+    </div>
+    <%= error_span(@litigante[:rut]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :persona, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :persona, :class => 'form-control' %>
+    </div>
+    <%= error_span(@litigante[:persona]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :nombre, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :nombre, :class => 'form-control' %>
+    </div>
+    <%= error_span(@litigante[:nombre]) %>
+  </div>
+
+
+  <%= f.submit nil, :class => 'btn btn-primary' %>
+  <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+            litigantes_path, :class => 'btn btn-default' %>
+
+<% end %>

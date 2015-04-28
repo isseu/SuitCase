@@ -1,4 +1,18 @@
 Rails.application.routes.draw do
+  resources :case_records
+
+  resources :case_users
+
+  resources :client_users
+
+  resources :litigantes
+
+  resources :possible_names
+
+  resources :cases
+
+  resources :notifications
+
   resources :clients
 
   devise_for :users
