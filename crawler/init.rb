@@ -6,7 +6,6 @@
 # civil.poderjudicial.com
 require 'nokogiri'
 require 'rest-client'
-include RestClient
 
 # Aqui guardaremos las cookies
 $cookies = {}
@@ -17,7 +16,7 @@ def guardarCookies(response)
     }
 end 
 
-# Esta consulta podria ser innecesaria
+# Esta consulta podria ser innecesaria si se setean algunas cookies con anterioridad
 def getCookiesIniciales
 	puts '[+] Obteniendo cookies'
 	response = RestClient.get "http://civil.poderjudicial.cl/CIVILPORWEB/"
@@ -61,7 +60,7 @@ puts '[+] Ejecutando consulta nombre'
 puts "[-] Cookies:" + $cookies.to_s
 
 begin
-	response = Request.execute(:method => :post, :url => 
+	response = RestClient::Request.execute(:method => :post, :url => 
 	  'http://civil.poderjudicial.cl/CIVILPORWEB/AtPublicoDAction.do',
 	  :headers => {
 	  	'Referer' => 'http://civil.poderjudicial.cl/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1',
@@ -99,4 +98,6 @@ end
 puts "[+] Cookies devueltas: " + response.cookies.to_s
 
 # Guardamos en un archivo
-File.write('resultado.html', response.to_str)
+# Porfavor dentro de la carpeta tmp
+puts "[+] Guardando resultado en tmp/resultado.html"
+File.write('tmp/resultado.html', response.to_str)
