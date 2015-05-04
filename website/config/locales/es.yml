@@ -323,6 +323,7 @@ es:
     models:
       user: Usuario
       client: Cliente
+      case: Caso
     attributes:
       user:
         name: Nombre
@@ -339,3 +340,4 @@ es:
         first_lastname: Primer apellido
         second_lastname: Segundo apellido
         is_company: Compañia
+

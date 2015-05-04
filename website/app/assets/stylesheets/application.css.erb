@@ -41,32 +41,29 @@ body {
     margin-top: 0px;
 }
 .login {
-    width: 60%;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    margin: -25% 0 0 -30%;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
 }
 .titleFront {
     @import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);
     font-size: 7.5em;
     font-family: 'Open Sans Condensed', sans-serif;
     color: #ffffff;
-    text-shadow: 0px 0px 14px rgba(150, 150, 150, 1);
+    text-shadow: 0px 0px 2px rgba(150, 150, 150, 1);
     margin-bottom: 40px;
 }
+.wrapper-login {
+    margin-top: 100px;
+}
 .bg {
-    position: absolute;
+    position: fixed;
     z-index: -1;
     top: 0px;
     left: 0px;
     height: 100%;
-    width: 120%;
-    background-image: url(<%= image_path('bg.jpg') %>);
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    width: 100%;
+    background-image: url(<%= image_path('bg2.jpg') %>);
 }
 
 @media (min-width: 768px) {
@@ -112,4 +109,26 @@ body {
 .navbar-inverse {
     background-color: #2e2e2e;
     border-color: #2e2e2e;
+}
+.alert {
+    width: 100%;
+    background: #fff;
+    border-bottom: 4px solid #eaeff3;
+    color: #e34848;
+    position: fixed;
+    top: 0;
+    font-size: 14px;
+    font-weight: bold;
+    height: 45px;
+    -moz-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.3);
+    border-radius: 0px;
+    text-align: center;
+    line-height: 10px;
+    font-family: HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+.alert-dismissable .close, .alert-dismissible .close {
+    top: -5px;
 }

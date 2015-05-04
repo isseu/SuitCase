@@ -40,10 +40,10 @@
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
         <ul class="nav nav-sidebar">
-          <li><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+          <li><a href="<%= clients_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;Inicio</a></li>
+          <li <%= printIfActivePage?(cases_path) %>><a href="<%= cases_path %>"><i class="fa fa-briefcase fa-fw"></i>&nbsp;Casos</a></li>
           <li <%= printIfActivePage?(clients_path) %>><a href="<%= clients_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;Clientes</a></li>
-          <li><a href="#">Analytics</a></li>
-          <li><a href="#"><i class="fa fa-cog fa-fw"></i>&nbsp;Crawler</a></li>
+          <li><a href="#"><i class="fa fa-cog fa-fw"></i>&nbsp;Scraper</a></li>
         </ul>
         <% if current_user.role? :admin%>
             <hr>
@@ -53,14 +53,8 @@
         <% end %>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-
 <% end %>
-<% if notice %>
-    <p class="alert alert-success"><%= notice %></p>
-<% end %>
-<% if alert %>
-    <p class="alert alert-danger"><%= alert %></p>
-<% end %>
+<%= render partial: 'shared/errors' %>
 <%= yield %>
 <% if user_signed_in? %>
         </div>
