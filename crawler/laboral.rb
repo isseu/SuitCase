@@ -1,5 +1,3 @@
-#$LOAD_PATH << '.'
-
 require 'nokogiri'
 require 'rest-client'
 
@@ -19,7 +17,7 @@ class Laboral < PoderJudicial
 			Get('http://laboral.poderjudicial.cl/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1/','Tercera')
 
 			#Consulta a AtPublicoDAction.do
-			puts '[+] Ejecutando consulta #{nombre}'
+			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno
 			Post('http://laboral.poderjudicial.cl/SITLAPORWEB/AtPublicoDAction.do',
 				'http://laboral.poderjudicial.cl/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta',
 				{"TIP_Consulta" => 3,
@@ -38,11 +36,11 @@ class Laboral < PoderJudicial
 				 "RUT_Consulta" => "",
 				 "RUT_DvConsulta" => "",
 				 "irAccionAtPublico" => "Consulta",
-				 "NOM_Consulta" => '"' + nombre.upcase + '"',
-				 "APE_Paterno" => '"' + apellido_paterno.upcase+ '"',
-				 "APE_Materno" => '"' + apellido_materno.upcase+ '"',
+				 "NOM_Consulta" => nombre.upcase,
+				 "APE_Paterno" => apellido_paterno.upcase,
+				 "APE_Materno" => apellido_materno.upcase,
 				 "GLS_Razon" => "",
-				 "COD_Tribunal" => 1336},true,'Laboral_#{nombre}_#{apellido_paterno}_#{apellido_materno}')
+				 "COD_Tribunal" => 1336},true,'Laboral_'+nombre + '_' + apellido_paterno + '_' + apellido_materno)
 
 		rescue Exception => e 
 			puts "[!] Error al intentar hacer consulta: " + e.to_s
