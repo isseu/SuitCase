@@ -15,3 +15,38 @@
 //= require twitter/bootstrap
 //= require turbolinks
 //= require_tree .
+
+$.dynatableSetup({
+    features: {
+        paginate: true,
+        sort: true,
+        pushState: true,
+        search: true,
+        recordCount: true,
+        perPageSelect: false
+    },
+    inputs: {
+        queries: null,
+        sorts: null,
+        multisort: ['ctrlKey', 'shiftKey', 'metaKey'],
+        page: null,
+        queryEvent: 'blur change',
+        recordCountTarget: null,
+        recordCountPlacement: 'after',
+        paginationLinkTarget: null,
+        paginationLinkPlacement: 'after',
+        paginationPrev: 'Anterior',
+        paginationNext: 'Siguiente',
+        paginationGap: [1,2,2,1],
+        searchTarget: null,
+        searchPlacement: 'before',
+        perPageTarget: null,
+        perPagePlacement: 'before',
+        perPageText: 'Mostrar: ',
+        recordCountText: 'Mostrando ',
+        processingText: 'Procesando...'
+    }
+});
+$(document).on('ready page:load', function () {
+    $('.table').dynatable();
+})
