@@ -10,20 +10,21 @@ class PoderJudicial
 	end 
 
 	def Get(url,iteracion)
-		puts '[+] ' + iteracion +' consulta'
+		puts '[+] ' + iteracion +' -> ' + url
 		response = RestClient.get(url,{ :cookies => $cookies })
 
 		if (response.code == 200)
-			puts '[-] Cookies obtenidas: ' + response.cookies.to_s
+			#puts '[-] Cookies obtenidas: ' + response.cookies.to_s
 		    saveCookies(response)
-		    puts '[-] Cookies Totales: ' + $cookies.to_s
+		    #puts '[-] Cookies Totales: ' + $cookies.to_s
+		    response.to_s
 		else
 			puts 'Error'
 		end
 	end
 
-	def Post(url,referer,iteracion,params,save,nombre)
-		puts '[+] ' + iteracion +' consulta'
+	def Post(url,referer,iteracion,params)
+		puts '[+] ' + iteracion +' -> ' + url 
 		response = RestClient::Request.execute(:method => :post,
 			:url => url,
 		  	:headers => {
@@ -36,17 +37,11 @@ class PoderJudicial
 		)
 
 		if (response.code == 200)
-			puts '[-] Cookies obtenidas: ' + response.cookies.to_s
+			#puts '[-] Cookies obtenidas: ' + response.cookies.to_s
 		    saveCookies(response)
+		    response.to_s		
 		else
 			puts 'No Entro'
 		end
-
-		if(save)
-			# Guardamos en un archivo
-			puts "[+] Guardando resultado en tmp/Resultado_" + nombre +".txt"
-			Dir.mkdir('tmp') unless File.exists?('tmp')
-			File.write('tmp/Resultado_' + nombre + '.txt', response.to_str)
-		end	
 	end
 end
