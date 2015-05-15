@@ -7,7 +7,7 @@ class Civil < PoderJudicial
 
 	$host = 'http://civil.poderjudicial.cl'
 
-	def Search(rut,nombre,apellido_paterno,apellido_materno)
+	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
 			#Iniciar para Obtener Cookie
 			Get($host + "/CIVILPORWEB/",'Primera Consulta')
@@ -32,12 +32,12 @@ class Civil < PoderJudicial
 					"FEC_Desde" => "15/05/2015",
 					"FEC_Hasta" => "15/05/2015",
 					"SEL_Litigantes" => 0,
-					"RUT_Consulta" => "",
-					"RUT_DvConsulta" => " ",
+					"RUT_Consulta" => rut.to_s,
+					"RUT_DvConsulta" => rut_dv.to_s,
 					"NOM_Consulta" => nombre.upcase,
 					"APE_Paterno" => apellido_paterno.upcase,
 					"APE_Materno" => apellido_materno.upcase,
-					"irAccionAtPublico" => "Consulta" })
+					"irAccionAtPublico" => "Consulta" },900000)
 
 		getCase(respuesta)	
 
@@ -124,4 +124,4 @@ class Civil < PoderJudicial
 end
 
 ola = Civil.new
-ola.Search('','','Alvear','Castillo')
+ola.Search('10696737','7','','','')

@@ -23,7 +23,7 @@ class PoderJudicial
 		end
 	end
 
-	def Post(url,referer,iteracion,params)
+	def Post(url,referer,iteracion,params,time)
 		puts '[+] ' + iteracion +' -> ' + url 
 		response = RestClient::Request.execute(:method => :post,
 			:url => url,
@@ -33,7 +33,7 @@ class PoderJudicial
 		  	},
 		  	:payload => params,
 		  	:cookies => $cookies,
-			:timeout => 90000000 # Esto se puede demorar kleta
+			:timeout => time # Esto se puede demorar kleta
 		)
 
 		if (response.code == 200)
