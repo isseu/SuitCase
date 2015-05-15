@@ -7,7 +7,7 @@ class Civil < PoderJudicial
 
 	$host = 'http://civil.poderjudicial.cl'
 
-	def Iniciar(rut,nombre,apellido_paterno,apellido_materno)
+	def Search(rut,nombre,apellido_paterno,apellido_materno)
 		begin
 			#Iniciar para Obtener Cookie
 			Get($host + "/CIVILPORWEB/",'Primera Consulta')
@@ -29,8 +29,8 @@ class Civil < PoderJudicial
 					"RUC_Tribunal" => 3,
 					"RUC_Numero" => "",
 					"RUC_Dv" => "",
-					"FEC_Desde" => "27/04/2015",
-					"FEC_Hasta" => "27/04/2015",
+					"FEC_Desde" => "15/05/2015",
+					"FEC_Hasta" => "15/05/2015",
 					"SEL_Litigantes" => 0,
 					"RUT_Consulta" => "",
 					"RUT_DvConsulta" => " ",
@@ -39,27 +39,7 @@ class Civil < PoderJudicial
 					"APE_Materno" => apellido_materno.upcase,
 					"irAccionAtPublico" => "Consulta" })
 
-
-			puts '
-         _______  _______  _______  ______  _________ _        _______ 
-        (  ____ )(  ____ \(  ___  )(  __  \ \__   __/( (    /|(  ____ \
-        | (    )|| (    \/| (   ) || (  \  )   ) (   |  \  ( || (    \/
-        | (____)|| (__    | (___) || |   ) |   | |   |   \ | || |      
-        |     __)|  __)   |  ___  || |   | |   | |   | (\ \) || | ____ 
-        | (\ (   | (      | (   ) || |   ) |   | |   | | \   || | \_  )
-        | ) \ \__| (____/\| )   ( || (__/  )___) (___| )  \  || (___) |
-        |/   \__/(_______/|/     \|(______/ \_______/|/    )_)(_______)
-                                                                       
-                  _______  _______  _______  _______  _______ 
-                 (  ____ \(  ___  )(  ____ \(  ____ \(  ____ \
-                 | (    \/| (   ) || (    \/| (    \/| (    \/
-                 | |      | (___) || (_____ | (__    | (_____ 
-                 | |      |  ___  |(_____  )|  __)   (_____  )
-                 | |      | (   ) |      ) || (            ) |
-                 | (____/\| )   ( |/\____) || (____/\/\____) |
-                 (_______/|/     \|\_______)(_______/\_______)
-                                                              '
-			SearchCases(respuesta)	
+		getCase(respuesta)	
 
 		rescue Exception => e 
 			puts "[!] Error al intentar hacer consulta: " + e.to_s
@@ -67,51 +47,81 @@ class Civil < PoderJudicial
 		end
 	end
 
-	def SearchCases(respuesta)
-
+	def getCase(respuesta)
 		doc = Nokogiri::HTML(respuesta)
-		rows = doc.xpath("//*[@id='contentCellsAddTabla']/tbody/tr")
+		rows = doc.xpath("//*[@id='contentCellsAddTabla']/tbody/tr")		
 		
-		case_number = 1
-		
-		#For each tag <tr>
-		rows[1..-2].each do |row|
+		rows[0..-1].each_with_index do |row,case_number|
 
-			href = row.xpath("td/a").attr('href')
-
-			#################################################
-			#Solo hacer el get si es necesario !!! Falta eso#
-			#################################################
-			getMoreInfo(href,case_number)
-
-			palabra = ""			
-			(row.xpath("td"))[1..-2].each do |td|
-				palabra += palabra + "/ "+ td.content + "/ "
+			palabra = "\n " + case_number.to_s + ") "			
+			(row.xpath("td"))[0..-1].each_with_index do |td,i|
+				if i == 0
+					palabra += "Rol: " 
+				elsif i == 1
+					palabra += "Fecha: "
+				elsif i == 2
+					palabra += "Caratulado: "					
+				elsif i ==3
+					palabra += "Tribunal: "
+				else
+					palabra += "?: "
+				end
+				palabra += td.content.strip + " "  			
 			end
 			puts palabra.to_s
-			
-			File.write('tmp/'+case_number.to_s+'.txt', palabra.to_s)		
-			case_number = case_number + 1
+
+
+			#Litigantes
+			href = row.xpath("td/a").attr('href')
+			getLitigantes(href,case_number)
 		end
 	end
 
-	#La idea es que se llame a este metodo si y solo se sigue el caso
-	def getMoreInfo(href,case_number)
-		res = Get($host + href.to_s,'Consultando Caso N° ' + case_number.to_s)
-			
-			#######
-			#Falta#
-			#######
+	def getLitigantes(href,case_number)
+		doc = Nokogiri::HTML(Get($host + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
+		rows = doc.xpath("//*[@id='Litigantes']/table[2]/tbody/tr")
 
-		File.write('tmp/litigantes/'+case_number.to_s+'.txt', res.to_s)		
-		res
+		#Litigantes
+		puts " Litigantes: "			
+		rows[0..-1].each_with_index do |row,i|
+			(row.xpath("td"))[0..-1].each_with_index do |td,j| 
+				if j == 0
+					puts "\t Participante: " + td.content.strip
+				elsif j == 1
+					puts "\t Rut: " + td.content.strip
+				elsif j == 2
+					puts "\t Persona: " + td.content.strip		
+				elsif j ==3
+					puts "\t Nombre: " + td.content.strip
+				else
+					puts "\t ?: " + td.content.strip
+				end
+			end
+			puts ""
+		end
+
+		getRetiros(doc)
+	end
+
+	def getRetiros(doc)
+		rows = doc.xpath("//*[@id='ReceptorDIV']/table[4]/tbody/tr")
+		puts " Retiros del Receptor: "			
+		rows[0..-1].each_with_index do |row,i|
+			puts "\t Receptor N° " + i.to_s
+			(row.xpath("td"))[0..-1].each_with_index do |td,j| 
+				if j == 0
+					puts "\t\t Cuaderno: " + td.content.strip 
+				elsif j == 1
+					puts "\t\t Datos del Retiro: " + td.content.strip
+				elsif j == 2
+					puts "\t\t Estado: " + td.content.strip	
+				else
+					puts "\t\t ?: " + td.content.strip
+				end
+			end
+		end
 	end
 end
 
-
-#Directorios de Prueba
-Dir.mkdir('tmp') unless File.exists?('tmp')
-Dir.mkdir('tmp/litigantes') unless File.exists?('tmp/litigantes')
-
 ola = Civil.new
-ola.Iniciar('','','Alvear','Castillo')
+ola.Search('','','Alvear','Castillo')
