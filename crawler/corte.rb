@@ -41,7 +41,7 @@ class Corte < PoderJudicial
 				 "RUC_Tribunal"=> "",
 				 "RUC_Numero"=> "",
 				 "RUC_Dv"=> "",
-				 "irAccionAtPublico"=> "Consulta" },30)
+				 "irAccionAtPublico"=> "Consulta" })
 
 		getCase(respuesta)
 

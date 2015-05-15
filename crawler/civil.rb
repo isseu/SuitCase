@@ -37,7 +37,7 @@ class Civil < PoderJudicial
 					"NOM_Consulta" => nombre.upcase,
 					"APE_Paterno" => apellido_paterno.upcase,
 					"APE_Materno" => apellido_materno.upcase,
-					"irAccionAtPublico" => "Consulta" },900000)
+					"irAccionAtPublico" => "Consulta" })
 
 		getCase(respuesta)	
 
