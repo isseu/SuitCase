@@ -65,7 +65,7 @@ if not defined? only_table or not only_table %>
                   <% end %>
               <% end %>
           <% else %>
-
+              <div style="float: left">
               <%= form_for current_user.case_users.build(case_id: d.id),
                            html: {
                                    id:    'form-add-user-case',
@@ -96,7 +96,8 @@ if not defined? only_table or not only_table %>
                       <i class="fa fa-minus"></i> Dejar caso
                   <% end %>
               <% end %>
-
+              </div>
+              <div style="float: left; margin-left: 10px;">
               <%= form_for current_user.case_records.build(case_id: d.id),
                            html: {
                                    id:    'form-add-record-case',
@@ -127,7 +128,7 @@ if not defined? only_table or not only_table %>
                       <i class="fa fa-circle"></i> No trackear
                   <% end %>
               <% end %>
-
+                  </div>
           <% end %>
         </td>
       </tr>

@@ -9,8 +9,9 @@
   <%= csrf_meta_tags %>
   <%= favicon_link_tag 'briefcase_32.png' %>
 </head>
-<body>
+<body class="skin-1">
 <% if user_signed_in? %>
+<!--
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
@@ -36,30 +37,59 @@
     </ul>
     </div>
   </div>
-</nav>
+</nav> -->
+
 <div id="wrapper">
-    <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-        <ul class="nav nav-sidebar">
+  <nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+      <ul class="nav" id="side-menu">
+        <li class="nav-header">
+          <div class="dropdown profile-element">
+            <span><img alt="image" class="img-circle user-profile-img" src="http://images.gotinder.com/54e38561732721e729d438de/284897f3-72d6-4717-8fd6-49c97551baf5.jpg"> </span>
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <span class="clear">
+                  <span class="block m-t-xs"> <strong class="font-bold">Eduardo</strong></span>
+                  <span class="text-muted text-xs block">My Account <b class="caret"></b></span>
+                </span>
+            </a>
+            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+              <li><a href="/logout/e09ad5bc-622b-4892-8fc2-cd27549d91ad">Logout</a></li>
+            </ul>
+          </div>
+        </li>
+
           <li <%= printIfActivePage?(root_path) %>><a href="<%= root_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;DashBoard</a></li>
           <li <%= printIfActivePage?(cases_path) %>><a href="<%= cases_path %>"><i class="fa fa-briefcase fa-fw"></i>&nbsp;Casos</a></li>
           <li <%= printIfActivePage?(clients_path) %>><a href="<%= clients_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;Clientes</a></li>
-        </ul>
         <% if current_user.role? :admin%>
             <hr>
-            <ul class="nav nav-sidebar">
               <li <%= printIfActivePage?(users_path) %>><a href="<%= users_path %>"><i class="fa fa-user fa-fw"></i>&nbsp;Usuarios</a></li>
-            </ul>
         <% end %>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      </ul>
+
+    </div>
+  </nav>
+  <div id="page-wrapper" class="gray-bg">
+
+
+
+    <div class="wrapper wrapper-content">
 <% end %>
 <%= render partial: 'shared/errors' %>
 <%= yield %>
 <% if user_signed_in? %>
         </div>
     </div>
-</div>
+
+
+
+    <div class="footer">
+      <div>
+        A <strong>@crockpotveggies</strong> project.
+      </div>
+    </div>
+
+    </div>
 <% end %>
 </body>
 </html>
