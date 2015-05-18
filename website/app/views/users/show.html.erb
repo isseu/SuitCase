@@ -44,7 +44,7 @@
     <%= line_chart Case.group_by_day(:created_at, last: 30).count , id: 'cases-chart'%>
   </div>
   <div class="col-md-4">
-    <b>Estado del scrapper: <span id="<%= (true) ? 'estado-sc-on': 'estado-sc-off'%>">ON</span></b>
+    <b>Estado del scrapper: <span class="<%= (true) ? 'green-color': 'red-color'%>">ON</span></b>
   </div>
 </div>
 

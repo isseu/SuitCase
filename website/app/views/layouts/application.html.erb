@@ -9,7 +9,7 @@
   <%= csrf_meta_tags %>
   <%= favicon_link_tag 'briefcase_32.png' %>
 </head>
-<body class="skin-1">
+<body>
 <% if user_signed_in? %>
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
@@ -37,7 +37,7 @@
     </div>
   </div>
 </nav>
-<div class="container-fluid wrapper">
+<div id="wrapper">
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
         <ul class="nav nav-sidebar">

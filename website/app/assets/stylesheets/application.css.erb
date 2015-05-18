@@ -36,10 +36,16 @@ body.skin-1 {
     background-repeat: no-repeat;
     background-position: 0% center;
 }
-.wrapper {
+body.boxed-layout #wrapper {
+    background-color: white;
+    max-width: 1200px;
+    margin: 0 auto;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
     padding-top: 55px;
-    background-color: #ffffff;
-    min-height: 100%;
+    width: 100%;
+    overflow-x: hidden;
 }
 .page-header {
     margin-top: 0px;
@@ -150,10 +156,10 @@ body.skin-1 {
 .perfil img {
     margin: 10px;
 }
-#estado-sc-on {
+.green-color {
     color: green;
 }
-#estado-sc-off {
+.red-color {
     color: red;
 }
 .field_with_errors {
@@ -167,7 +173,4 @@ body.skin-1 {
 }
 .hidden {
     visibility: hidden;
-}
-#boton-add-case {
-
 }

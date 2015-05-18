@@ -64,6 +64,10 @@ class CaseUsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_case_user
+      if not params[:case_id].nil?
+        @case_user = CaseUser.where(case_id: params[:case_id]).first
+        return
+      end
       @case_user = CaseUser.find(params[:id])
     end
 

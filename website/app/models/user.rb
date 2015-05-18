@@ -58,6 +58,10 @@ class User < ActiveRecord::Base
     return (FROLES.key?(self.role)) ? FROLES[self.role] : self.role
   end
 
+  def following_case?(id)
+    return self.case_users.where(case_id: id).empty? == false
+  end
+
   def recording_case?(id)
     return self.case_records.where(case_id: id).empty? == false
   end

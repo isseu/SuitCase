@@ -65,40 +65,68 @@ if not defined? only_table or not only_table %>
                   <% end %>
               <% end %>
           <% else %>
-            <%= link_to case_users_path,
-                        :id => 'boton-icon' do %>
-                  <i class="fa fa-plus fa-lg"></i>
-            <% end %>
 
-                  <%= form_for(current_user.case_records.build(case_id: d.id),
-                               html: {
-                                       id:    'form-add-record-case',
-                                       class: (current_user.recording_case?(d.id) ? 'hidden' : ''),
-                                       'data-type' => 'json'
-                               } ,
-                               update: { success: "response", failure: "error"},
-                               remote: true) do |f| %>
-                      <%= f.hidden_field :case_id %>
-                      <%= f.hidden_field :user_id %>
-                      <%= button_tag(type: 'submit', class: "btn btn-primary") do %>
-                          <i class="fa fa-circle"></i> Registrar
-                      <% end %>
+              <%= form_for current_user.case_users.build(case_id: d.id),
+                           html: {
+                                   id:    'form-add-user-case',
+                                   class: (current_user.following_case?(d.id) ? 'hidden' : ''),
+                                   'data-type' => 'json'
+                           } ,
+                           update: { success: "response", failure: "error"},
+                           remote: true do |f| %>
+                  <%= f.hidden_field :case_id %>
+                  <%= f.hidden_field :user_id %>
+                  <%= button_tag(type: 'submit', class: "btn btn-primary") do %>
+                      <i class="fa fa-plus"></i> Adjudicar
                   <% end %>
-                  <%= form_for current_user.case_records.build(case_id: d.id),
-                               url: case_case_record_path(d) ,
-                               html: {
-                                       method: :delete,
-                                       id:    'form-remove-record-case',
-                                       class: (current_user.recording_case?(d.id) ? '' : 'hidden'),
-                                       'data-type' => 'json'
-                               },
-                               update: { success: "response", failure: "error"},
-                               remote: true do |f| %>
-                      <%= f.hidden_field :case_id %>
-                      <%= button_tag(type: 'submit', class: "btn btn-primary btn-danger") do %>
-                          <i class="fa fa-circle" id="#estado-sc-off"></i> Siguiendo
-                      <% end %>
+              <% end %>
+
+              <%= form_for current_user.case_users.build(case_id: d.id),
+                           url: case_case_user_path(d) ,
+                           html: {
+                                   method: :delete,
+                                   id:    'form-remove-user-case',
+                                   class: (current_user.following_case?(d.id) ? '' : 'hidden'),
+                                   'data-type' => 'json'
+                           },
+                           update: { success: "response", failure: "error"},
+                           remote: true do |f| %>
+                  <%= f.hidden_field :case_id %>
+                  <%= button_tag(type: 'submit', class: "btn btn-primary btn-danger") do %>
+                      <i class="fa fa-minus"></i> Dejar caso
                   <% end %>
+              <% end %>
+
+              <%= form_for current_user.case_records.build(case_id: d.id),
+                           html: {
+                                   id:    'form-add-record-case',
+                                   class: (current_user.recording_case?(d.id) ? 'hidden' : ''),
+                                   'data-type' => 'json'
+                           } ,
+                           update: { success: "response", failure: "error"},
+                           remote: true do |f| %>
+                  <%= f.hidden_field :case_id %>
+                  <%= f.hidden_field :user_id %>
+                  <%= button_tag(type: 'submit', class: "btn btn-primary") do %>
+                      <i class="fa fa-circle-o"></i> Trackear
+                  <% end %>
+              <% end %>
+
+              <%= form_for current_user.case_records.build(case_id: d.id),
+                           url: case_case_record_path(d) ,
+                           html: {
+                                   method: :delete,
+                                   id:    'form-remove-record-case',
+                                   class: (current_user.recording_case?(d.id) ? '' : 'hidden'),
+                                   'data-type' => 'json'
+                           },
+                           update: { success: "response", failure: "error"},
+                           remote: true do |f| %>
+                  <%= f.hidden_field :case_id %>
+                  <%= button_tag(type: 'submit', class: "btn btn-primary btn-danger") do %>
+                      <i class="fa fa-circle"></i> No trackear
+                  <% end %>
+              <% end %>
 
           <% end %>
         </td>
