@@ -13,7 +13,10 @@
 #
 
 class Client < ActiveRecord::Base
-  validates :rut, rut: { message: 'no es valido'}
   has_many :client_users
   has_many :users, through: :client_users
+
+  # Si es compañia, valido rut?
+  # validates :rut, rut: { message: 'no es valido'}
+  validates :name, presence: true
 end

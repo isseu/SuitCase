@@ -1,1 +1,7 @@
-<%= render 'shared/table_generator', model_class: User, data: @users, attributes: [:id, :rut, :name, :first_lastname, :second_lastname, :email]%>
+<%= render partial: 'shared/table_generator',
+           locals: {
+               model_class: User,
+               data: @users,
+               attributes: [:rut, :name, :first_lastname, :second_lastname, :email]
+           }
+%>

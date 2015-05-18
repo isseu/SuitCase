@@ -12,7 +12,7 @@ default: &default
 development:
   adapter: postgresql
   encoding: utf8
-  database: lostreschiflados
+  database: suitcase
   pool: 5
   username: <%= ENV["POSTGRE_USER"] %>
   password: <%= ENV["POSTGRE_PASS"] %>

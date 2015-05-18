@@ -25,7 +25,7 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
-
+    @user.password_confirmation = @user.password
     respond_to do |format|
       if @user.save
         format.html { redirect_to @user, notice: 'Usuario fue correctamente creado.' }
@@ -69,6 +69,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:name, :telephone, :first_lastname, :second_lastname, :email, :rol, :rut)
+      params.require(:user).permit(:name, :telephone, :password, :first_lastname, :second_lastname, :email, :rol, :rut)
     end
 end

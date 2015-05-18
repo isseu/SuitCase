@@ -13,7 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require twitter/bootstrap
-//= require turbolinks
 //= require_tree .
 
 $.dynatableSetup({
@@ -47,6 +46,29 @@ $.dynatableSetup({
         processingText: 'Procesando...'
     }
 });
+
 $(document).on('ready page:load', function () {
+
     $('.table').dynatable();
+
+    $('#form-add-record-case').on('ajax:success', function(e, data, status, xhr){
+        $(this).addClass("hidden")
+        var remove_form = $(this).siblings("#form-remove-record-case")
+        remove_form.removeClass("hidden")
+    }).on('ajax:error', function(e, xhr, status, error){
+        alert("Error al agregar registro de seguimiento")
+    });
+
+    $('#form-remove-record-case').on('ajax:success', function(e, data, status, xhr){
+        $(this).addClass("hidden")
+        var add_form = $(this).siblings("#form-add-record-case")
+        add_form.removeClass("hidden")
+    }).on('ajax:error', function(e, xhr, status, error){
+        alert("Error al agregar registro de seguimiento")
+    });
+    $('#client_is_company').change(function() {
+        $("#form-company-disappear").toggle()
+    });
+
+    //new_case_record
 })

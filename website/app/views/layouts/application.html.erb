@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <title>SuitCase | Sistema se seguimiento de casos del poder judicial</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag    'application', media: 'all'%>
+  <%= javascript_include_tag 'application'%>
   <%= javascript_include_tag '//www.google.com/jsapi', 'chartkick' %>
   <%= csrf_meta_tags %>
   <%= favicon_link_tag 'briefcase_32.png' %>
 </head>
-<body>
+<body class="skin-1">
 <% if user_signed_in? %>
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
@@ -44,7 +44,6 @@
           <li <%= printIfActivePage?(root_path) %>><a href="<%= root_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;DashBoard</a></li>
           <li <%= printIfActivePage?(cases_path) %>><a href="<%= cases_path %>"><i class="fa fa-briefcase fa-fw"></i>&nbsp;Casos</a></li>
           <li <%= printIfActivePage?(clients_path) %>><a href="<%= clients_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;Clientes</a></li>
-          <li><a href="#"><i class="fa fa-cog fa-fw"></i>&nbsp;Scraper</a></li>
         </ul>
         <% if current_user.role? :admin%>
             <hr>

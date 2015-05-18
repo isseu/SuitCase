@@ -1,36 +1,41 @@
 <%- model_class = User -%>
-<div class="page-header">
-  <h1><%=t '.title', :default => model_class.model_name.human.titleize %></h1>
+<div class="row perfil">
+  <div class="col-md-2 col-md-offset-1">
+    <img class="img-responsive img-circle" src="http://s3.amazonaws.com/37assets/svn/765-default-avatar.png">
+  </div>
+  <div class="col-md-7">
+    <h2>
+      <%= @user.inspect %>
+    </h2>
+    <dl class="dl-horizontal">
+      <dt><strong><%= model_class.human_attribute_name(:email) %>:</strong></dt>
+      <dd><%= mail_to @user.email %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:rut) %>:</strong></dt>
+      <dd><%= @user.rut %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:role) %>:</strong></dt>
+      <dd><%= @user.format_role %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:telephone) %>:</strong></dt>
+      <dd><%= @user.telephone %></dd>
+    </dl>
+  </div>
+  <div class="col-md-2">
+    <div class="perfil-botones">
+      <% if can? :edit, @user %>
+          <%= link_to edit_user_path(@user), id: 'boton-icon' do %>
+              <i class="fa fa-pencil fa-3x"></i>
+          <% end %>
+      <% end %>
+      <% if can? :destroy, @user %>
+          <%= link_to user_path(@user),
+                      :method => 'delete',
+                      :id => 'boton-icon',
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) } do %>
+              <i class="fa fa-trash-o fa-3x"></i>
+          <% end %>
+      <% end %>
+    </div>
+  </div>
 </div>
-
-<dl class="dl-horizontal">
-  <dt><strong><%= model_class.human_attribute_name(:name) %>:</strong></dt>
-  <dd><%= @user.name %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:first_lastname) %>:</strong></dt>
-  <dd><%= @user.first_lastname %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:second_lastname) %>:</strong></dt>
-  <dd><%= @user.second_lastname %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:email) %>:</strong></dt>
-  <dd><%= @user.email %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:rut) %>:</strong></dt>
-  <dd><%= @user.rut %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:role) %>:</strong></dt>
-  <dd><%= @user.role %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:telephone) %>:</strong></dt>
-  <dd><%= @user.telephone %></dd>
-</dl>
-<% if can? :edit, @user %>
-<%= link_to t('.edit', :default => t("helpers.links.edit")),
-              edit_user_path(@user), :class => 'btn btn-default' %>
-<% end %>
-<% if can? :destroy, @user %>
-<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
-              user_path(@user),
-              :method => 'delete',
-              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
-              :class => 'btn btn-danger' %>
-<% end %>
-
 <hr>
 <% if current_user.id == @user.id %>
 <h2>Ultimos casos agregados</h2>
@@ -42,4 +47,13 @@
     <b>Estado del scrapper: <span id="<%= (true) ? 'estado-sc-on': 'estado-sc-off'%>">ON</span></b>
   </div>
 </div>
+
+<%= render partial: 'shared/table_generator',
+           locals: {
+               model_class: Case,
+               data: Case.order("created_at").last(10),
+               attributes: [:rol, :fecha, :tribunal, :caratula, :info_id, :info_type],
+               only_table: true
+           }
+%>
 <% end %>

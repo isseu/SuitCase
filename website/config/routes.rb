@@ -9,7 +9,9 @@ Rails.application.routes.draw do
 
   resources :possible_names
 
-  resources :cases
+  resources :cases do
+    resource :case_record, only: [:destroy]
+  end
 
   resources :notifications
 

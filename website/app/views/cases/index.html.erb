@@ -1,1 +1,8 @@
-<%= render 'shared/table_generator', model_class: Case, data: @cases, attributes: [:rol, :fecha, :tribunal, :caratula, :info_id, :info_type]%>
+<%= render partial: 'shared/table_generator',
+           locals: {
+               model_class: Case,
+               data: @cases,
+               attributes: [:rol, :fecha, :tribunal, :caratula, :info_id, :info_type],
+               hide_add: true
+           }
+%>

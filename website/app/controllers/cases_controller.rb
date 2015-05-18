@@ -4,6 +4,7 @@ class CasesController < ApplicationController
   # GET /cases
   # GET /cases.json
   def index
+    # @cases = Case.where().all
     @cases = Case.all
   end
 

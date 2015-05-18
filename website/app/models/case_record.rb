@@ -12,4 +12,7 @@
 class CaseRecord < ActiveRecord::Base
   belongs_to :case
   belongs_to :user
+
+  validates :case_id, uniqueness: {scope: :user_id}
+
 end

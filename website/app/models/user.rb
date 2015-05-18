@@ -29,7 +29,9 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :recoverable,
          :rememberable, :trackable, :validatable #, registerable
+
   validates :rut, rut: { message: 'no es valido'}
+  validates :role, presence: true
 
   has_many :possible_names
   has_many :notifications
@@ -42,6 +44,7 @@ class User < ActiveRecord::Base
 
   # Posibles roles de cada usuario
   ROLES = %w[guest secretary lawyer admin]
+  FROLES = { 'guest' => 'Invitado', 'secretary' => 'Secretaria', 'lawyer' => 'Abogado', 'admin' => 'Administrador' }
 
   def role?(base_role)
     ROLES.index(base_role.to_s) == ROLES.index(self.role)
@@ -50,4 +53,13 @@ class User < ActiveRecord::Base
   def inspect
     self.name.titleize + ' ' + self.first_lastname.titleize + ' ' + self.second_lastname
   end
+
+  def format_role
+    return (FROLES.key?(self.role)) ? FROLES[self.role] : self.role
+  end
+
+  def recording_case?(id)
+    return self.case_records.where(case_id: id).empty? == false
+  end
+
 end
