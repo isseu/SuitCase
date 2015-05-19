@@ -87,5 +87,12 @@ $(document).on('ready page:load', function () {
         $("#form-company-disappear").toggle()
     });
 
+    $("#notifications").popover({
+        'title' : 'Notificaciones',
+        'html' : true,
+        'placement' : 'right',
+        'content' : $(".alert_list").html()
+    });
+
     //new_case_record
 })

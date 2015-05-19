@@ -13,4 +13,9 @@
 
 class Notification < ActiveRecord::Base
   belongs_to :user
+
+  def self.get_all_unread(user)
+    return Notification.all.where(user_id: user.id, read: false)
+  end
+
 end

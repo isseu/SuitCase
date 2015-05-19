@@ -1,7 +1,7 @@
 <%- model_class = User -%>
 <div class="row perfil">
   <div class="col-md-2 col-md-offset-1">
-    <img class="img-responsive img-circle" src="http://s3.amazonaws.com/37assets/svn/765-default-avatar.png">
+    <%= image_tag @user.avatar.url(:medium), class:  "img-responsive img-circle"%>
   </div>
   <div class="col-md-7">
     <h2>
@@ -44,7 +44,12 @@
     <%= line_chart Case.group_by_day(:created_at, last: 30).count , id: 'cases-chart'%>
   </div>
   <div class="col-md-4">
-    <b>Estado del scrapper: <span class="<%= (true) ? 'green-color': 'red-color'%>">ON</span></b>
+    <dl class="dl-horizontal">
+      <dt><strong>Estado del scrapper: </strong></dt>
+      <dd><span class="<%= (true) ? 'green-color': 'red-color'%>">ON</span></dd>
+      <dt><strong>Total de casos: </strong></dt>
+      <dd><%= Case.all.count %></dd>
+    </dl>
   </div>
 </div>
 

@@ -7,7 +7,7 @@
 #  rut             :string
 #  first_lastname  :string
 #  second_lastname :string
-#  is_company      :boolean          default("f")
+#  is_company      :boolean          default("false")
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #

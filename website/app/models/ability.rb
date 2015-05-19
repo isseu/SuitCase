@@ -28,14 +28,24 @@ class Ability
     #
     # See the wiki for details:
     # https://github.com/ryanb/cancan/wiki/Defining-Abilities
+
+    alias_action :create, :read, :update, :destroy, :to => :crud
+
     user ||= User.new
 
     if user.role? :guest
+      can :read, [Case, Litigante]
     end
     if user.role? :secretary
+      can [:read, :destroy], Notification, :user_id => user.id
+      # Pueden agregar casos a otras personas y tambien nombres posibles
+      can :crud, [CaseRecord, CaseUser, PossibleName]
+      can :read, [Case, Litigante]
     end
     if user.role? :lawyer
-      # can :manage, Post
+      can [:read, :destroy], Notification, :user_id => user.id
+      can :crud, [CaseRecord, CaseUser, PossibleName], :user_id => user.id
+      can :read, [Case, Litigante]
     end
     if user.role? :admin
       can :manage, :all

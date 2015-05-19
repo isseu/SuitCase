@@ -68,6 +68,9 @@ gem 'chartkick'
 # Para ordenar por dias al usar charts
 gem 'groupdate'
 
+# Gema para profile image
+gem 'paperclip'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

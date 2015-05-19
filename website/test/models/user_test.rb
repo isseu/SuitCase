@@ -22,6 +22,10 @@
 #  second_lastname        :string           default(""), not null
 #  password_judicial      :string
 #  telephone              :string
+#  avatar_file_name       :string
+#  avatar_content_type    :string
+#  avatar_file_size       :integer
+#  avatar_updated_at      :datetime
 #
 
 require 'test_helper'

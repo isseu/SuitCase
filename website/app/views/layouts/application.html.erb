@@ -11,33 +11,15 @@
 </head>
 <body class="skin-1">
 <% if user_signed_in? %>
-<!--
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">
-        SuitCase
-      </a>
+
+    <div style="display:none" class="alert_list">
+      <ul>
+        <% Notification.get_all_unread(current_user).each do |n| %>
+            <li class="alert_li"><%= link_to n.text, n.url %> <br /><div class="clearfix"></div></li>
+      <% end %>
+      </ul>
     </div>
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav navbar-right">
-      <li class="notificacionesAlert has-tooltip" data-toggle="tooltip" title="Notificaciones" data-placement="bottom"><a href="#"><span class="fa fa-bell fa-fw" aria-hidden="true"></span>&nbsp;0</a></li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><%= current_user.inspect %> <span class="caret"></span></a>
-        <ul class="dropdown-menu" role="menu">
-          <li><%= link_to('<i class="fa fa-user fw"></i>&nbsp;Mi Perfil'.html_safe, current_user)%></li>
-          <li><%= link_to('<i class="fa fa-sign-out fw"></i>&nbsp;Cerrar Sesión'.html_safe, destroy_user_session_path, :method => :delete)%></li>
-        </ul>
-      </li>
-    </ul>
-    </div>
-  </div>
-</nav> -->
+<%= render partial: 'shared/errors' %>
 
 <div id="wrapper">
   <nav class="navbar-default navbar-static-side" role="navigation">
@@ -45,48 +27,44 @@
       <ul class="nav" id="side-menu">
         <li class="nav-header">
           <div class="dropdown profile-element">
-            <span><img alt="image" class="img-circle user-profile-img" src="http://images.gotinder.com/54e38561732721e729d438de/284897f3-72d6-4717-8fd6-49c97551baf5.jpg"> </span>
-            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+            <span>
+              <%= image_tag current_user.avatar.url(:thumb), class: "img-circle user-profile-img" %>
+            </span>
+            <%= link_to current_user do %>
                 <span class="clear">
-                  <span class="block m-t-xs"> <strong class="font-bold">Eduardo</strong></span>
-                  <span class="text-muted text-xs block">My Account <b class="caret"></b></span>
+                  <span class="block m-t-xs"> <strong class="font-bold"><%= current_user.inspect %></strong></span>
                 </span>
-            </a>
-            <ul class="dropdown-menu animated fadeInRight m-t-xs">
-              <li><a href="/logout/e09ad5bc-622b-4892-8fc2-cd27549d91ad">Logout</a></li>
-            </ul>
+            <% end %>
           </div>
         </li>
+        <li class="notificacionesAlert" title="Notificaciones">
+          <%= link_to user_notifications_path(user_id: current_user.id, format: :json ),
+                      method: :delete,
+                      id: 'notifications',
+                      remote: true do %>
+              <span class="fa fa-bell fa-fw" aria-hidden="true"></span>&nbsp;Notificaciones <span class="badge"><%= Notification.get_all_unread(current_user).count %></span>
+          <% end %>
 
-          <li <%= printIfActivePage?(root_path) %>><a href="<%= root_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;DashBoard</a></li>
-          <li <%= printIfActivePage?(cases_path) %>><a href="<%= cases_path %>"><i class="fa fa-briefcase fa-fw"></i>&nbsp;Casos</a></li>
-          <li <%= printIfActivePage?(clients_path) %>><a href="<%= clients_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;Clientes</a></li>
+        </li>
+        <!--<li><%= link_to('<i class="fa fa-user fw"></i>&nbsp;Mi Perfil'.html_safe, current_user)%></li>-->
+        <li <%= printIfActivePage?(root_path) %>><a href="<%= root_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;DashBoard</a></li>
+        <li <%= printIfActivePage?(cases_path) %>><a href="<%= cases_path %>"><i class="fa fa-briefcase fa-fw"></i>&nbsp;Casos</a></li>
+        <li <%= printIfActivePage?(clients_path) %>><a href="<%= clients_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;Clientes</a></li>
         <% if current_user.role? :admin%>
-            <hr>
-              <li <%= printIfActivePage?(users_path) %>><a href="<%= users_path %>"><i class="fa fa-user fa-fw"></i>&nbsp;Usuarios</a></li>
+        <hr>
+        <li <%= printIfActivePage?(users_path) %>><a href="<%= users_path %>"><i class="fa fa-user fa-fw"></i>&nbsp;Usuarios</a></li>
         <% end %>
+        <hr>
+        <li><%= link_to('<i class="fa fa-sign-out fw"></i>&nbsp;Cerrar Sesión'.html_safe, destroy_user_session_path, :method => :delete)%></li>
       </ul>
-
     </div>
   </nav>
   <div id="page-wrapper" class="gray-bg">
-
-
-
     <div class="wrapper wrapper-content">
 <% end %>
-<%= render partial: 'shared/errors' %>
 <%= yield %>
 <% if user_signed_in? %>
         </div>
-    </div>
-
-
-
-    <div class="footer">
-      <div>
-        A <strong>@crockpotveggies</strong> project.
-      </div>
     </div>
 
     </div>

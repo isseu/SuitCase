@@ -64,6 +64,10 @@ class NotificationsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_notification
+      if not params[:user_id].nil?
+        @notification = Notification.where(user_id: params[:user_id]).first
+        return
+      end
       @notification = Notification.find(params[:id])
     end
 

@@ -22,6 +22,10 @@
 #  second_lastname        :string           default(""), not null
 #  password_judicial      :string
 #  telephone              :string
+#  avatar_file_name       :string
+#  avatar_content_type    :string
+#  avatar_file_size       :integer
+#  avatar_updated_at      :datetime
 #
 
 class User < ActiveRecord::Base
@@ -29,6 +33,10 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :recoverable,
          :rememberable, :trackable, :validatable #, registerable
+
+  # Avatar - Paperclip
+  has_attached_file :avatar, :styles => { :medium => "300x300>", :thumb => "100x100>" }, :default_url => "default-avatar.png"
+  validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
 
   validates :rut, rut: { message: 'no es valido'}
   validates :role, presence: true
