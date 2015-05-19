@@ -1,9 +1,3 @@
-##REF1 http://suprema.poderjudicial.cl/SITSUPPORWEB/AtPublicoDAction.do
-##REF2 http://suprema.poderjudicial.cl/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1 GET
-##REF3 http://suprema.poderjudicial.cl/SITSUPPORWEB/jsp/Menu/Comun/SUP_MNU_BlancoAutoconsulta.jsp GET
-##REF4 http://suprema.poderjudicial.cl/SITSUPPORWEB/InicioAplicacion.do POST
-##REF5 http://suprema.poderjudicial.cl/SITSUPPORWEB/ GET
-
 
 require 'nokogiri'
 require 'rest-client'
@@ -12,25 +6,27 @@ require_relative 'poderjudicial.rb'
 
 class Suprema < PoderJudicial
 
-	def Iniciar(rut,nombre,apellido_paterno,apellido_materno)
+	$host = 'http://suprema.poderjudicial.cl'
+
+	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
 
-			Get('http://suprema.poderjudicial.cl/SITSUPPORWEB/','Primera')
+			Get($host + '/SITSUPPORWEB/','Primera')
 
-			Post('http://suprema.poderjudicial.cl/SITSUPPORWEB/InicioAplicacion.do','http://suprema.poderjudicial.cl/SITSUPPORWEB/', 'Segunda',
+			Post($host + '/SITSUPPORWEB/InicioAplicacion.do','http://suprema.poderjudicial.cl/SITSUPPORWEB/', 'Segunda',
 				{ "username" => "autoconsulta",
 				  "password" => "amisoft",
 				  "Aceptar" => "Ingresar"
-					}, false, '')
+					})
 
-			##Get('http://suprema.poderjudicial.cl/SITSUPPORWEB/jsp/Menu/Comun/SUP_MNU_BlancoAutoconsulta.jsp', 'Tercera')
+			#Get($host + '/SITSUPPORWEB/jsp/Menu/Comun/SUP_MNU_BlancoAutoconsulta.jsp', 'Tercera')
 
-			Get('http://suprema.poderjudicial.cl/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta')
+			Get($host + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta')
 
 			#Consulta a AtPublicoDAction.do			
 			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno
-			Post('http://suprema.poderjudicial.cl/SITSUPPORWEB/AtPublicoDAction.do',
-				'http://suprema.poderjudicial.cl/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Quinta',
+			respuesta = Post($host + '/SITSUPPORWEB/AtPublicoDAction.do',
+				$host + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Quinta',
 				{"TIP_Consulta" => 3,
 				 "TIP_Lengueta" => "tdNombre",
 				 "SeleccionL" => 0,
@@ -55,18 +51,53 @@ class Suprema < PoderJudicial
 				 "ERA_Causa" => "",
 				 "RUC_Era" => "",
 				 "RUC_Tribunal" => "",
-				 "RUC_Numero" => "",
-				 "RUC_Dv" => "",
+				 "RUC_Numero" => rut.to_s,
+				 "RUC_Dv" => rut_dv.to_s,
 				 "COD_CorteAP_Pra" => 0,
 				 "GLS_Caratulado_Recurso" => "",
-				 "irAccionAtPublico" => "Consulta"},true,'Suprema_'+nombre + '_' + apellido_paterno + '_' + apellido_materno)
+				 "irAccionAtPublico" =>"Consulta"})
+
+			getCase(respuesta)
 
 		rescue Exception => e 
 			puts "[!] Error al intentar hacer consulta: " + e.to_s
 			exit
 		end
 	end
+
+
+	def getCase(respuesta)
+		doc = Nokogiri::HTML(respuesta)
+		rows = doc.xpath("//*[@id='contentCells']/tbody/tr")		
+		
+		rows[0..-1].each_with_index do |row,case_number|
+
+			palabra = "\n " + case_number.to_s + ") "			
+			(row.xpath("td"))[0..-1].each_with_index do |td,i|
+				if i == 0
+					palabra += "N° Ingreso: " 
+				elsif i == 1
+					palabra += "Tipo Recurso: "
+				elsif i == 2
+					palabra += "Fecha Ing.: "					
+				elsif i == 3
+					palabra += "Ubicación: "
+				elsif i == 4
+					palabra += "Fecha Ub.: "
+				elsif i == 5
+					palabra += "Corte: "					
+				elsif i == 6
+					palabra += "Caratulado: "
+				else
+					palabra += "?: "
+				end
+				palabra += td.content.strip + " "  			
+			end
+			puts palabra.to_s
+		end
+	end
+
 end
 
 test = Suprema.new
-test.Iniciar('','','Aguirre','')
+test.Search('','','','Alvear','Castillo')

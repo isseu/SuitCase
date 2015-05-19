@@ -3,7 +3,7 @@
 # civil.poderjudicial.com
 # corte.poderjudicial.com
 # suprema.poderjudicial.com
-# civil.poderjudicial.com
+# laboral.poderjudicial.com
 
 require 'nokogiri'
 require 'rest-client'

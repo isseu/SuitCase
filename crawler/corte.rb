@@ -5,20 +5,22 @@ require_relative 'poderjudicial.rb'
 
 class Corte < PoderJudicial
 
-	def Iniciar(rut,nombre,apellido_paterno,apellido_materno)
+	$host = 'http://corte.poderjudicial.cl'
+	
+	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
 			#Iniciar para Obtener Cookie
-			Get("http://corte.poderjudicial.cl/SITCORTEPORWEB/",'Primera')
+			Get($host + "/SITCORTEPORWEB/",'Primera')
 
 			#Get("http://corte.poderjudicial.cl/SITCORTEPORWEB/jsp/Menu/Comun/COR_MNU_BlancoAutoconsulta.jsp",'Segunda')
 
 			#Setear Camino
-			Get('http://corte.poderjudicial.cl/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda')
+			Get($host + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda')
 
 			#Consulta a AtPublicoDAction.do
 			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno
-			Post('http://corte.poderjudicial.cl/SITCORTEPORWEB/AtPublicoDAction.do',
-				'http://corte.poderjudicial.cl/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera',
+			respuesta = Post($host + '/SITCORTEPORWEB/AtPublicoDAction.do',
+				 $host + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera',
 				{"TIP_Consulta"=> "3", 
 				 "TIP_Lengueta"=> "tdNombre",
 				 "TIP_Causa"=> " ",
@@ -39,14 +41,49 @@ class Corte < PoderJudicial
 				 "RUC_Tribunal"=> "",
 				 "RUC_Numero"=> "",
 				 "RUC_Dv"=> "",
-				 "irAccionAtPublico"=> "Consulta" },true,'Corte_'+nombre + '_' + apellido_paterno + '_' + apellido_materno)
+				 "irAccionAtPublico"=> "Consulta" })
+
+		getCase(respuesta)
 
 		rescue Exception => e 
 			puts "[!] Error al intentar hacer consulta: " + e.to_s
 			exit
 		end
+	end	
+
+	def getCase(respuesta)
+		doc = Nokogiri::HTML(respuesta)
+		rows = doc.xpath("//*[@id='divRecursos']/table/tbody/tr")		
+		
+		#Primer tr es Encabezado Tabla
+		rows[1..-1].each_with_index do |row,case_number|
+
+			palabra = "\n " + case_number.to_s + ") "			
+			(row.xpath("td"))[0..-1].each_with_index do |td,i|
+				if i == 0
+					palabra += "N° Ingreso: " 
+				elsif i == 1
+					palabra += "Fecha Ing.: "
+				elsif i == 2
+					palabra += "Ubicación: "					
+				elsif i == 3
+					palabra += "Fecha Ub.: "
+				elsif i == 4
+					palabra += "Corte: "
+				elsif i == 5
+					palabra += "Caratulado: "
+				else
+					palabra += "?: "
+				end
+				palabra += td.content.strip + " "  			
+			end
+			puts palabra.to_s
+
+		end
 	end
+
 end
 
 ola = Corte.new
-ola.Iniciar('','','Aguirre','')
+ola.Search("","","","Alvear","Castillo")
+#ola.Search('10696737','7','','','')
