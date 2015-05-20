@@ -1,14 +1,15 @@
-<%= form_for current_user.possible_names.build,
+<% @possible_name =  current_user.possible_names.build %>
+<%= form_for @possible_name,
              :html => { :class => "form-horizontal possible_name" } do |f| %>
 
-    <% if f.errors.any? %>
+    <% if @possible_name.errors.any? %>
     <div id="error_expl" class="panel panel-danger">
       <div class="panel-heading">
-        <h3 class="panel-title"><%= pluralize(f.errors.count, "error", "errores") %> no <%= (f.errors.count > 1) ? "permitieron" : "permitio"  %> guardar el nombre posible.</h3>
+        <h3 class="panel-title"><%= pluralize(@possible_name.errors.count, "error", "errores") %> no <%= (@possible_name.errors.count > 1) ? "permitieron" : "permitio"  %> guardar el nombre posible.</h3>
       </div>
       <div class="panel-body">
         <ul>
-        <% f.errors.full_messages.each do |msg| %>
+        <% @possible_name.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
         </ul>
@@ -22,7 +23,7 @@
     <div class="col-sm-10">
       <%= f.text_field :user_id, :class => 'form-control' %>
     </div>
-    <%= error_span(f[:user_id]) %>
+    <%= error_span(@possible_name[:user_id]) %>
   </div>
   <% else %>
     <%= f.hidden_field :user_id %>
@@ -32,26 +33,32 @@
     <div class="col-sm-10">
       <%= f.text_field :name, :class => 'form-control' %>
     </div>
-    <%= error_span(f[:name]) %>
+    <%= error_span(@possible_name[:name]) %>
   </div>
   <div class="form-group">
     <%= f.label :first_lastname, :class => 'col-sm-2 control-label' %>
     <div class="col-sm-10">
       <%= f.text_field :first_lastname, :class => 'form-control' %>
     </div>
-    <%= error_span(f[:first_lastname]) %>
+    <%= error_span(@possible_name[:first_lastname]) %>
   </div>
   <div class="form-group">
     <%= f.label :second_lastname, :class => 'col-sm-2 control-label' %>
     <div class="col-sm-10">
       <%= f.text_field :second_lastname, :class => 'form-control' %>
     </div>
-    <%= error_span(f[:second_lastname]) %>
+    <%= error_span(@possible_name[:second_lastname]) %>
   </div>
 
-
-  <%= f.submit nil, :class => 'btn btn-primary' %>
-  <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-            possible_names_path, :class => 'btn btn-default' %>
+    <div class="text-center">
+      <div class="col-sm-6">
+        <%= f.submit nil, :class => 'btn btn-primary btn-block' %>
+      </div>
+      <div class="col-sm-6">
+        <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                    possible_names_path,
+                    :class => 'btn btn-default btn-block' %>
+      </div>
+    </div>
 
 <% end %>

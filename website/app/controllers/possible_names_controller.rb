@@ -4,7 +4,7 @@ class PossibleNamesController < ApplicationController
   # GET /possible_names
   # GET /possible_names.json
   def index
-    @possible_names = PossibleName.all
+    @possible_names = current_user.possible_names.all
   end
 
   # GET /possible_names/1
