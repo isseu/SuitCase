@@ -39,7 +39,7 @@ class Civil < PoderJudicial
 					"APE_Materno" => apellido_materno.upcase,
 					"irAccionAtPublico" => "Consulta" })
 
-		getCase(respuesta)	
+		return getCases(respuesta)	
 
 		rescue Exception => e 
 			puts "[!] Error al intentar hacer consulta: " + e.to_s
@@ -47,60 +47,77 @@ class Civil < PoderJudicial
 		end
 	end
 
-	def getCase(respuesta)
+	def getCases(respuesta)
+		
 		doc = Nokogiri::HTML(respuesta)
 		rows = doc.xpath("//*[@id='contentCellsAddTabla']/tbody/tr")		
-		
-		rows[0..-1].each_with_index do |row,case_number|
+		listaCasos = []
 
-			palabra = "\n " + case_number.to_s + ") "			
+		rows[0..2].each_with_index do |row,case_number|
+			caso = Case.new
+			puts "\n " + case_number.to_s + ") "			
 			(row.xpath("td"))[0..-1].each_with_index do |td,i|
 				if i == 0
-					palabra += "Rol: " 
+					caso.rol = td.content.strip 
 				elsif i == 1
-					palabra += "Fecha: "
+					caso.fecha = td.content.strip
 				elsif i == 2
-					palabra += "Caratulado: "					
+					caso.caratula = td.content.strip					
 				elsif i ==3
-					palabra += "Tribunal: "
+					caso.tribunal = td.content.strip
 				else
 					palabra += "?: "
 				end
-				palabra += td.content.strip + " "  			
+				#palabra += td.content.strip + " "  			
 			end
-			puts palabra.to_s
-
-
+			#puts palabra.to_s
+			puts 'ROL:'
+			puts caso.rol.to_s
 			#Litigantes
 			href = row.xpath("td/a").attr('href')
-			getLitigantes(href,case_number)
+			listaLitigantes = getLitigantes(href,case_number)
+			
+			listaLitigantes.each do |litigante|
+				l = caso.litigantes.build
+				l.rut = litigante.rut
+				l.persona = litigante.persona
+				l.nombre = litigante.nombre
+				l.participante = litigante.participante
+			end
+
+			listaCasos << caso
+
 		end
+
+		return listaCasos
 	end
 
 	def getLitigantes(href,case_number)
 		doc = Nokogiri::HTML(Get($host + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
 		rows = doc.xpath("//*[@id='Litigantes']/table[2]/tbody/tr")
-
+		listaLitigantes = []
 		#Litigantes
-		puts " Litigantes: "			
+		puts "Litigantes: "			
 		rows[0..-1].each_with_index do |row,i|
+			litigante = Litigante.new
 			(row.xpath("td"))[0..-1].each_with_index do |td,j| 
 				if j == 0
-					puts "\t Participante: " + td.content.strip
+					litigante.participante = td.content.strip
 				elsif j == 1
-					puts "\t Rut: " + td.content.strip
+					litigante.rut = td.content.strip
 				elsif j == 2
-					puts "\t Persona: " + td.content.strip		
+					litigante.persona = td.content.strip
 				elsif j ==3
-					puts "\t Nombre: " + td.content.strip
+					litigante.nombre = td.content.strip
 				else
 					puts "\t ?: " + td.content.strip
 				end
 			end
-			puts ""
+			listaLitigantes << litigante
 		end
 
-		getRetiros(doc)
+		#getRetiros(doc)
+		return listaLitigantes
 	end
 
 	def getRetiros(doc)
