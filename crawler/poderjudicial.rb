@@ -44,37 +44,4 @@ class PoderJudicial
 			puts 'No Entro'
 		end
 	end
-
-  def ReadCases(pagina, rut, nombre, apellido_paterno, apellido_materno)
-    if(pagina=='civil')
-      ReadCasesCivil(rut,nombre,apellido_paterno,apellido_materno)
-    elsif(pagina=='suprema')
-      ReadCasesSuprema(rut,nombre,apellido_paterno,apellido_materno)
-    elsif(pagina='laboral')
-      ReadCasesLaboral(rut,nombre,apellido_paterno,apellido_materno)
-    elsif(pagina='corte')
-      ReadCasesCorte(rut,nombre,apellido_paterno,apellido_materno)
-    elsif(pagina='todas')
-      ReadCasesCivil(rut,nombre,apellido_paterno,apellido_materno)
-      ReadCasesSuprema(rut,nombre,apellido_paterno,apellido_materno)
-      ReadCasesCorte(rut,nombre,apellido_paterno,apellido_materno)
-      ReadCasesLaboral(rut,nombre,apellido_paterno,apellido_materno)
-    end
-  end
-
-  def ReadCasesCivil(rut,nombre,apellido_paterno,apellido_materno)
-
-  end
-
-  def ReadCasesSuprema(rut,nombre,apellido_paterno,apellido_materno)
-
-  end
-
-  def ReadCasesLaboral(rut,nombre,apellido_paterno,apellido_materno)
-
-  end
-
-  def ReadCasesCorte(rut,nombre,apellido_paterno,apellido_materno)
-
-  end
 end

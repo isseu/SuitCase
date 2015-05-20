@@ -15,7 +15,7 @@
 
 class Case < ActiveRecord::Base
   has_many :case_users
-  has_many :users, through: :case_users
+  has_many :users  , through: :case_users
   has_many :case_records
   has_many :recording_users, through: :case_records, class_name: User
   has_many :litigantes
