@@ -6,4 +6,8 @@ module ApplicationHelper
   def printBetterError(data, attr)
     return 'has-error' if data.errors[attr].present?
   end
+
+  def crawler_working?
+    return File.exists? ( File.dirname(__FILE__) + '/../../../crawler/crawler.pid' )
+  end
 end

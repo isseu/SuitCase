@@ -1,5 +1,6 @@
 class PossibleNamesController < ApplicationController
   before_action :set_possible_name, only: [:show, :edit, :update, :destroy]
+  autocomplete :user, :name, :full => true, :extra_data => [:first_lastname, :second_lastname], :display_value => :inspect
 
   # GET /possible_names
   # GET /possible_names.json

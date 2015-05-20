@@ -41,13 +41,13 @@ class User < ActiveRecord::Base
   validates :rut, rut: { message: 'no es valido'}
   validates :role, presence: true
 
-  has_many :possible_names
-  has_many :notifications
-  has_many :client_users
+  has_many :possible_names, dependent: :destroy
+  has_many :notifications, dependent: :destroy
+  has_many :client_users, dependent: :destroy
   has_many :clients, through: :client_users
-  has_many :case_users
+  has_many :case_users, dependent: :destroy
   has_many :cases, through: :case_users
-  has_many :case_records
+  has_many :case_records, dependent: :destroy
   has_many :recorded_cases, through: :case_records, class_name: Case
 
   # Posibles roles de cada usuario

@@ -46,7 +46,12 @@
   <div class="col-md-4">
     <dl class="dl-horizontal">
       <dt><strong>Estado del scrapper: </strong></dt>
-      <dd><span class="<%= (true) ? 'green-color': 'red-color'%>">ON</span></dd>
+      <dd>
+            <% if crawler_working? %>
+            <span class="green-color">ON</span>
+            <% else %>
+            <span class="red-color">OFF</span>
+            <% end %>
       <dt><strong>Total de casos: </strong></dt>
       <dd><%= Case.all.count %></dd>
     </dl>

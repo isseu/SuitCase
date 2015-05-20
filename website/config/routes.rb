@@ -7,7 +7,9 @@ Rails.application.routes.draw do
 
   resources :litigantes
 
-  resources :possible_names
+  resources :possible_names do
+    get :autocomplete_user_name, :on => :collection
+  end
 
   resources :cases do
     resource :case_record, only: [:destroy]

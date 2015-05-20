@@ -21,7 +21,11 @@
   <div class="form-group">
     <%= f.label :user_id, :class => 'col-sm-2 control-label' %>
     <div class="col-sm-10">
-      <%= f.text_field :user_id, :class => 'form-control' %>
+      <%= autocomplete_field_tag @possible_name.user.inspect, '',
+                               autocomplete_user_name_possible_names_path,
+                               :class => 'form-control',
+                               :id_element => '#possible_name_user_id'%>
+      <%= f.hidden_field :user_id %>
     </div>
     <%= error_span(@possible_name[:user_id]) %>
   </div>
