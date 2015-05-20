@@ -28,4 +28,3 @@ fork do
     puts "Hello from fork pid: #{Process.pid}"
     sleep 5.seconds
   end
-end
