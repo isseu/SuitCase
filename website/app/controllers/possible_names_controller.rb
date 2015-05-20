@@ -14,7 +14,6 @@ class PossibleNamesController < ApplicationController
 
   # GET /possible_names/new
   def new
-    @possible_name = PossibleName.new
   end
 
   # GET /possible_names/1/edit

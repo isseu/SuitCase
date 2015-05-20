@@ -10,6 +10,7 @@
   <%= favicon_link_tag 'briefcase_32.png' %>
 </head>
 <body class="skin-1">
+<%= render partial: 'shared/errors' %>
 <% if user_signed_in? %>
 
     <div style="display:none" class="alert_list">
@@ -19,8 +20,6 @@
       <% end %>
       </ul>
     </div>
-<%= render partial: 'shared/errors' %>
-
 <div id="wrapper">
   <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
