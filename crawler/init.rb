@@ -8,6 +8,7 @@
 require 'nokogiri'
 require 'rest-client'
 require_relative 'civil.rb'
+require_relative 'corte.rb'
 
 class Busqueda 
 
@@ -17,7 +18,7 @@ class Busqueda
 		    	caso.litigantes.each do |litigantes|
 		    		puts "\t" + litigantes.nombre
 		    	end
-		    	if Case.exists?(:rol => caso.rol)
+		    	if Case.exists?(:rol => caso.rol) 
 		    		puts 'Caso ya Existe'
 		    	else 
 		    		puts 'Guardando Caso'
@@ -26,23 +27,23 @@ class Busqueda
 		    end
 	end
 
-	def BusquedaLista(lista, tribunal)
+	def BusquedaLista(lista, pagina)
 		lista.each do |user|
 
 			##Por RUT
 			rut = user.rut.split('-')
 			puts rut[0] + rut[1]
-			listaCasos = tribunal.Search(rut[0],rut[1],'','','')
+			listaCasos = pagina.Search(rut[0],rut[1],'','','')
 			AgregarCasos(listaCasos)
 
 			##Por Nombre + Apellido_Paterno
-			listaCasos = tribunal.Search('','',user.name, user.first_lastname, '')
+			listaCasos = pagina.Search('','',user.name, user.first_lastname, '')
 			AgregarCasos(listaCasos)
 
 			##Por Nombres Posibles
 			listaNombres = user.possible_names
 			listaNombres.each do |nombre|
-				listaCasos = tribunal.Search('','',nombre, user.first_lastname, '')
+				listaCasos = pagina.Search('','',nombre, user.first_lastname, '')
 			end
 			
 		end
@@ -58,6 +59,7 @@ buscar = Busqueda.new
 listaClientes = Client.all
 listaUsuarios = User.all
 civil = Civil.new
+corte = Corte.new
 
 fork do
 
@@ -74,11 +76,16 @@ fork do
 	    end
 
 		# Primero Buscamos Casos del Usuario 
+		puts 'buscando en civil -> Usuarios'
 		buscar.BusquedaLista(listaUsuarios, civil)
+		puts 'buscando en corte -> Usuarios'
+		buscar.BusquedaLista(listaUsuarios, corte)
 
 		# Segundo Buscamos Casos de Clientes
+		puts 'buscando en civil -> Usuarios'
 		buscar.BusquedaLista(listaClientes, civil)
-
+		puts 'buscando en corte -> Usuarios'
+		buscar.BusquedaLista(listaClientes, corte)
 
 		puts "[+] Iteracion Terminada"
 

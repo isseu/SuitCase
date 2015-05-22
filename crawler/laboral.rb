@@ -32,8 +32,8 @@ class Laboral < PoderJudicial
 				 "RUC_Tribunal" => 4,
 				 "RUC_Numero" => "",
 				 "RUC_Dv" => "",
-				 "FEC_Desde" => "27/04/2015",
-				 "FEC_Hasta" => "27/04/2015",
+				 "FEC_Desde" => Time.now.strftime("%d/%m/%Y").to_s,
+				 "FEC_Hasta" => Time.now.strftime("%d/%m/%Y").to_s,
 				 "SEL_Trabajadores" => 0,
 				 "RUT_Consulta" => rut.to_s,
 				 "RUT_DvConsulta" => rut_dv.to_s,
@@ -56,7 +56,7 @@ class Laboral < PoderJudicial
 		doc = Nokogiri::HTML(respuesta)
 		rows = doc.xpath("//*[@id='filaSel']/tbody/tr")		
 		
-		rows[0..-1].each_with_index do |row,case_number|
+		rows.each_with_index do |row,case_number|
 
 			palabra = "\n " + case_number.to_s + ") "			
 			(row.xpath("td"))[0..-1].each_with_index do |td,i|
@@ -79,6 +79,3 @@ class Laboral < PoderJudicial
 		end
 	end
 end
-
-ola = Laboral.new
-ola.Search('','','','Alvear','Castillo')

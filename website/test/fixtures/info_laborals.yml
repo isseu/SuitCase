@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: info_laborals
+#
+#  id         :integer          not null, primary key
+#  case_id    :integer
+#  rit        :string
+#  ruc        :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  case_id: 
+  rit: MyString
+  ruc: MyString
+
+two:
+  case_id: 
+  rit: MyString
+  ruc: MyString

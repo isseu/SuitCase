@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150519115757) do
+ActiveRecord::Schema.define(version: 20150522220701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,49 @@ ActiveRecord::Schema.define(version: 20150519115757) do
     t.datetime "updated_at",                      null: false
   end
 
+  create_table "info_civils", force: :cascade do |t|
+    t.integer  "case_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "info_civils", ["case_id"], name: "index_info_civils_on_case_id", using: :btree
+
+  create_table "info_cortes", force: :cascade do |t|
+    t.integer  "case_id"
+    t.string   "numero_ingreso"
+    t.string   "ubicacion"
+    t.string   "corte"
+    t.date     "fecha_ubicacion"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "info_cortes", ["case_id"], name: "index_info_cortes_on_case_id", using: :btree
+
+  create_table "info_laborals", force: :cascade do |t|
+    t.integer  "case_id"
+    t.string   "rit"
+    t.string   "ruc"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "info_laborals", ["case_id"], name: "index_info_laborals_on_case_id", using: :btree
+
+  create_table "info_supremas", force: :cascade do |t|
+    t.integer  "case_id"
+    t.string   "numero_ingreso"
+    t.string   "tipo_recurso"
+    t.string   "ubicacion"
+    t.string   "corte"
+    t.date     "fecha_ubicacion"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "info_supremas", ["case_id"], name: "index_info_supremas_on_case_id", using: :btree
+
   create_table "litigantes", force: :cascade do |t|
     t.integer  "case_id"
     t.string   "participante"
@@ -100,6 +143,17 @@ ActiveRecord::Schema.define(version: 20150519115757) do
   end
 
   add_index "possible_names", ["user_id"], name: "index_possible_names_on_user_id", using: :btree
+
+  create_table "receptors", force: :cascade do |t|
+    t.integer  "info_civil_id"
+    t.string   "notebook"
+    t.string   "dat"
+    t.string   "state"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "receptors", ["info_civil_id"], name: "index_receptors_on_info_civil_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -136,7 +190,12 @@ ActiveRecord::Schema.define(version: 20150519115757) do
   add_foreign_key "case_users", "users"
   add_foreign_key "client_users", "clients"
   add_foreign_key "client_users", "users"
+  add_foreign_key "info_civils", "cases"
+  add_foreign_key "info_cortes", "cases"
+  add_foreign_key "info_laborals", "cases"
+  add_foreign_key "info_supremas", "cases"
   add_foreign_key "litigantes", "cases"
   add_foreign_key "notifications", "users"
   add_foreign_key "possible_names", "users"
+  add_foreign_key "receptors", "info_civils"
 end

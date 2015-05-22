@@ -16,7 +16,7 @@ class Civil < PoderJudicial
 			Get($host +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda Consulta')
 
 			#Consulta a AtPublicoDAction.do
-			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno
+			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno + ' (' + rut + ')'
 			respuesta = Post($host + '/CIVILPORWEB/AtPublicoDAction.do',
 				$host +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera Consulta',
 				{"TIP_Consulta" => 3,
@@ -53,7 +53,7 @@ class Civil < PoderJudicial
 		rows = doc.xpath("//*[@id='contentCellsAddTabla']/tbody/tr")		
 		listaCasos = []
 
-		rows.each_with_index do |row,case_number|
+		rows[0..40].each_with_index do |row,case_number|
 			caso = Case.new
 			puts "\n " + case_number.to_s + ") "			
 			(row.xpath("td")).each_with_index do |td,i|
@@ -73,6 +73,7 @@ class Civil < PoderJudicial
 			#puts palabra.to_s
 			puts 'ROL:'
 			puts caso.rol.to_s
+
 			#Litigantes
 			href = row.xpath("td/a").attr('href')
 			listaLitigantes = getLitigantes(href,case_number)

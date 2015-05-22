@@ -1,0 +1,26 @@
+# == Schema Information
+#
+# Table name: receptors
+#
+#  id            :integer          not null, primary key
+#  info_civil_id :integer
+#  notebook      :string
+#  dat           :string
+#  state         :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  info_civil_id: 
+  notebook: MyString
+  dat: MyString
+  state: MyString
+
+two:
+  info_civil_id: 
+  notebook: MyString
+  dat: MyString
+  state: MyString

@@ -1,0 +1,32 @@
+# == Schema Information
+#
+# Table name: info_supremas
+#
+#  id              :integer          not null, primary key
+#  case_id         :integer
+#  numero_ingreso  :string
+#  tipo_recurso    :string
+#  ubicacion       :string
+#  corte           :string
+#  fecha_ubicacion :date
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  case_id: 
+  numero_ingreso: MyString
+  tipo_recurso: MyString
+  ubicacion: MyString
+  corte: MyString
+  fecha_ubicacion: 2015-05-22
+
+two:
+  case_id: 
+  numero_ingreso: MyString
+  tipo_recurso: MyString
+  ubicacion: MyString
+  corte: MyString
+  fecha_ubicacion: 2015-05-22
