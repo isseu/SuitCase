@@ -33,7 +33,7 @@ class PoderJudicial
 		  	},
 		  	:payload => params,
 		  	:cookies => $cookies,
-			:timeout => 120 # Esto se puede demorar kleta
+			:timeout => 1200 # Esto se puede demorar kleta
 		)
 
 		if (response.code == 200)

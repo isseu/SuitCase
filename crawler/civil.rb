@@ -29,8 +29,8 @@ class Civil < PoderJudicial
 					"RUC_Tribunal" => 3,
 					"RUC_Numero" => "",
 					"RUC_Dv" => "",
-					"FEC_Desde" => "15/05/2015",
-					"FEC_Hasta" => "15/05/2015",
+					"FEC_Desde" => Time.now.strftime("%d/%m/%Y").to_s,
+					"FEC_Hasta" => Time.now.strftime("%d/%m/%Y").to_s,
 					"SEL_Litigantes" => 0,
 					"RUT_Consulta" => rut.to_s,
 					"RUT_DvConsulta" => rut_dv.to_s,
@@ -53,10 +53,10 @@ class Civil < PoderJudicial
 		rows = doc.xpath("//*[@id='contentCellsAddTabla']/tbody/tr")		
 		listaCasos = []
 
-		rows[0..2].each_with_index do |row,case_number|
+		rows.each_with_index do |row,case_number|
 			caso = Case.new
 			puts "\n " + case_number.to_s + ") "			
-			(row.xpath("td"))[0..-1].each_with_index do |td,i|
+			(row.xpath("td")).each_with_index do |td,i|
 				if i == 0
 					caso.rol = td.content.strip 
 				elsif i == 1
@@ -98,7 +98,7 @@ class Civil < PoderJudicial
 		listaLitigantes = []
 		#Litigantes
 		puts "Litigantes: "			
-		rows[0..-1].each_with_index do |row,i|
+		rows.each_with_index do |row,i|
 			litigante = Litigante.new
 			(row.xpath("td"))[0..-1].each_with_index do |td,j| 
 				if j == 0
@@ -116,7 +116,7 @@ class Civil < PoderJudicial
 			listaLitigantes << litigante
 		end
 
-		#getRetiros(doc)
+		#getRetiros(doc) 	
 		return listaLitigantes
 	end
 
@@ -125,7 +125,7 @@ class Civil < PoderJudicial
 		puts " Retiros del Receptor: "			
 		rows[0..-1].each_with_index do |row,i|
 			puts "\t Receptor N° " + i.to_s
-			(row.xpath("td"))[0..-1].each_with_index do |td,j| 
+			(row.xpath("td")).each_with_index do |td,j| 
 				if j == 0
 					puts "\t\t Cuaderno: " + td.content.strip 
 				elsif j == 1
@@ -139,6 +139,3 @@ class Civil < PoderJudicial
 		end
 	end
 end
-
-ola = Civil.new
-ola.Search('10696737','7','','','')

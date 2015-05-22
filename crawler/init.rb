@@ -9,8 +9,54 @@ require 'nokogiri'
 require 'rest-client'
 require_relative 'civil.rb'
 
+class Busqueda 
+
+	def AgregarCasos(listaCasos)
+		 listaCasos.each do |caso|
+		    	puts caso.rol
+		    	caso.litigantes.each do |litigantes|
+		    		puts "\t" + litigantes.nombre
+		    	end
+		    	if Case.exists?(:rol => caso.rol)
+		    		puts 'Caso ya Existe'
+		    	else 
+		    		puts 'Guardando Caso'
+		    		caso.save
+		    	end
+		    end
+	end
+
+	def BusquedaLista(lista, tribunal)
+		lista.each do |user|
+
+			##Por RUT
+			rut = user.rut.split('-')
+			puts rut[0] + rut[1]
+			listaCasos = tribunal.Search(rut[0],rut[1],'','','')
+			AgregarCasos(listaCasos)
+
+			##Por Nombre + Apellido_Paterno
+			listaCasos = tribunal.Search('','',user.name, user.first_lastname, '')
+			AgregarCasos(listaCasos)
+
+			##Por Nombres Posibles
+			listaNombres = user.possible_names
+			listaNombres.each do |nombre|
+				listaCasos = tribunal.Search('','',nombre, user.first_lastname, '')
+			end
+			
+		end
+	end
+
+end
+
 CRAWLER_PATH = File.dirname(__FILE__) + '/../../../crawler/' if not defined? CRAWLER_PATH
 CRAWLER_PID_FILE = 'crawler.pid' if not defined? CRAWLER_PID_FILE
+
+buscar = Busqueda.new
+
+listaClientes = Client.all
+listaUsuarios = User.all
 civil = Civil.new
 
 fork do
@@ -27,21 +73,16 @@ fork do
 	      exit
 	    end
 
-	    listaCasos = civil.Search('10696737','7','','','')
-	    puts 'iniciando lista de casos'
-	    listaCasos.each do |caso|
-	    	puts caso.rol
-	    	caso.litigantes.each do |litigantes|
-	    		puts "\t" + litigantes.nombre
-	    	end
-	    	if Case.find_by(id: caso.id)
-	    		
-	    	else 
-	    		puts 'Guardando Caso'
-	    		caso.save
-	    	end
-	    end
+		# Primero Buscamos Casos del Usuario 
+		buscar.BusquedaLista(listaUsuarios, civil)
+
+		# Segundo Buscamos Casos de Clientes
+		buscar.BusquedaLista(listaClientes, civil)
+
+
 		puts "[+] Iteracion Terminada"
+
 	end
 end
+
 
