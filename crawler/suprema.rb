@@ -73,7 +73,7 @@ class Suprema < PoderJudicial
 
 		rows[0..20].each_with_index do |row,case_number|
 			caso = Case.new
-			info_caso = InfoSuprema.new
+			info_caso = InfoSuprema.new(case_id: caso.id)
 
 			palabra = "\n " + case_number.to_s + ") "			
 			row.xpath("td").each_with_index do |td,i|
@@ -84,6 +84,7 @@ class Suprema < PoderJudicial
 					info_caso.tipo_recurso = td.content.strip
 				elsif i == 2
 					caso.fecha = td.content.strip
+					puts 'fecha: ' + caso.fecha.to_s
 				elsif i == 3
 					info_caso.ubicacion = td.content.strip
 				elsif i == 4
@@ -112,6 +113,7 @@ class Suprema < PoderJudicial
 
 		end
 
+		return listaCasos
 
 	end
 
@@ -123,7 +125,7 @@ class Suprema < PoderJudicial
 		puts "Litigantes: "			
 		rows.each_with_index do |row,i|
 			litigante = Litigante.new
-			(row.xpath("td"))[0..-1].each_with_index do |td,j| 
+			row.xpath("td").each_with_index do |td,j| 
 				if j == 0
 					litigante.participante = td.content.strip
 				elsif j == 1

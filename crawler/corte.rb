@@ -60,7 +60,7 @@ class Corte < PoderJudicial
 		#Primer tr es Encabezado Tabla
 		rows[1..20].each_with_index do |row,case_number|
 			caso = Case.new
-			info_caso = InfoCorte.new
+			info_caso = InfoCorte.new(case_id: caso.id)
 			palabra = "\n " + case_number.to_s + ") "			
 			(row.xpath("td"))[0..-1].each_with_index do |td,i|
 				if i == 0
@@ -104,6 +104,7 @@ class Corte < PoderJudicial
 			listaCasos << caso
 
 		end
+		return listaCasos
 	end
 
 	def getLitigantes(href,case_number)

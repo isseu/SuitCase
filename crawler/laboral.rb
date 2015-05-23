@@ -57,11 +57,12 @@ class Laboral < PoderJudicial
 		rows = doc.xpath("//*[@id='filaSel']/tbody/tr")		
 		listaCasos = []
 		
-		rows.each_with_index do |row,case_number|
+		rows[0..20].each_with_index do |row,case_number|
 			caso = Case.new
-			info_caso = InfoLaboral.new
+			info_caso = InfoLaboral.new(case_id: caso.id)
+
 			palabra = "\n " + case_number.to_s + ") "			
-			(row.xpath("td"))[0..-1].each_with_index do |td,i|
+			row.xpath("td").each_with_index do |td,i|
 				if i == 0
 					info_caso.rit = td.content.strip
 				elsif i == 1
@@ -90,7 +91,9 @@ class Laboral < PoderJudicial
 			end
 
 			listaCasos << caso
-			
+
 		end
+
+		return listaCasos
 	end
 end

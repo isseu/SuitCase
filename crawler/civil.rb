@@ -53,7 +53,7 @@ class Civil < PoderJudicial
 		rows = doc.xpath("//*[@id='contentCellsAddTabla']/tbody/tr")		
 		listaCasos = []
 
-		rows[0..40].each_with_index do |row,case_number|
+		rows[0..20].each_with_index do |row,case_number|
 			caso = Case.new
 			puts "\n " + case_number.to_s + ") "			
 			row.xpath("td").each_with_index do |td,i|

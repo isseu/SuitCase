@@ -13,25 +13,32 @@ require_relative 'suprema.rb'
 
 class Busqueda 
 
+	
 	def AgregarCasos(listaCasos)
+		puts 'listaCasos: ' + listaCasos.class.to_s
 		 listaCasos.each do |caso|
 		    	#puts caso.rol
-		    	puts 'Caso:'
-		    	#if caso.litigantes.count > 0 
-			    #	caso.litigantes.each do |litigantes|
-			    #		puts "\t" + litigantes.nombre
-			    #	end
-				#end
+		    	puts 'Caso:' + caso.class.to_s
+		    	
+		    	if caso.litigantes.count > 0 
+			    	caso.litigantes.each do |litigantes|
+			    		puts "\t" + litigantes.nombre
+			    	end
+				end
+				
 
-		    	if caso.rol		
+		    	if caso.rol != nil	
+		    		puts 'responde a rol'
 			    	if Case.exists?(:rol => caso.rol) 
 			    		puts 'Caso ya Existe'
 			    	else 
 			    		puts 'Guardando Caso'
 			    		caso.save
 			    	end
-			    elsif Case.exists?(:fecha => caso.fecha, :caratula => caso.caratula)			    	
-			    	puts 'Guardando Caso'
+			    elsif Case.exists?(:caratula => caso.caratula, :fecha => caso.fecha)	
+			    		puts 'no responde a rol y si a caratula y ya existe'
+			    else		    	
+			    	puts 'Guardando Caso por caratula'
 			    	caso.save
 			    end
 		    end
@@ -40,11 +47,18 @@ class Busqueda
 	def BusquedaLista(lista, pagina)
 		lista.each do |user|
 
-			##Por RUT
-			#rut = user.rut.split('-')
-			#puts rut[0] + rut[1]
-			#listaCasos = pagina.Search(rut[0],rut[1],'','','')
-			#AgregarCasos(listaCasos)
+			#Por RUT
+			puts pagina.class.name.to_s
+			if pagina.class.name.to_s == 'Civil'
+				puts 'true'
+				if user.respond_to?('rut') and user.rut != nil
+					rut = user.rut.split('-')
+					puts rut[0] + rut[1]
+					listaCasos = pagina.Search(rut[0],rut[1],'','','')
+					AgregarCasos(listaCasos)
+				end
+			end
+			
 
 			##Por Nombre + Apellido_Paterno
 			puts 'Buscando por nombre y Apellido_Paterno'
@@ -72,40 +86,38 @@ civil = Civil.new
 corte = Corte.new
 suprema = Suprema.new
 
-fork do
+puts "[+] Crawler iniciado PID #{Process.pid}"
+# Creamos archivo de pid
+f = File.new( CRAWLER_PATH + CRAWLER_PID_FILE , "w")
+f.puts(Process.pid)
+f.close
+while true
+    # Terminamos ejecucion si se elimina archivo
+    if not File.exist?( CRAWLER_PATH + CRAWLER_PID_FILE )
+      puts "[+] Cerrando crawler PID #{Process.pid}"
+      exit
+    end
 
-  puts "[+] Crawler iniciado PID #{Process.pid}"
-  # Creamos archivo de pid
-  f = File.new( CRAWLER_PATH + CRAWLER_PID_FILE , "w")
-  f.puts(Process.pid)
-  f.close
-	while true
-	    # Terminamos ejecucion si se elimina archivo
-	    if not File.exist?( CRAWLER_PATH + CRAWLER_PID_FILE )
-	      puts "[+] Cerrando crawler PID #{Process.pid}"
-	      exit
-	    end
+	# Primero Buscamos Casos del Usuario 
+	puts 'buscando en civil -> Usuarios'
+	buscar.BusquedaLista(listaUsuarios, civil)
+	puts 'buscando en corte -> Usuarios'
+	buscar.BusquedaLista(listaUsuarios, corte)
+	puts 'buscando en suprema -> Usuarios'
+	buscar.BusquedaLista(listaUsuarios, suprema)
 
-		# Primero Buscamos Casos del Usuario 
-		#puts 'buscando en civil -> Usuarios'
-		#buscar.BusquedaLista(listaUsuarios, civil)
-		#puts 'buscando en corte -> Usuarios'
-		#buscar.BusquedaLista(listaUsuarios, corte)
-		puts 'buscando en suprema -> Usuarios'
-		buscar.BusquedaLista(listaUsuarios, suprema)
-
-		# Segundo Buscamos Casos de Clientes
-		#puts 'buscando en civil -> Usuarios'
-		#buscar.BusquedaLista(listaClientes, civil)
-		#puts 'buscando en corte -> Usuarios'
-		#buscar.BusquedaLista(listaClientes, corte)
-		puts 'buscando en suprema -> Clientes'
-		buscar.BusquedaLista(listaClientes, suprema)
+	# Segundo Buscamos Casos de Clientes
+	puts 'buscando en civil -> Usuarios'
+	buscar.BusquedaLista(listaClientes, civil)
+	puts 'buscando en corte -> Usuarios'
+	buscar.BusquedaLista(listaClientes, corte)
+	puts 'buscando en suprema -> Clientes'
+	buscar.BusquedaLista(listaClientes, suprema)
 
 
-		puts "[+] Iteracion Terminada"
+	puts "[+] Iteracion Terminada"
 
-	end
 end
+
 
 
