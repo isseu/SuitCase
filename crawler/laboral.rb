@@ -55,27 +55,42 @@ class Laboral < PoderJudicial
 	def getCase(respuesta)
 		doc = Nokogiri::HTML(respuesta)
 		rows = doc.xpath("//*[@id='filaSel']/tbody/tr")		
+		listaCasos = []
 		
 		rows.each_with_index do |row,case_number|
-
+			caso = Case.new
+			info_caso = InfoLaboral.new
 			palabra = "\n " + case_number.to_s + ") "			
 			(row.xpath("td"))[0..-1].each_with_index do |td,i|
 				if i == 0
-					palabra += "Rit: " 
+					info_caso.rit = td.content.strip
 				elsif i == 1
-					palabra += "Ruc: "
+					info_caso.ruc = td.content.strip
 				elsif i == 2
-					palabra += "Fecha Ing.: "					
+					caso.fecha = td.content.strip
 				elsif i == 3
-					palabra += "Caratulado: "
+					caso.caratula = td.content.strip
 				elsif i == 4
-					palabra += "Tribunal: "
+					caso.tribunal = td.content.strip
 				else
 					palabra += "?: "
 				end
-				palabra += td.content.strip + " "  			
 			end
-			puts palabra.to_s
+
+			#Litigantes
+			href = row.xpath("td/a").attr('href')
+			listaLitigantes = getLitigantes(href,case_number)
+			
+			listaLitigantes.each do |litigante|
+				l = caso.litigantes.build
+				l.rut = litigante.rut
+				l.persona = litigante.persona
+				l.nombre = litigante.nombre
+				l.participante = litigante.participante
+			end
+
+			listaCasos << caso
+			
 		end
 	end
 end

@@ -56,7 +56,7 @@ class Civil < PoderJudicial
 		rows[0..40].each_with_index do |row,case_number|
 			caso = Case.new
 			puts "\n " + case_number.to_s + ") "			
-			(row.xpath("td")).each_with_index do |td,i|
+			row.xpath("td").each_with_index do |td,i|
 				if i == 0
 					caso.rol = td.content.strip 
 				elsif i == 1

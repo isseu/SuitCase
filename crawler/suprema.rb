@@ -35,8 +35,8 @@ class Suprema < PoderJudicial
 				 "COD_Corte_AP" => 0,
 				 "ROL_Recurso" => "",
 				 "ERA_Recurso" => "",
-				 "FEC_Desde" => "28/04/2015",
-				 "FEC_Hasta" => "28/04/2015",
+				 "FEC_Desde" => Time.now.strftime("%d/%m/%Y").to_s,
+				 "FEC_Hasta" => Time.now.strftime("%d/%m/%Y").to_s,
 				 "TIP_Litigante" => 999,
 				 "TIP_Persona" => "N",
 				 "APN_Nombre" => nombre.upcase,
@@ -68,36 +68,80 @@ class Suprema < PoderJudicial
 
 	def getCase(respuesta)
 		doc = Nokogiri::HTML(respuesta)
-		rows = doc.xpath("//*[@id='contentCells']/tbody/tr")		
-		
-		rows[0..-1].each_with_index do |row,case_number|
+		rows = doc.xpath("//*[@id='contentCells']/tbody/tr")	
+		listaCasos = []
+
+		rows[0..20].each_with_index do |row,case_number|
+			caso = Case.new
+			info_caso = InfoSuprema.new
 
 			palabra = "\n " + case_number.to_s + ") "			
-			(row.xpath("td"))[0..-1].each_with_index do |td,i|
+			row.xpath("td").each_with_index do |td,i|
+				
 				if i == 0
-					palabra += "N° Ingreso: " 
+					info_caso.numero_ingreso = td.content.strip
 				elsif i == 1
-					palabra += "Tipo Recurso: "
+					info_caso.tipo_recurso = td.content.strip
 				elsif i == 2
-					palabra += "Fecha Ing.: "					
+					caso.fecha = td.content.strip
 				elsif i == 3
-					palabra += "Ubicación: "
+					info_caso.ubicacion = td.content.strip
 				elsif i == 4
-					palabra += "Fecha Ub.: "
+					info_caso.fecha_ubicacion = td.content.strip
 				elsif i == 5
-					palabra += "Corte: "					
+					info_caso.corte = td.content.strip
 				elsif i == 6
-					palabra += "Caratulado: "
+					caso.caratula = td.content.strip
 				else
 					palabra += "?: "
 				end
-				palabra += td.content.strip + " "  			
 			end
-			puts palabra.to_s
+
+			href = row.xpath("td/a").attr('href')
+			listaLitigantes = getLitigantes(href,case_number)
+			
+			listaLitigantes.each do |litigante|
+				l = caso.litigantes.build
+				l.rut = litigante.rut
+				l.persona = litigante.persona
+				l.nombre = litigante.nombre
+				l.participante = litigante.participante
+			end
+
+			listaCasos << caso
+
 		end
+
+
+	end
+
+	def getLitigantes(href,case_number)
+		doc = Nokogiri::HTML(Get($host + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
+		rows = doc.xpath("//*[@id='contentCellsLitigantes']/tbody/tr")
+		listaLitigantes = []
+		#Litigantes
+		puts "Litigantes: "			
+		rows.each_with_index do |row,i|
+			litigante = Litigante.new
+			(row.xpath("td"))[0..-1].each_with_index do |td,j| 
+				if j == 0
+					litigante.participante = td.content.strip
+				elsif j == 1
+					litigante.rut = td.content.strip
+				elsif j == 2
+					litigante.persona = td.content.strip
+				elsif j ==3
+					litigante.nombre = td.content.strip
+				else
+					puts "\t ?: " + td.content.strip
+				end
+			end
+			listaLitigantes << litigante
+		end
+
+		#getRetiros(doc) 	
+		return listaLitigantes
 	end
 
 end
 
-test = Suprema.new
-test.Search('','','','Alvear','Castillo')

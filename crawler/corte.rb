@@ -55,9 +55,10 @@ class Corte < PoderJudicial
 	def getCases(respuesta)
 		doc = Nokogiri::HTML(respuesta)
 		rows = doc.xpath("//*[@id='divRecursos']/table/tbody/tr")		
+		listaCasos = []
 		
 		#Primer tr es Encabezado Tabla
-		rows[1..40].each_with_index do |row,case_number|
+		rows[1..20].each_with_index do |row,case_number|
 			caso = Case.new
 			info_caso = InfoCorte.new
 			palabra = "\n " + case_number.to_s + ") "			
@@ -73,7 +74,7 @@ class Corte < PoderJudicial
 				elsif i == 4
 					info_caso.corte = td.content.strip
 				elsif i == 5
-					caso.caratulado = td.content.strip
+					caso.caratula = td.content.strip
 				else
 					palabra += "?: "
 				end
@@ -91,6 +92,14 @@ class Corte < PoderJudicial
 				l.nombre = litigante.nombre
 				l.participante = litigante.participante
 			end
+
+			##guardar la informacion del caso
+			#info_caso.case_id = caso.id
+			#if InfoCorte.exists?(:ruc => info_caso.ruc)
+			#	puts 'caso existe'
+			#else
+			#	info_caso.save
+			#end
 
 			listaCasos << caso
 
