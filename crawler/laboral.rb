@@ -5,23 +5,23 @@ require_relative 'poderjudicial.rb'
 
 class Laboral < PoderJudicial
 
-	$host = 'http://laboral.poderjudicial.cl'
+	$host_laboral = 'http://laboral.poderjudicial.cl'
 
 	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
 			#Iniciar para Obtener Cookie
-			Post($host + '/SITLAPORWEB/InicioAplicacionPortal.do',
-				 $host + '/SITLAPORWEB/jsp/LoginPortal/LoginPortal.jsp','Primera',
+			Post($host_laboral + '/SITLAPORWEB/InicioAplicacionPortal.do',
+				 $host_laboral + '/SITLAPORWEB/jsp/LoginPortal/LoginPortal.jsp','Primera',
 				{"FLG_Autoconsulta" => 1})
 
 			#Actualizar Sesión
-			#Get($host + '/SITLAPORWEB/jsp/Menu/Comun/LAB_MNU_BlancoPortal.jsp','Segunda')
-			Get($host + '/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1/','Tercera')
+			#Get($host_laboral + '/SITLAPORWEB/jsp/Menu/Comun/LAB_MNU_BlancoPortal.jsp','Segunda')
+			Get($host_laboral + '/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1/','Tercera')
 
 			#Consulta a AtPublicoDAction.do
 			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno
-			respuesta = Post($host + '/SITLAPORWEB/AtPublicoDAction.do',
-				 $host + '/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta',
+			respuesta = Post($host_laboral + '/SITLAPORWEB/AtPublicoDAction.do',
+				 $host_laboral + '/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta',
 				{"TIP_Consulta" => 3,
 				 "TIP_Lengueta" => "tdCuatro",
 				 "SeleccionL" => 0,
@@ -59,12 +59,13 @@ class Laboral < PoderJudicial
 		
 		rows[0..20].each_with_index do |row,case_number|
 			caso = Case.new
-			info_caso = InfoLaboral.new(case_id: caso.id)
+			info_caso = InfoLaboral.new
 
 			palabra = "\n " + case_number.to_s + ") "			
 			row.xpath("td").each_with_index do |td,i|
 				if i == 0
 					info_caso.rit = td.content.strip
+					caso.rol = info_caso.rit
 				elsif i == 1
 					info_caso.ruc = td.content.strip
 				elsif i == 2
@@ -90,10 +91,41 @@ class Laboral < PoderJudicial
 				l.participante = litigante.participante
 			end
 
+			caso.info_type = 'Laboral'
+
 			listaCasos << caso
+
+			GuardarInfoCaso(info_caso, caso)
 
 		end
 
 		return listaCasos
 	end
+
+	def getLitigantes(href,case_number)
+		doc = Nokogiri::HTML(Get($host_laboral + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
+		rows = doc.xpath("//*[@id='Litigantes']/table[2]/tbody/tr")
+		listaLitigantes = []
+		#Litigantes
+		puts "Litigantes: "			
+		rows.each_with_index do |row,i|
+			litigante = Litigante.new
+			row.xpath("td").each_with_index do |td,j| 
+				if j == 2
+					litigante.participante = td.content.strip
+				elsif j == 3
+					litigante.rut = td.content.strip
+				elsif j == 4
+					litigante.persona = td.content.strip
+				elsif j == 5
+					litigante.nombre = td.content.strip
+				end
+			end
+			listaLitigantes << litigante
+		end
+
+		#getRetiros(doc) 	
+		return listaLitigantes
+	end
+
 end

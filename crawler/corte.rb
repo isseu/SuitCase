@@ -5,22 +5,22 @@ require_relative 'poderjudicial.rb'
 
 class Corte < PoderJudicial
 
-	$host = 'http://corte.poderjudicial.cl'
+	$host_corte = 'http://corte.poderjudicial.cl'
 	
 	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
 			#Iniciar para Obtener Cookie
-			Get($host + "/SITCORTEPORWEB/",'Primera')
+			Get($host_corte + "/SITCORTEPORWEB/",'Primera')
 
 			#Get("http://corte.poderjudicial.cl/SITCORTEPORWEB/jsp/Menu/Comun/COR_MNU_BlancoAutoconsulta.jsp",'Segunda')
 
 			#Setear Camino
-			Get($host + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda')
+			Get($host_corte + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda')
 
 			#Consulta a AtPublicoDAction.do
 			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno
-			respuesta = Post($host + '/SITCORTEPORWEB/AtPublicoDAction.do',
-				 $host + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera',
+			respuesta = Post($host_corte + '/SITCORTEPORWEB/AtPublicoDAction.do',
+				 $host_corte + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera',
 				{"TIP_Consulta"=> "3", 
 				 "TIP_Lengueta"=> "tdNombre",
 				 "TIP_Causa"=> " ",
@@ -64,7 +64,7 @@ class Corte < PoderJudicial
 			palabra = "\n " + case_number.to_s + ") "			
 			(row.xpath("td"))[0..-1].each_with_index do |td,i|
 				if i == 0
-					info_caso.numero_ingreso = td.content.strip
+					info_caso.rol = td.content.strip
 				elsif i == 1
 					caso.fecha = td.content.strip
 				elsif i == 2
@@ -101,14 +101,18 @@ class Corte < PoderJudicial
 			#	info_caso.save
 			#end
 
+			caso.info_type = 'Corte'
+
 			listaCasos << caso
 
+		GuardarInfoCaso(info_caso, caso)
 		end
+
 		return listaCasos
 	end
 
 	def getLitigantes(href,case_number)
-		doc = Nokogiri::HTML(Get($host + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
+		doc = Nokogiri::HTML(Get($host_corte + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
 		rows = doc.xpath("//*[@id='divLitigantes']/table[2]/tbody/tr")
 		listaLitigantes = []
 		#Litigantes

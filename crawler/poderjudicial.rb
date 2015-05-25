@@ -44,4 +44,15 @@ class PoderJudicial
 			puts 'No Entro'
 		end
 	end
+
+	def GuardarInfoCaso(info_caso, caso)
+		if Case.exists?(rol: caso.rol) or Case.exists?(fecha: caso.fecha, caratula: caso.caratula)
+			puts 'informacion del caso ya existe'
+		else
+			puts 'Guardando informacion del caso'
+			info_caso.case_id = caso.id
+			info_caso.save
+		end 
+	end
+
 end

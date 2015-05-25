@@ -21,7 +21,4 @@ class Case < ActiveRecord::Base
   has_many :litigantes, dependent: :destroy
   belongs_to :info, polymorphic: true
 
-  validates :rol, presence: true, allow_blank: false
-  validates :tribunal, presence: true, allow_blank: false
-
 end

@@ -6,27 +6,27 @@ require_relative 'poderjudicial.rb'
 
 class Suprema < PoderJudicial
 
-	$host = 'http://suprema.poderjudicial.cl'
+	$host_suprema = 'http://suprema.poderjudicial.cl'
 
 	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
 
-			Get($host + '/SITSUPPORWEB/','Primera')
+			Get($host_suprema + '/SITSUPPORWEB/','Primera')
 
-			Post($host + '/SITSUPPORWEB/InicioAplicacion.do','http://suprema.poderjudicial.cl/SITSUPPORWEB/', 'Segunda',
+			Post($host_suprema + '/SITSUPPORWEB/InicioAplicacion.do','http://suprema.poderjudicial.cl/SITSUPPORWEB/', 'Segunda',
 				{ "username" => "autoconsulta",
 				  "password" => "amisoft",
 				  "Aceptar" => "Ingresar"
 					})
 
-			#Get($host + '/SITSUPPORWEB/jsp/Menu/Comun/SUP_MNU_BlancoAutoconsulta.jsp', 'Tercera')
+			#Get($host_suprema + '/SITSUPPORWEB/jsp/Menu/Comun/SUP_MNU_BlancoAutoconsulta.jsp', 'Tercera')
 
-			Get($host + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta')
+			Get($host_suprema + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta')
 
 			#Consulta a AtPublicoDAction.do			
 			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno
-			respuesta = Post($host + '/SITSUPPORWEB/AtPublicoDAction.do',
-				$host + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Quinta',
+			respuesta = Post($host_suprema + '/SITSUPPORWEB/AtPublicoDAction.do',
+				$host_suprema + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Quinta',
 				{"TIP_Consulta" => 3,
 				 "TIP_Lengueta" => "tdNombre",
 				 "SeleccionL" => 0,
@@ -79,7 +79,7 @@ class Suprema < PoderJudicial
 			row.xpath("td").each_with_index do |td,i|
 				
 				if i == 0
-					info_caso.numero_ingreso = td.content.strip
+					info_caso.rol = td.content.strip
 				elsif i == 1
 					info_caso.tipo_recurso = td.content.strip
 				elsif i == 2
@@ -109,8 +109,12 @@ class Suprema < PoderJudicial
 				l.participante = litigante.participante
 			end
 
+			caso.info_type = 'Suprema'
+
 			listaCasos << caso
 
+			GuardarInfoCaso(info_caso, caso)
+			
 		end
 
 		return listaCasos
@@ -118,7 +122,7 @@ class Suprema < PoderJudicial
 	end
 
 	def getLitigantes(href,case_number)
-		doc = Nokogiri::HTML(Get($host + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
+		doc = Nokogiri::HTML(Get($host_suprema + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
 		rows = doc.xpath("//*[@id='contentCellsLitigantes']/tbody/tr")
 		listaLitigantes = []
 		#Litigantes

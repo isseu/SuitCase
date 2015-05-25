@@ -5,20 +5,20 @@ require_relative 'poderjudicial.rb'
 
 class Civil < PoderJudicial
 
-	$host = 'http://civil.poderjudicial.cl'
+	$host_civil = 'http://civil.poderjudicial.cl'
 
 	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
 			#Iniciar para Obtener Cookie
-			Get($host + "/CIVILPORWEB/",'Primera Consulta')
+			Get($host_civil + "/CIVILPORWEB/",'Primera Consulta')
 
 			#Setear Camino
-			Get($host +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda Consulta')
+			Get($host_civil +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda Consulta')
 
 			#Consulta a AtPublicoDAction.do
 			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno + ' (' + rut + ')'
-			respuesta = Post($host + '/CIVILPORWEB/AtPublicoDAction.do',
-				$host +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera Consulta',
+			respuesta = Post($host_civil + '/CIVILPORWEB/AtPublicoDAction.do',
+				$host_civil +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera Consulta',
 				{"TIP_Consulta" => 3,
 					"TIP_Lengueta" => "tdCuatro",
 					"SeleccionL" => 0,
@@ -86,6 +86,8 @@ class Civil < PoderJudicial
 				l.participante = litigante.participante
 			end
 
+			caso.info_type = 'Civil'
+
 			listaCasos << caso
 
 		end
@@ -94,7 +96,7 @@ class Civil < PoderJudicial
 	end
 
 	def getLitigantes(href,case_number)
-		doc = Nokogiri::HTML(Get($host + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
+		doc = Nokogiri::HTML(Get($host_civil + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
 		rows = doc.xpath("//*[@id='Litigantes']/table[2]/tbody/tr")
 		listaLitigantes = []
 		#Litigantes
