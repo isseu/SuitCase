@@ -10,4 +10,9 @@ module ApplicationHelper
   def crawler_working?
     return File.exists? ( File.dirname(__FILE__) + '/../../../crawler/crawler.pid' )
   end
+
+  def date_format(time)
+    time.strftime("%d/%m/%Y") unless time.nil?
+  end
+
 end

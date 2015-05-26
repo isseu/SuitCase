@@ -10,4 +10,6 @@
 
 class InfoCivil < ActiveRecord::Base
   belongs_to :case
+  has_many :cases, as: :info
+  has_many :receptors
 end

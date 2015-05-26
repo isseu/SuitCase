@@ -6,6 +6,7 @@
     attributes: lista con diccionarios de atributos a imprimir
     hide_add: si se esconde el boton add, default(false)
     only_table: si esconde titulo y boton add, default(false)
+    hide_actions: si escondo acciones, default(false)
 =end
 
 if not defined? only_table or not only_table %>
@@ -14,8 +15,10 @@ if not defined? only_table or not only_table %>
     <%=t '.title', :default => model_class.model_name.human.pluralize.titleize %>
     <% if not defined? hide_add or not hide_add %>
         <%= link_to '+',
-                    { :controller => model_class.model_name.plural,
-                      :action => :new } ,
+                    {
+                            :controller => model_class.model_name.plural,
+                            :action => :new
+                    },
                     :class => 'btn btn-success' %>
     <% end %>
   </h1>
@@ -27,7 +30,9 @@ if not defined? only_table or not only_table %>
     <% attributes.each do |x| %>
         <th><%= model_class.human_attribute_name(x) %></th>
     <% end %>
-    <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    <% if not defined? hide_actions or hide_actions == false %>
+        <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    <% end %>
   </tr>
   </thead>
   <tbody>
@@ -39,94 +44,43 @@ if not defined? only_table or not only_table %>
             <% else %>
                 <% if d.column_for_attribute(attribute).type == :boolean %>
                     <td><%=  ( d[attribute] ? 'Verdadero' : 'Falso') %></td>
+                <% elsif d.column_for_attribute(attribute).type == :datetime %>
+                    <td><%=  date_format( d[attribute] ) %></td>
                 <% else %>
                     <td><%= d[attribute] %></td>
                 <% end %>
             <% end %>
         <% end %>
-        <td>
-          <% if not model_class == Case %>
-              <% if can? :show, d %>
-                  <%= link_to d, id: 'boton-icon' do %>
-                      <i class="fa fa-eye fa-lg"></i>
+          <% if not defined? hide_actions or hide_actions == false %>
+            <td>
+              <% if not model_class == Case %>
+                  <% if can? :show, d %>
+                      <%= link_to d, id: 'boton-icon' do %>
+                          <i class="fa fa-eye fa-lg"></i>
+                      <% end %>
                   <% end %>
-              <% end %>
-              <% if can? :edit, d %>
-                  <%= link_to [:edit, d], id: 'boton-icon' do %>
-                      <i class="fa fa-pencil fa-lg"></i>
+                  <% if can? :edit, d %>
+                      <%= link_to [:edit, d], id: 'boton-icon' do %>
+                          <i class="fa fa-pencil fa-lg"></i>
+                      <% end %>
                   <% end %>
-              <% end %>
-              <% if can? :destroy, d %>
-                  <%= link_to d,
-                              :method => 'delete',
-                              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
-                              :id => 'boton-icon' do %>
-                      <i class="fa fa-trash-o fa-lg"></i>
+                  <% if can? :destroy, d %>
+                      <%= link_to d,
+                                  :method => 'delete',
+                                  :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                                  :id => 'boton-icon' do %>
+                          <i class="fa fa-trash-o fa-lg"></i>
+                      <% end %>
                   <% end %>
+              <% else %>
+                  <%= render partial: 'shared/actions_case',
+                             locals: {
+                                     data: d,
+                             }
+                  %>
               <% end %>
-          <% else %>
-              <div style="float: left">
-              <%= form_for current_user.case_users.build(case_id: d.id),
-                           html: {
-                                   class: 'form-add-user-case' + (current_user.following_case?(d.id) ? ' hidden' : ''),
-                                   'data-type' => 'json'
-                           } ,
-                           update: { success: "response", failure: "error"},
-                           remote: true do |f| %>
-                  <%= f.hidden_field :case_id %>
-                  <%= f.hidden_field :user_id %>
-                  <%= button_tag(type: 'submit', class: "btn btn-primary") do %>
-                      <i class="fa fa-plus"></i> Adjudicar
-                  <% end %>
-              <% end %>
-
-              <%= form_for current_user.case_users.build(case_id: d.id),
-                           url: case_case_user_path(d) ,
-                           html: {
-                                   method: :delete,
-                                   class: 'form-remove-user-case' + (current_user.following_case?(d.id) ? '' : ' hidden'),
-                                   'data-type' => 'json'
-                           },
-                           update: { success: "response", failure: "error"},
-                           remote: true do |f| %>
-                  <%= f.hidden_field :case_id %>
-                  <%= button_tag(type: 'submit', class: "btn btn-primary btn-danger") do %>
-                      <i class="fa fa-minus"></i> Dejar caso
-                  <% end %>
-              <% end %>
-              </div>
-              <div style="float: left; margin-left: 10px;">
-              <%= form_for current_user.case_records.build(case_id: d.id),
-                           html: {
-                                   class: 'form-add-record-case' + (current_user.recording_case?(d.id) ? ' hidden' : ''),
-                                   'data-type' => 'json'
-                           } ,
-                           update: { success: "response", failure: "error"},
-                           remote: true do |f| %>
-                  <%= f.hidden_field :case_id %>
-                  <%= f.hidden_field :user_id %>
-                  <%= button_tag(type: 'submit', class: "btn btn-primary") do %>
-                      <i class="fa fa-circle-o"></i> Trackear
-                  <% end %>
-              <% end %>
-
-              <%= form_for current_user.case_records.build(case_id: d.id),
-                           url: case_case_record_path(d) ,
-                           html: {
-                                   method: :delete,
-                                   class: 'form-remove-record-case' + (current_user.recording_case?(d.id) ? '' : ' hidden'),
-                                   'data-type' => 'json'
-                           },
-                           update: { success: "response", failure: "error"},
-                           remote: true do |f| %>
-                  <%= f.hidden_field :case_id %>
-                  <%= button_tag(type: 'submit', class: "btn btn-primary btn-danger") do %>
-                      <i class="fa fa-circle"></i> No trackear
-                  <% end %>
-              <% end %>
-                  </div>
+            </td>
           <% end %>
-        </td>
       </tr>
   <% end %>
   </tbody>

@@ -8,6 +8,8 @@ class CreateReceptors < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+
     add_foreign_key :receptors, :info_civils
+
   end
 end

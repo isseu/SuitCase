@@ -38,7 +38,7 @@ $.dynatableSetup({
         paginationLinkPlacement: 'after',
         paginationPrev: 'Anterior',
         paginationNext: 'Siguiente',
-        paginationGap: [1,2,2,1],
+        paginationGap: [1, 2, 2, 1],
         searchTarget: null,
         searchPlacement: 'before',
         perPageTarget: null,
@@ -96,5 +96,4 @@ $(document).on('ready page:load', function () {
         'content' : $(".alert_list").html()
     });
 
-    //new_case_record
 })

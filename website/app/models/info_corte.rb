@@ -14,4 +14,5 @@
 
 class InfoCorte < ActiveRecord::Base
   belongs_to :case
+  has_many :cases, as: :info
 end

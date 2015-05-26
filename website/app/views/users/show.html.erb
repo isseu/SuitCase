@@ -62,7 +62,7 @@
            locals: {
                model_class: Case,
                data: Case.order("created_at").last(10),
-               attributes: [:rol, :fecha, :tribunal, :caratula, :info_id, :info_type],
+               attributes: [:rol, :fecha, :tribunal, :caratula],
                only_table: true
            }
 %>
