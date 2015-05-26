@@ -68,8 +68,7 @@ if not defined? only_table or not only_table %>
               <div style="float: left">
               <%= form_for current_user.case_users.build(case_id: d.id),
                            html: {
-                                   id:    'form-add-user-case',
-                                   class: (current_user.following_case?(d.id) ? 'hidden' : ''),
+                                   class: 'form-add-user-case' + (current_user.following_case?(d.id) ? ' hidden' : ''),
                                    'data-type' => 'json'
                            } ,
                            update: { success: "response", failure: "error"},
@@ -85,8 +84,7 @@ if not defined? only_table or not only_table %>
                            url: case_case_user_path(d) ,
                            html: {
                                    method: :delete,
-                                   id:    'form-remove-user-case',
-                                   class: (current_user.following_case?(d.id) ? '' : 'hidden'),
+                                   class: 'form-remove-user-case' + (current_user.following_case?(d.id) ? '' : ' hidden'),
                                    'data-type' => 'json'
                            },
                            update: { success: "response", failure: "error"},
@@ -100,8 +98,7 @@ if not defined? only_table or not only_table %>
               <div style="float: left; margin-left: 10px;">
               <%= form_for current_user.case_records.build(case_id: d.id),
                            html: {
-                                   id:    'form-add-record-case',
-                                   class: (current_user.recording_case?(d.id) ? 'hidden' : ''),
+                                   class: 'form-add-record-case' + (current_user.recording_case?(d.id) ? ' hidden' : ''),
                                    'data-type' => 'json'
                            } ,
                            update: { success: "response", failure: "error"},
@@ -117,8 +114,7 @@ if not defined? only_table or not only_table %>
                            url: case_case_record_path(d) ,
                            html: {
                                    method: :delete,
-                                   id:    'form-remove-record-case',
-                                   class: (current_user.recording_case?(d.id) ? '' : 'hidden'),
+                                   class: 'form-remove-record-case' + (current_user.recording_case?(d.id) ? '' : ' hidden'),
                                    'data-type' => 'json'
                            },
                            update: { success: "response", failure: "error"},

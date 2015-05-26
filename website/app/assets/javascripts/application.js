@@ -53,33 +53,33 @@ $(document).on('ready page:load', function () {
 
     $('.table').dynatable();
 
-    $('#form-add-record-case').on('ajax:success', function(e, data, status, xhr){
+    $('.form-add-record-case').on('ajax:success', function(e, data, status, xhr){
         $(this).addClass("hidden")
-        var remove_form = $(this).siblings("#form-remove-record-case")
+        var remove_form = $(this).siblings(".form-remove-record-case")
         remove_form.removeClass("hidden")
     }).on('ajax:error', function(e, xhr, status, error){
         alert("Error al agregar registro de seguimiento")
     });
 
-    $('#form-remove-record-case').on('ajax:success', function(e, data, status, xhr){
+    $('.form-remove-record-case').on('ajax:success', function(e, data, status, xhr){
         $(this).addClass("hidden")
-        var add_form = $(this).siblings("#form-add-record-case")
+        var add_form = $(this).siblings(".form-add-record-case")
         add_form.removeClass("hidden")
     }).on('ajax:error', function(e, xhr, status, error){
         alert("Error al agregar registro de seguimiento")
     });
 
-    $('#form-add-user-case').on('ajax:success', function(e, data, status, xhr){
+    $('.form-add-user-case').on('ajax:success', function(e, data, status, xhr){
         $(this).addClass("hidden")
-        var remove_form = $(this).siblings("#form-remove-user-case")
+        var remove_form = $(this).siblings(".form-remove-user-case")
         remove_form.removeClass("hidden")
     }).on('ajax:error', function(e, xhr, status, error){
         alert("Error al agregar registro de seguimiento")
     });
 
-    $('#form-remove-user-case').on('ajax:success', function(e, data, status, xhr){
+    $('.form-remove-user-case').on('ajax:success', function(e, data, status, xhr){
         $(this).addClass("hidden")
-        var add_form = $(this).siblings("#form-add-user-case")
+        var add_form = $(this).siblings(".form-add-user-case")
         add_form.removeClass("hidden")
     }).on('ajax:error', function(e, xhr, status, error){
         alert("Error al agregar registro de seguimiento")
