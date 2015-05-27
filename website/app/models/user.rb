@@ -50,6 +50,8 @@ class User < ActiveRecord::Base
   has_many :case_records, dependent: :destroy
   has_many :recorded_cases, through: :case_records, class_name: Case
 
+  before_create :create_possible_names
+
   # Posibles roles de cada usuario
   ROLES = %w[guest secretary lawyer admin]
   FROLES = { 'guest' => 'Invitado', 'secretary' => 'Secretaria', 'lawyer' => 'Abogado', 'admin' => 'Administrador' }
@@ -72,6 +74,35 @@ class User < ActiveRecord::Base
 
   def recording_case?(id)
     return self.case_records.where(case_id: id).empty? == false
+  end
+
+  private
+
+  REPLACE = %w[á é í ó ú g j h w z qu]
+
+  def create_possible_names
+    # Quitar acentos
+    self.possible_names.build(
+        name: clean_accents(self.name),
+        first_lastname: clean_accents(self.first_lastname),
+        second_lastname: clean_accents(self.second_lastname)
+    )
+    # En vez de acentos o JG, poner comodines
+    self.possible_names.build(
+        name: replace_words(self.name),
+        first_lastname: replace_words(self.first_lastname),
+        second_lastname: replace_words(self.second_lastname)
+    )
+  end
+
+  def replace_words(string)
+    REPLACE.each { |character|  string = string.gsub(character, '%') }
+    return string
+  end
+
+  def clean_accents(string)
+    require 'i18n'
+    I18n.transliterate(string)
   end
 
 end
