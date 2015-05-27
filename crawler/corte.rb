@@ -64,7 +64,7 @@ class Corte < PoderJudicial
 			palabra = "\n " + case_number.to_s + ") "			
 			(row.xpath("td"))[0..-1].each_with_index do |td,i|
 				if i == 0
-					info_caso.rol = td.content.strip
+					caso.rol = td.content.strip
 				elsif i == 1
 					caso.fecha = td.content.strip
 				elsif i == 2

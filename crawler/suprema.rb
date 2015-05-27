@@ -79,7 +79,7 @@ class Suprema < PoderJudicial
 			row.xpath("td").each_with_index do |td,i|
 				
 				if i == 0
-					info_caso.rol = td.content.strip
+					caso.rol = td.content.strip
 				elsif i == 1
 					info_caso.tipo_recurso = td.content.strip
 				elsif i == 2
