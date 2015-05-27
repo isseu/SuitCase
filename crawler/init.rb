@@ -98,8 +98,8 @@ while true
     end
 
 	# Primero Buscamos Casos del Usuario 
-	# puts 'buscando en civil -> Usuarios'
-	# buscar.BusquedaLista(listaUsuarios, civil)
+	puts 'buscando en civil -> Usuarios'
+	buscar.BusquedaLista(listaUsuarios, civil)
 
 	puts 'buscando en corte -> Usuarios'
 	buscar.BusquedaLista(listaUsuarios, corte)
