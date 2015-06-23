@@ -19,4 +19,9 @@ class Client < ActiveRecord::Base
   # Si es compañia, valido rut?
   # validates :rut, rut: { message: 'no es valido'}
   validates :name, presence: true
+
+  def inspect
+    self.name.titleize + ' ' + self.first_lastname.titleize + ' ' + self.second_lastname
+  end
+
 end

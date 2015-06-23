@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery-ui/autocomplete
+//= require angular
 //= require autocomplete-rails
 //= require twitter/bootstrap
 //= require_tree .

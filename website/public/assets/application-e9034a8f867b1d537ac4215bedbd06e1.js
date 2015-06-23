@@ -1978,7 +1978,7 @@ Expr = Sizzle.selectors = {
 				elem.type === "text" &&
 
 				// Support: IE<8
-				// New HTML5 attribute values (e.g., "search") appear with elem.type === "text"
+				// New HTML5 attribute values (e.g., "searches") appear with elem.type === "text"
 				( (attr = elem.getAttribute("type")) == null || attr.toLowerCase() === "text" );
 		},
 
@@ -13190,11 +13190,11 @@ return jQuery;
         }
       }
 
-      // Query search functionality
+      // Query searches functionality
       if (settings.inputs.queries || settings.features.search) {
         var allQueries = settings.inputs.queries || $();
         if (settings.features.search) {
-          allQueries = allQueries.add('#dynatable-query-search-' + obj.element.id);
+          allQueries = allQueries.add('#dynatable-query-searches-' + obj.element.id);
         }
 
         allQueries.each(function() {
@@ -13919,7 +13919,7 @@ return jQuery;
       settings.dataset.queryRecordCount = obj.records.count();
     };
 
-    // Shortcut for performing simple query from built-in search
+    // Shortcut for performing simple query from built-in searches
     this.runSearch = function(q) {
       var origQueries = $.extend({}, settings.dataset.queries);
       if (q) {
@@ -14001,13 +14001,13 @@ return jQuery;
     this.create = function() {
       var $search = $('<input />', {
             type: 'search',
-            id: 'dynatable-query-search-' + obj.element.id,
+            id: 'dynatable-query-searches-' + obj.element.id,
             'data-dynatable-query': 'search',
             value: settings.dataset.queries.search
           }),
           $searchSpan = $('<span></span>', {
-            id: 'dynatable-search-' + obj.element.id,
-            'class': 'dynatable-search',
+            id: 'dynatable-searches-' + obj.element.id,
+            'class': 'dynatable-searches',
             text: 'Search: '
           }).append($search);
 

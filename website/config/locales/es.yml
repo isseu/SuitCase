@@ -325,6 +325,7 @@ es:
       client: Cliente
       case: Caso
       possible_name: Nombre posible
+      search: Busqueda
     attributes:
       user:
         name: Nombre
@@ -343,6 +344,7 @@ es:
         is_company: Compañia
       possible_name:
         name: Nombre
+        user: Usuario
         user_id: Usuario
         first_lastname: Primer apellido
         second_lastname: Segundo apellido

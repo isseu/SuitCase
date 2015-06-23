@@ -28,7 +28,7 @@ class PossibleNamesController < ApplicationController
 
     respond_to do |format|
       if @possible_name.save
-        format.html { redirect_to @possible_name, notice: 'Possible name was successfully created.' }
+        format.html { redirect_to possible_names_url, notice: 'Possible name was successfully created.' }
         format.json { render :show, status: :created, location: @possible_name }
       else
         format.html { render :new }

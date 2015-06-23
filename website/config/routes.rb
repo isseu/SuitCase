@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   resources :case_records
 
   resources :case_users
@@ -12,6 +13,9 @@ Rails.application.routes.draw do
   end
 
   resources :cases do
+    collection do
+      resource :searches, only: [:create, :new]
+    end
     resource :case_record, only: [:destroy]
     resource :case_user, only: [:destroy]
   end
@@ -24,6 +28,7 @@ Rails.application.routes.draw do
   resources :users do
     resource :notifications, only: [:destroy]
   end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
