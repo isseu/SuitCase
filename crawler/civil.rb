@@ -10,13 +10,12 @@ class Civil < PoderJudicial
 	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
 			#Iniciar para Obtener Cookie
-			Get($host_civil + "/CIVILPORWEB/",'Primera Consulta')
+			Get($host_civil + "/CIVILPORWEB/",'Primera Consulta',4)
 
 			#Setear Camino
-			Get($host_civil +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda Consulta')
+			Get($host_civil +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda Consulta',4)
 
 			#Consulta a AtPublicoDAction.do
-			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno + ' (' + rut + ')'
 			respuesta = Post($host_civil + '/CIVILPORWEB/AtPublicoDAction.do',
 				$host_civil +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera Consulta',
 				{"TIP_Consulta" => 3,
@@ -37,7 +36,7 @@ class Civil < PoderJudicial
 					"NOM_Consulta" => nombre.upcase,
 					"APE_Paterno" => apellido_paterno.upcase,
 					"APE_Materno" => apellido_materno.upcase,
-					"irAccionAtPublico" => "Consulta" })
+					"irAccionAtPublico" => "Consulta" },4)
 
 		return getCases(respuesta)	
 
@@ -53,9 +52,10 @@ class Civil < PoderJudicial
 		rows = doc.xpath("//*[@id='contentCellsAddTabla']/tbody/tr")		
 		listaCasos = []
 
+		puts ""
 		rows[0..20].each_with_index do |row,case_number|
 			caso = Case.new
-			puts "\n " + case_number.to_s + ") "			
+
 			row.xpath("td").each_with_index do |td,i|
 				if i == 0
 					caso.rol = td.content.strip 
@@ -68,11 +68,9 @@ class Civil < PoderJudicial
 				else
 					palabra += "?: "
 				end
-				#palabra += td.content.strip + " "  			
 			end
-			#puts palabra.to_s
-			puts 'ROL:'
-			puts caso.rol.to_s
+
+			puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
 
 			#Litigantes
 			href = row.xpath("td/a").attr('href')
@@ -84,6 +82,7 @@ class Civil < PoderJudicial
 				l.persona = litigante.persona
 				l.nombre = litigante.nombre
 				l.participante = litigante.participante
+				l.save
 			end
 
 			caso.info_type = 'Civil'
@@ -96,11 +95,12 @@ class Civil < PoderJudicial
 	end
 
 	def getLitigantes(href,case_number)
-		doc = Nokogiri::HTML(Get($host_civil + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
+		doc = Nokogiri::HTML(Get($host_civil + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s,4))
 		rows = doc.xpath("//*[@id='Litigantes']/table[2]/tbody/tr")
 		listaLitigantes = []
+
 		#Litigantes
-		puts "Litigantes: "			
+		puts "\t \t \t \t " + "Litigantes: "			
 		rows.each_with_index do |row,i|
 			litigante = Litigante.new
 			(row.xpath("td"))[0..-1].each_with_index do |td,j| 
@@ -113,11 +113,14 @@ class Civil < PoderJudicial
 				elsif j ==3
 					litigante.nombre = td.content.strip
 				else
-					puts "\t ?: " + td.content.strip
+					puts "\t \t \t \t ?: " + td.content.strip
 				end
 			end
+			puts "\t \t \t \t \t " + i.to_s + ") " + litigante.rut + " " + litigante.nombre
+
 			listaLitigantes << litigante
 		end
+
 
 		#getRetiros(doc) 	
 		return listaLitigantes
@@ -127,7 +130,7 @@ class Civil < PoderJudicial
 		rows = doc.xpath("//*[@id='ReceptorDIV']/table[4]/tbody/tr")
 		puts " Retiros del Receptor: "			
 		rows[0..-1].each_with_index do |row,i|
-			puts "\t Receptor N° " + i.to_s
+			puts "\t \t \t \t Receptor N° " + i.to_s
 			(row.xpath("td")).each_with_index do |td,j| 
 				if j == 0
 					puts "\t\t Cuaderno: " + td.content.strip 

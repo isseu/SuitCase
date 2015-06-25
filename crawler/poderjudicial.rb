@@ -9,8 +9,18 @@ class PoderJudicial
 	    }
 	end 
 
-	def Get(url,iteracion)
-		puts '[+] ' + iteracion +' -> ' + url
+	def Get(url,iteracion,cant)
+		
+		#Mensaje
+		tab = ""
+		cant.times{ tab += "\t " }
+
+		if url.size > 118
+			puts tab + '[+] ' + iteracion +' -> ' + url[56..118].to_s + " ..."
+		else
+			puts tab + '[+] ' + iteracion +' -> ' + url 
+		end
+
 		response = RestClient.get(url,{ :cookies => $cookies })
 
 		if (response.code == 200)
@@ -23,8 +33,17 @@ class PoderJudicial
 		end
 	end
 
-	def Post(url,referer,iteracion,params)
-		puts '[+] ' + iteracion +' -> ' + url 
+	def Post(url,referer,iteracion,params,cant)
+		#Mensaje
+		tab = ""
+		cant.times{ tab += "\t " }
+
+		if url.size > 118
+			puts tab + '[+] ' + iteracion +' -> ' + url[56..118].to_s + " ..."
+		else
+			puts tab + '[+] ' + iteracion +' -> ' + url 
+		end
+
 		response = RestClient::Request.execute(:method => :post,
 			:url => url,
 		  	:headers => {
@@ -47,9 +66,9 @@ class PoderJudicial
 
 	def GuardarInfoCaso(info_caso, caso)
 		if Case.exists?(rol: caso.rol) or Case.exists?(fecha: caso.fecha, caratula: caso.caratula)
-			puts 'informacion del caso ya existe'
+			puts '[+] Informacion del caso ya existe'
 		else
-			puts 'Guardando informacion del caso'
+			puts '[+] Guardando informacion del caso'
 			info_caso.case_id = caso.id
 			info_caso.save
 		end 

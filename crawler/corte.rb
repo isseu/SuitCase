@@ -10,15 +10,14 @@ class Corte < PoderJudicial
 	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
 			#Iniciar para Obtener Cookie
-			Get($host_corte + "/SITCORTEPORWEB/",'Primera')
+			Get($host_corte + "/SITCORTEPORWEB/",'Primera',4)
 
 			#Get("http://corte.poderjudicial.cl/SITCORTEPORWEB/jsp/Menu/Comun/COR_MNU_BlancoAutoconsulta.jsp",'Segunda')
 
 			#Setear Camino
-			Get($host_corte + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda')
+			Get($host_corte + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda',4)
 
 			#Consulta a AtPublicoDAction.do
-			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno
 			respuesta = Post($host_corte + '/SITCORTEPORWEB/AtPublicoDAction.do',
 				 $host_corte + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera',
 				{"TIP_Consulta"=> "3", 
@@ -41,7 +40,7 @@ class Corte < PoderJudicial
 				 "RUC_Tribunal"=> "",
 				 "RUC_Numero"=> "",
 				 "RUC_Dv"=> "",
-				 "irAccionAtPublico"=> "Consulta" })
+				 "irAccionAtPublico"=> "Consulta" },4)
 
 		return getCases(respuesta)
 
@@ -91,6 +90,7 @@ class Corte < PoderJudicial
 				l.persona = litigante.persona
 				l.nombre = litigante.nombre
 				l.participante = litigante.participante
+				l.save
 			end
 
 			##guardar la informacion del caso
@@ -112,7 +112,7 @@ class Corte < PoderJudicial
 	end
 
 	def getLitigantes(href,case_number)
-		doc = Nokogiri::HTML(Get($host_corte + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
+		doc = Nokogiri::HTML(Get($host_corte + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s,4))
 		rows = doc.xpath("//*[@id='divLitigantes']/table[2]/tbody/tr")
 		listaLitigantes = []
 		#Litigantes

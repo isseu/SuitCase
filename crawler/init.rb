@@ -14,27 +14,25 @@ require_relative 'laboral.rb'
 
 class Busqueda 
 
-	def AgregarCasos(listaCasos)
-		puts 'listaCasos: ' + listaCasos.class.to_s
-		listaCasos.each do |caso|
-	    	# puts caso.rol
-	    	puts 'Caso:' + caso.class.to_s
-	    	
-	    	# escribir litigantes
-	    	if caso.litigantes.count > 0 
-		    	caso.litigantes.each do |litigantes|
-		    		puts "\t" + litigantes.nombre
-		    	end
-		    else
-		    	puts 'No encontro litigantes'
-			end
-			
-
-			# guardar Caso
-			if Case.exists?(:rol => caso.rol, :info_type => caso.info_type)
-				puts 'Caso ya Existe'
+	def AgregarCasos(listaCasos)		
+		listaCasos.each_with_index do |caso,i|
+	    	if Case.exists?(:rol => caso.rol, :info_type => caso.info_type)
+				puts '[-] Caso ya Existe'
 	    	else 
-	    		puts 'Guardando Caso'
+			   	puts '[+] Agregando caso N°' + i.to_s
+		    	
+		    	# Escribir litigantes
+		    	puts  "\t" + '[+] Agregando Litigantes'
+		    	if caso.litigantes.count > 0 
+			    	caso.litigantes.each_with_index do |litigantes,j|
+			    		puts "\t \t " + j.to_s + ".- " + litigantes.nombre
+			    	end
+			    else
+			    	puts "\t [-] No encontro litigantes"
+				end
+				
+				# Guardar Caso
+				puts '[+] Guardando Caso'
 	    		caso.save!
 	    	end
 		end
@@ -42,33 +40,35 @@ class Busqueda
 	end
 
 	def BusquedaLista(lista, pagina)
-		lista.each do |user|
-
+		
+=begin		puts "\t [+] Buscando por Rut" 
+		lista.each_with_index do |user,number|
+			
 			# Por RUT
-			puts pagina.class.name.to_s
 			if ['Civil', 'Laboral'].include? pagina.class.name.to_s
-				puts 'Buscando por RUT'
 				if user.rut != nil
 					rut = user.rut.split('-')
-					puts rut[0] + rut[1]
+					puts "\t \t " + number.to_s + ") " + rut[0].to_s + rut[1].to_s
 					listaCasos = pagina.Search(rut[0],rut[1],'','','')
 					AgregarCasos(listaCasos)
 				end
 			end
+=end		
+
+		puts "\t [+] Buscando por Posibles Nombres"	
+		lista.each_with_index do |user,number|	
 			
-
-			# Por Nombre + Apellido_Paterno
-			puts 'Buscando por nombre y Apellido_Paterno'
-			listaCasos = pagina.Search('','',user.name, user.first_lastname, '')
-			AgregarCasos(listaCasos)
-
-			# Por Nombres Posibles
+			puts "\t \t [+]" + user.name.to_s + " "+  user.first_lastname + " (" + user.rut.to_s + ")"
+			
+			#Nombres Posibles
 			listaNombres = user.possible_names
-			listaNombres.each do |nombre|
-				listaCasos = pagina.Search('','',nombre, user.first_lastname, '')
+			listaNombres.each_with_index do |lista,j|
+				puts "\t \t \t " + j.to_s + ") Nombre: " +  lista.name.to_s + " Apellidos: " + lista.first_lastname + " " + lista.second_lastname.to_s
+				listaCasos = pagina.Search('','',lista.name.to_s,lista.first_lastname,lista.second_lastname.to_s)
+				AgregarCasos(listaCasos)
 			end
-			
-		end
+		
+		end	
 	end
 end
 
@@ -98,9 +98,9 @@ while true
     end
 
 	# Primero Buscamos Casos del Usuario 
-	puts 'buscando en civil -> Usuarios'
+	puts '[+] Buscando en Civil -> Usuarios'
 	buscar.BusquedaLista(listaUsuarios, civil)
-
+=begin	
 	puts 'buscando en corte -> Usuarios'
 	buscar.BusquedaLista(listaUsuarios, corte)
 
@@ -119,7 +119,7 @@ while true
 	buscar.BusquedaLista(listaClientes, suprema)
 	puts 'buscando en laboral -> Clientes'
 	buscar.BusquedaLista(listaClientes, laboral)
-
+=end
 
 	puts "[+] Iteracion Terminada"
 
