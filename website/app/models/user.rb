@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   has_many :case_records, dependent: :destroy
   has_many :recorded_cases, through: :case_records, class_name: Case
 
-  before_create :create_possible_names
+  after_create :create_possible_names
 
   # Posibles roles de cada usuario
   ROLES = %w[guest secretary lawyer admin]
@@ -81,6 +81,23 @@ class User < ActiveRecord::Base
   REPLACE = %w[á é í ó ú g j h w z qu]
 
   def create_possible_names
+    # Algunas combinaciones de nombres
+    self.possible_names.build(
+       name: self.name,
+       first_lastname: self.first_lastname,
+       second_lastname: ''
+    )
+    self.possible_names.build(
+        name: self.name,
+        first_lastname: '',
+        second_lastname: self.second_lastname
+    )
+    self.possible_names.build(
+        name: '',
+        first_lastname: self.first_lastname,
+        second_lastname: self.second_lastname
+    )
+
     # Quitar acentos
     self.possible_names.build(
         name: clean_accents(self.name),

@@ -1,7 +1,7 @@
 <div class="page-header">
   <h1>Buscar</h1>
 </div>
-<%= form_for @search, :html => { :class => "form-horizontal client" } do |f| %>
+<%= form_for @search, :html => { :class => "form-horizontal client", :id => 'form_search' } do |f| %>
 
     <div class="form-group">
       <%= f.label :rol, :class => 'col-sm-2 control-label' %>

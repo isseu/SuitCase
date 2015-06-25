@@ -4,9 +4,7 @@ class CasesController < ApplicationController
   # GET /cases
   # GET /cases.json
   def index
-    # @cases = Case.where().all
-    @cases = current_user.cases.all
-    # @cases = Case.includes(:case_records, :recording_users).all
+    @cases = current_user.cases.includes(:case_records, :case_users).all
   end
 
   # GET /cases/1

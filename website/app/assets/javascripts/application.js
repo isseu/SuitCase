@@ -97,4 +97,9 @@ $(document).on('ready page:load', function () {
         'content' : $(".alert_list").html()
     });
 
+    $("#form_search").submit(function( event ) {
+        alert(1);
+        event.preventDefault();
+    });
+
 })
