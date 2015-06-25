@@ -64,11 +64,14 @@ class PoderJudicial
 		end
 	end
 
-	def GuardarInfoCaso(info_caso, caso)
+	def GuardarInfoCaso(info_caso, caso,cant)
+		tab = ""
+		cant.times{ tab += "\t " }
+
 		if Case.exists?(rol: caso.rol) or Case.exists?(fecha: caso.fecha, caratula: caso.caratula)
-			puts '[+] Informacion del caso ya existe'
+			puts tab + '[+] Informacion del caso ya existe'
 		else
-			puts '[+] Guardando informacion del caso'
+			puts tab + '[+] Guardando informacion del caso'
 			info_caso.case_id = caso.id
 			info_caso.save
 		end 

@@ -11,20 +11,19 @@ class Suprema < PoderJudicial
 	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
 
-			Get($host_suprema + '/SITSUPPORWEB/','Primera')
+			Get($host_suprema + '/SITSUPPORWEB/','Primera',4)
 
 			Post($host_suprema + '/SITSUPPORWEB/InicioAplicacion.do','http://suprema.poderjudicial.cl/SITSUPPORWEB/', 'Segunda',
 				{ "username" => "autoconsulta",
 				  "password" => "amisoft",
 				  "Aceptar" => "Ingresar"
-					})
+					},4)
 
 			#Get($host_suprema + '/SITSUPPORWEB/jsp/Menu/Comun/SUP_MNU_BlancoAutoconsulta.jsp', 'Tercera')
 
-			Get($host_suprema + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta')
+			Get($host_suprema + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta',4)
 
 			#Consulta a AtPublicoDAction.do			
-			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno
 			respuesta = Post($host_suprema + '/SITSUPPORWEB/AtPublicoDAction.do',
 				$host_suprema + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Quinta',
 				{"TIP_Consulta" => 3,
@@ -55,7 +54,7 @@ class Suprema < PoderJudicial
 				 "RUC_Dv" => rut_dv.to_s,
 				 "COD_CorteAP_Pra" => 0,
 				 "GLS_Caratulado_Recurso" => "",
-				 "irAccionAtPublico" =>"Consulta"})
+				 "irAccionAtPublico" =>"Consulta"},4)
 
 			getCase(respuesta)
 
@@ -84,7 +83,6 @@ class Suprema < PoderJudicial
 					info_caso.tipo_recurso = td.content.strip
 				elsif i == 2
 					caso.fecha = td.content.strip
-					puts 'fecha: ' + caso.fecha.to_s
 				elsif i == 3
 					info_caso.ubicacion = td.content.strip
 				elsif i == 4
@@ -98,6 +96,8 @@ class Suprema < PoderJudicial
 				end
 			end
 
+			puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
+
 			href = row.xpath("td/a").attr('href')
 			listaLitigantes = getLitigantes(href,case_number)
 			
@@ -107,13 +107,14 @@ class Suprema < PoderJudicial
 				l.persona = litigante.persona
 				l.nombre = litigante.nombre
 				l.participante = litigante.participante
+				l.save
 			end
 
 			caso.info_type = 'Suprema'
 
 			listaCasos << caso
 
-			GuardarInfoCaso(info_caso, caso)
+			GuardarInfoCaso(info_caso, caso,4)
 			
 		end
 
@@ -122,11 +123,12 @@ class Suprema < PoderJudicial
 	end
 
 	def getLitigantes(href,case_number)
-		doc = Nokogiri::HTML(Get($host_suprema + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
+		doc = Nokogiri::HTML(Get($host_suprema + href.to_s.strip,'Consultando Litigantes Caso N° ' + case_number.to_s,4))
 		rows = doc.xpath("//*[@id='contentCellsLitigantes']/tbody/tr")
 		listaLitigantes = []
+		
 		#Litigantes
-		puts "Litigantes: "			
+		puts "\t \t \t \t " + "Litigantes: "
 		rows.each_with_index do |row,i|
 			litigante = Litigante.new
 			row.xpath("td").each_with_index do |td,j| 
@@ -142,10 +144,11 @@ class Suprema < PoderJudicial
 					puts "\t ?: " + td.content.strip
 				end
 			end
+			puts "\t \t \t \t \t " + i.to_s + ") " + litigante.rut + " " + litigante.nombre
+
 			listaLitigantes << litigante
 		end
 
-		#getRetiros(doc) 	
 		return listaLitigantes
 	end
 

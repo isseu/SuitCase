@@ -9,6 +9,7 @@ class Civil < PoderJudicial
 
 	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
 		begin
+
 			#Iniciar para Obtener Cookie
 			Get($host_civil + "/CIVILPORWEB/",'Primera Consulta',4)
 
@@ -52,7 +53,6 @@ class Civil < PoderJudicial
 		rows = doc.xpath("//*[@id='contentCellsAddTabla']/tbody/tr")		
 		listaCasos = []
 
-		puts ""
 		rows[0..20].each_with_index do |row,case_number|
 			caso = Case.new
 
@@ -95,7 +95,7 @@ class Civil < PoderJudicial
 	end
 
 	def getLitigantes(href,case_number)
-		doc = Nokogiri::HTML(Get($host_civil + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s,4))
+		doc = Nokogiri::HTML(Get($host_civil + href.to_s.strip,'Consultando Litigantes Caso N° ' + case_number.to_s,4))
 		rows = doc.xpath("//*[@id='Litigantes']/table[2]/tbody/tr")
 		listaLitigantes = []
 

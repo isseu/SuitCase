@@ -78,7 +78,8 @@ class Corte < PoderJudicial
 					palabra += "?: "
 				end
 			end
-			#puts palabra.to_s
+
+			puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
 
 			#Litigantes
 			href = row.xpath("td/a").attr('href')
@@ -105,18 +106,19 @@ class Corte < PoderJudicial
 
 			listaCasos << caso
 
-		GuardarInfoCaso(info_caso, caso)
+			GuardarInfoCaso(info_caso, caso,4)
 		end
 
 		return listaCasos
 	end
 
 	def getLitigantes(href,case_number)
-		doc = Nokogiri::HTML(Get($host_corte + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s,4))
+		doc = Nokogiri::HTML(Get($host_corte + href.to_s.strip,'Consultando Litigantes Caso N° ' + case_number.to_s,4))
 		rows = doc.xpath("//*[@id='divLitigantes']/table[2]/tbody/tr")
 		listaLitigantes = []
+
 		#Litigantes
-		puts "Litigantes: "			
+		puts "\t \t \t \t " + "Litigantes: "			
 		rows.each_with_index do |row,i|
 			litigante = Litigante.new
 			(row.xpath("td"))[0..-1].each_with_index do |td,j| 
@@ -132,10 +134,10 @@ class Corte < PoderJudicial
 					puts "\t ?: " + td.content.strip
 				end
 			end
+			puts "\t \t \t \t \t " + i.to_s + ") " + litigante.rut + " " + litigante.nombre
+			
 			listaLitigantes << litigante
 		end
-
-		#getRetiros(doc) 	
 		return listaLitigantes
 	end
 end

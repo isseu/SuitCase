@@ -17,22 +17,22 @@ class Busqueda
 	def AgregarCasos(listaCasos)		
 		listaCasos.each_with_index do |caso,i|
 	    	if Case.exists?(:rol => caso.rol, :info_type => caso.info_type)
-				puts '[-] Caso ya Existe'
+				puts  "\t \t " + '[-] Caso ya Existe'
 	    	else 
-			   	puts '[+] Agregando caso N°' + i.to_s
+			   	puts  "\t \t " + '[+] Agregando caso N°' + i.to_s
 		    	
 		    	# Escribir litigantes
-		    	puts  "\t" + '[+] Agregando Litigantes'
+		    	puts  "\t \t \t " + '[+] Agregando Litigantes'
 		    	if caso.litigantes.count > 0 
 			    	caso.litigantes.each_with_index do |litigantes,j|
-			    		puts "\t \t " + j.to_s + ".- " + litigantes.nombre
+			    		puts "\t \t \t \t " + j.to_s + ".- " + litigantes.nombre
 			    	end
 			    else
-			    	puts "\t [-] No encontro litigantes"
+			    	puts "\t \t \t [-] No encontro litigantes"
 				end
 				
 				# Guardar Caso
-				puts '[+] Guardando Caso'
+				puts  "\t \t " + '[+] Guardando Caso'
 	    		caso.save!
 	    	end
 		end
@@ -41,7 +41,7 @@ class Busqueda
 
 	def BusquedaLista(lista, pagina)
 		
-=begin		puts "\t [+] Buscando por Rut" 
+		puts "\t [+] Buscando por Rut" 
 		lista.each_with_index do |user,number|
 			
 			# Por RUT
@@ -49,25 +49,34 @@ class Busqueda
 				if user.rut != nil
 					rut = user.rut.split('-')
 					puts "\t \t " + number.to_s + ") " + rut[0].to_s + rut[1].to_s
-					listaCasos = pagina.Search(rut[0],rut[1],'','','')
-					AgregarCasos(listaCasos)
+					
+					begin
+						listaCasos = pagina.Search(rut[0],rut[1],'','','')
+						AgregarCasos(listaCasos)
+					rescue Exception => e
+						puts "[!] Error al intentar: " + e.to_s
+					end
 				end
 			end
-=end		
+		
 
 		puts "\t [+] Buscando por Posibles Nombres"	
 		lista.each_with_index do |user,number|	
 			
-			puts "\t \t [+]" + user.name.to_s + " "+  user.first_lastname + " (" + user.rut.to_s + ")"
+			puts "\t \t [+] " + user.name.to_s + " "+  user.first_lastname + " (" + user.rut.to_s + ")"
 			
 			#Nombres Posibles
 			listaNombres = user.possible_names
 			listaNombres.each_with_index do |lista,j|
 				puts "\t \t \t " + j.to_s + ") Nombre: " +  lista.name.to_s + " Apellidos: " + lista.first_lastname + " " + lista.second_lastname.to_s
-				listaCasos = pagina.Search('','',lista.name.to_s,lista.first_lastname,lista.second_lastname.to_s)
-				AgregarCasos(listaCasos)
-			end
-		
+				
+				begin
+					listaCasos = pagina.Search('','',lista.name.to_s,lista.first_lastname,lista.second_lastname.to_s)
+					AgregarCasos(listaCasos)
+				rescue Exception => e
+					puts "[!] Error al intentar: " + e.to_s
+				end
+			end		
 		end	
 	end
 end
@@ -100,26 +109,32 @@ while true
 	# Primero Buscamos Casos del Usuario 
 	puts '[+] Buscando en Civil -> Usuarios'
 	buscar.BusquedaLista(listaUsuarios, civil)
-=begin	
-	puts 'buscando en corte -> Usuarios'
+
+	
+	puts '[+] Buscando en Corte -> Usuarios'
 	buscar.BusquedaLista(listaUsuarios, corte)
 
-	puts 'buscando en suprema -> Usuarios'
+
+	puts '[+] Buscando en Suprema -> Usuarios'
 	buscar.BusquedaLista(listaUsuarios, suprema)
-	
-	puts 'buscando en laboral -> Usuarios'
+
+	puts '[+] Buscando en Laboral -> Usuarios'
 	buscar.BusquedaLista(listaUsuarios, laboral)
 
+	
 	# Segundo Buscamos Casos de Clientes
-	puts 'buscando en civil -> Usuarios'
+	puts '[+] Buscando en Civil -> Usuarios'
 	buscar.BusquedaLista(listaClientes, civil)
-	puts 'buscando en corte -> Usuarios'
+
+	puts '[+] Buscando en Corte -> Usuarios'
 	buscar.BusquedaLista(listaClientes, corte)
-	puts 'buscando en suprema -> Clientes'
+
+	puts '[+] Buscando en Suprema -> Usuarios'
 	buscar.BusquedaLista(listaClientes, suprema)
-	puts 'buscando en laboral -> Clientes'
+
+	puts '[+] Buscando en Laboral -> Usuarios'
 	buscar.BusquedaLista(listaClientes, laboral)
-=end
+
 
 	puts "[+] Iteracion Terminada"
 

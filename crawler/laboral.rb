@@ -12,14 +12,13 @@ class Laboral < PoderJudicial
 			#Iniciar para Obtener Cookie
 			Post($host_laboral + '/SITLAPORWEB/InicioAplicacionPortal.do',
 				 $host_laboral + '/SITLAPORWEB/jsp/LoginPortal/LoginPortal.jsp','Primera',
-				{"FLG_Autoconsulta" => 1})
+				{"FLG_Autoconsulta" => 1},4)
 
 			#Actualizar Sesión
 			#Get($host_laboral + '/SITLAPORWEB/jsp/Menu/Comun/LAB_MNU_BlancoPortal.jsp','Segunda')
-			Get($host_laboral + '/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1/','Tercera')
+			Get($host_laboral + '/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1/','Tercera',4)
 
 			#Consulta a AtPublicoDAction.do
-			puts '[+] Ejecutando consulta '+ nombre + ' ' + apellido_paterno + ' ' + apellido_materno
 			respuesta = Post($host_laboral + '/SITLAPORWEB/AtPublicoDAction.do',
 				 $host_laboral + '/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta',
 				{"TIP_Consulta" => 3,
@@ -42,9 +41,9 @@ class Laboral < PoderJudicial
 				 "APE_Paterno" => apellido_paterno.upcase,
 				 "APE_Materno" => apellido_materno.upcase,
 				 "GLS_Razon" => "",
-				 "COD_Tribunal" => 0}) #0 Son todos los Tribunales
+				 "COD_Tribunal" => 0},4) #0 Son todos los Tribunales
 
-		getCase(respuesta)
+		return getCase(respuesta)
 
 		rescue Exception => e 
 			puts "[!] Error al intentar hacer consulta: " + e.to_s
@@ -79,9 +78,10 @@ class Laboral < PoderJudicial
 				end
 			end
 
+
 			#Litigantes
 			href = row.xpath("td/a").attr('href')
-			listaLitigantes = getLitigantes(href,case_number)
+			listaLitigantes = getLitigantes(href.to_s,case_number)
 			
 			listaLitigantes.each do |litigante|
 				l = caso.litigantes.build
@@ -89,13 +89,14 @@ class Laboral < PoderJudicial
 				l.persona = litigante.persona
 				l.nombre = litigante.nombre
 				l.participante = litigante.participante
+				l.save
 			end
 
 			caso.info_type = 'Laboral'
 
 			listaCasos << caso
 
-			GuardarInfoCaso(info_caso, caso)
+			GuardarInfoCaso(info_caso, caso,4)
 
 		end
 
@@ -103,11 +104,12 @@ class Laboral < PoderJudicial
 	end
 
 	def getLitigantes(href,case_number)
-		doc = Nokogiri::HTML(Get($host_laboral + href.to_s,'Consultando Litigantes Caso N° ' + case_number.to_s))
+		doc = Nokogiri::HTML(Get($host_laboral + href.to_s.strip,'Consultando Litigantes Caso N° ' + case_number.to_s,4))
 		rows = doc.xpath("//*[@id='Litigantes']/table[2]/tbody/tr")
 		listaLitigantes = []
+
 		#Litigantes
-		puts "Litigantes: "			
+		puts "\t \t \t \t " + "Litigantes: "		
 		rows.each_with_index do |row,i|
 			litigante = Litigante.new
 			row.xpath("td").each_with_index do |td,j| 
@@ -121,10 +123,11 @@ class Laboral < PoderJudicial
 					litigante.nombre = td.content.strip
 				end
 			end
+			puts "\t \t \t \t \t " + i.to_s + ") " + litigante.rut + " " + litigante.nombre
+
 			listaLitigantes << litigante
 		end
-
-		#getRetiros(doc) 	
+	
 		return listaLitigantes
 	end
 
