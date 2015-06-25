@@ -58,7 +58,7 @@ class Busqueda
 					end
 				end
 			end
-		
+		end	
 
 		puts "\t [+] Buscando por Posibles Nombres"	
 		lista.each_with_index do |user,number|	
@@ -135,10 +135,6 @@ while true
 	puts '[+] Buscando en Laboral -> Usuarios'
 	buscar.BusquedaLista(listaClientes, laboral)
 
-
 	puts "[+] Iteracion Terminada"
 
 end
-
-
-
