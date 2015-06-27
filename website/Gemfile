@@ -74,6 +74,10 @@ gem 'paperclip'
 gem 'rails4-autocomplete'
 gem 'jquery-ui-rails'
 gem 'angularjs-rails'
+gem 'angular_rails_csrf'
+
+# Paginar contenidos
+gem 'will_paginate', '~> 3.0.6'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

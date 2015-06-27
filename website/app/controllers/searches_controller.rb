@@ -1,4 +1,6 @@
 class SearchesController < ApplicationController
+  before_action :set_case, only: [:show]
+
   def new
     @search = Search.new
   end
@@ -22,6 +24,11 @@ class SearchesController < ApplicationController
   end
 
   private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_search
+      @search = Search.find(params[:id])
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def search_params
       params.require(:search).permit(:rol, :name, :first_lastname, :second_lastname, :rut)

@@ -21,11 +21,18 @@
 $.dynatableSetup({
     features: {
         paginate: true,
-        sort: true,
+        sort: false,
         pushState: true,
         search: true,
         recordCount: true,
         perPageSelect: false
+    },
+    params: {
+        sorts: 'order',
+        page: 'page',
+        perPage: 'per_page',
+        queryRecordCount: 'count',
+        totalRecordCount: 'total_count'
     },
     inputs: {
         queries: null,
@@ -50,9 +57,54 @@ $.dynatableSetup({
     }
 });
 
+(function() {
+    var app = angular.module('SuitCase', []);
+    app.controller('SearchController', function($http) {
+        var search = this;
+        search.rol = '';
+        search.name = '';
+        search.first_lastname = '';
+        search.second_lastname = '';
+        search.rut = '';
+        search.buttonText = 'Buscar'
+        search.working = false;
+        search.show_table = false;
+        search.id = null;
+        search.table = $('.search_table')
+        search.submit = function(){
+            search.buttonText = 'Buscando ...';
+            search.working = true;
+            search.table.dynatable({
+                dataset: {
+                    ajax: true,
+                    ajaxUrl: '/cases.json',
+                    ajaxOnLoad: true,
+                    records: [],
+                    perPageDefault: 15,
+                    perPageOptions: 15
+                }
+            });
+            search.show_table = true;
+            // Creamos busqueda
+            $http.post("/cases/searches.json",
+                {
+                    rol: search.rol,
+                    name: search.name,
+                    first_lastname: search.first_lastname,
+                    second_lastname: search.second_lastname,
+                    rut: search.rut
+                } )
+                .success(function(response) {
+                    // Sacamos id
+                    search.id = response.id
+                });
+        };
+    });
+})();
+
 $(document).on('ready page:load', function () {
 
-    $('.table').dynatable();
+    $('.table_generator').dynatable();
 
     $('.form-add-record-case').on('ajax:success', function(e, data, status, xhr){
         $(this).addClass("hidden")
@@ -95,11 +147,6 @@ $(document).on('ready page:load', function () {
         'html' : true,
         'placement' : 'right',
         'content' : $(".alert_list").html()
-    });
-
-    $("#form_search").submit(function( event ) {
-        alert(1);
-        event.preventDefault();
     });
 
 })

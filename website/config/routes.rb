@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     resource :case_record, only: [:destroy]
     resource :case_user, only: [:destroy]
   end
+  resources :searches, only: [:show]
 
   resources :notifications
 

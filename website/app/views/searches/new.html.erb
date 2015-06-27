@@ -1,48 +1,65 @@
 <div class="page-header">
   <h1>Buscar</h1>
 </div>
-<%= form_for @search, :html => { :class => "form-horizontal client", :id => 'form_search' } do |f| %>
-
+<div ng-controller="SearchController as search">
+<form class="form-horizontal client"  ng-submit="search.submit()">
     <div class="form-group">
-      <%= f.label :rol, :class => 'col-sm-2 control-label' %>
+      <%= label_tag :rol, 'Rol', :class => 'col-sm-2 control-label' %>
       <div class="col-sm-10">
-        <%= f.text_field :rol, :class => 'form-control' %>
+        <%= text_field_tag :rol, '', :class => 'form-control', :html => { 'ng-model' => 'search.rol' } %>
       </div>
     </div>
     <div class="form-group">
-      <%= f.label :name, :class => 'col-sm-2 control-label' %>
+      <%= label_tag :name, 'Nombre', :class => 'col-sm-2 control-label' %>
       <div class="col-sm-10">
-        <%= f.text_field :name, :class => 'form-control' %>
+        <%= text_field_tag :name, '', :class => 'form-control', :html => { 'ng-model' => 'search.name' }  %>
       </div>
     </div>
     <div id="form-company-disappear">
       <div class="form-group">
-        <%= f.label :first_lastname, :class => 'col-sm-2 control-label' %>
+        <%= label_tag :first_lastname, 'Primer apellido', :class => 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <%= f.text_field :first_lastname, :class => 'form-control' %>
+          <%= text_field_tag :first_lastname, '', :class => 'form-control', :html => { 'ng-model' => 'search.first_lastname' }  %>
         </div>
-        <%= error_span(@search[:first_lastname]) %>
       </div>
       <div class="form-group ">
-        <%= f.label :second_lastname, :class => 'col-sm-2 control-label' %>
+        <%= label_tag :second_lastname, 'Segundo apellido', :class => 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <%= f.text_field :second_lastname, :class => 'form-control' %>
+          <%= text_field_tag :second_lastname, '', :class => 'form-control', :html => { 'ng-model' => 'search.second_lastname' }  %>
         </div>
-        <%= error_span(@search[:second_lastname]) %>
       </div>
     </div>
     <div class="form-group">
-      <%= f.label :rut, :class => 'col-sm-2 control-label' %>
+      <%= label_tag :rut, 'RUT', :class => 'col-sm-2 control-label' %>
       <div class="col-sm-10">
-        <%= f.text_field :rut, :class => 'form-control' %>
-        <%= error_span(@search[:rut]) %>
+        <%= text_field_tag :rut, '', :class => 'form-control', :html => { 'ng-model' => 'search.rut' }  %>
       </div>
 
     </div>
-
-    <div class="text-center">
+  <div class="text-center">
       <div class="col-sm-12">
-        <%= f.submit nil, :class => 'btn btn-primary btn-block' %>
+        <%= button_tag :class => 'btn btn-primary btn-block' do %>
+            {{ search.buttonText }} <i ng-show="search.working" class="fa fa-spinner fa-spin"></i>
+        <% end %>
       </div>
     </div>
-<% end %>
+    <br>
+  <div ng-show="search.show_table" id="search_table_div">
+      <table class="search_table table table-striped">
+        <thead>
+        <tr>
+          <th>Rol</th>
+          <th>Fecha</th>
+          <th>Tribunal</th>
+          <th>Caratula</th>
+          <th>Info type</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+  </div>
+</form>
+
+</div>

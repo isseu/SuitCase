@@ -21,7 +21,7 @@ th a:hover {
   float: right;
   margin-bottom: 10px;
 }
-#dynatable-query-searches-{
+#dynatable-query-searches-, #dynatable-query-searches-search_table{
   width: 25%;
   height: 34px;
   padding: 6px 12px;

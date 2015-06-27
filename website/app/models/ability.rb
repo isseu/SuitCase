@@ -35,17 +35,20 @@ class Ability
 
     if user.role? :guest
       can :read, [Case, Litigante]
+      can :crud, Search
     end
     if user.role? :secretary
       can [:read, :destroy], Notification, :user_id => user.id
       # Pueden agregar casos a otras personas y tambien nombres posibles
       can :crud, [CaseRecord, CaseUser, PossibleName]
       can :read, [Case, Litigante]
+      can :crud, Search
     end
     if user.role? :lawyer
       can [:read, :destroy], Notification, :user_id => user.id
       can :crud, [CaseRecord, CaseUser, PossibleName], :user_id => user.id
       can :read, [Case, Litigante]
+      can :crud, Search
     end
     if user.role? :admin
       can :manage, :all

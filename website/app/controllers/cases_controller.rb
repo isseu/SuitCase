@@ -4,7 +4,23 @@ class CasesController < ApplicationController
   # GET /cases
   # GET /cases.json
   def index
-    @cases = current_user.cases.includes(:case_records, :case_users).all
+    @cases = nil
+    respond_to do |format|
+      format.html { @cases = current_user.cases }
+      format.json { @cases = Case.all }
+    end
+    @cases = @cases.includes(:case_records, :case_users)
+    if not params[:queries].nil? and not params[:queries][:search].nil?
+      #TODO consulta de busqueda
+      @cases = @cases.where('rol LIKE :search', search: '%' + params[:queries][:search] + '%')
+    end
+    if not params[:page].blank? and not params[:per_page].blank?
+      @cases = @cases.paginate(:page => params[:page].to_i, :per_page => params[:per_page].to_i)
+    end
+    if not params[:order].blank?
+      @cases = @cases.order(params[:order])
+    end
+    @cases = @cases.all
   end
 
   # GET /cases/1
@@ -64,7 +80,7 @@ class CasesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_case
-      @case = Case.find(params[:id])
+      @case = Case.includes(:case_records, :case_users).find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
