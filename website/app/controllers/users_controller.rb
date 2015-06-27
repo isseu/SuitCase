@@ -28,6 +28,7 @@ class UsersController < ApplicationController
     @user.password_confirmation = @user.password
     respond_to do |format|
       if @user.save
+        UserMailer.welcome_email(@user).deliver_later
         format.html { redirect_to @user, notice: 'Usuario fue correctamente creado.' }
         format.json { render :show, status: :created, location: @user }
       else
