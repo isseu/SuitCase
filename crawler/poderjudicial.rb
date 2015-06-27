@@ -81,7 +81,8 @@ class PoderJudicial
 			l.save
 		end
 
-=begin		if listaLitigantes.count > 0 
+=begin		
+		if listaLitigantes.count > 0 
 			litigante = listaLitigantes[0]
 			l = caso.litigantes.build
 			l.rut = litigante.rut
@@ -89,6 +90,7 @@ class PoderJudicial
 			l.nombre = litigante.nombre
 			l.participante = litigante.participante
 			l.save
+		end
 =end
 
 
@@ -142,6 +144,7 @@ class PoderJudicial
 			message = "Nuevos Litigantes \n \t Rol: " + caso.rol.to_s + " \n \t Tribunal: " + caso.tribunal.to_s + " \n \t Tipo: " + caso.info_type.to_s
 			url = 'cases/' + caso.id.to_s
 			user.notifications.create!(read: false, text: message, url: url.to_s)
+			puts "\t \t \t \t [+] Enviando Notificación"
 		end
 	end
 

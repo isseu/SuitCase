@@ -7,9 +7,8 @@ class Civil < PoderJudicial
 
 	$host_civil = 'http://civil.poderjudicial.cl'
 
-	def Search(rol,rut,nombre,apellido_paterno,apellido_materno,tip_consulta,tracking)
+	def Search(rol,user,rut,nombre,apellido_paterno,apellido_materno,tip_consulta,tip_lengueta,tracking)
 		begin
-
 			#Iniciar para Obtener Cookie
 			Get($host_civil + "/CIVILPORWEB/",'Primera Consulta',4)
 
@@ -27,7 +26,7 @@ class Civil < PoderJudicial
 			respuesta = Post($host_civil + '/CIVILPORWEB/AtPublicoDAction.do',
 				$host_civil +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera Consulta',
 				{"TIP_Consulta" => tip_consulta,
-					"TIP_Lengueta" => "tdCuatro",
+					"TIP_Lengueta" => tip_lengueta,
 					"SeleccionL" => 0,
 					"TIP_Causa" => aux[0].to_s.strip,
 					"ROL_Causa" => aux[1].to_s.strip,
@@ -46,58 +45,70 @@ class Civil < PoderJudicial
 					"APE_Materno" => apellido_materno.upcase,
 					"irAccionAtPublico" => "Consulta" },4)
 
-		return getCases(respuesta,tracking)	
-
+		return getCases(respuesta,user,tracking)
+		
 		rescue Exception => e 
 			puts "[!] Error al intentar hacer consulta: " + e.to_s
 		end
 	end
 
-	def getCases(respuesta,tracking)
-		
+	def getCases(respuesta,user,tracking)	
 		doc = Nokogiri::HTML(respuesta)
 		rows = doc.xpath("//*[@id='contentCellsAddTabla']/tbody/tr")		
 
-		rows.each_with_index do |row,case_number|
-			begin
-				caso = Case.new
-				info_caso = InfoCivil.new
+		if rows.size > 0
+			rows.each_with_index do |row,case_number|
+				begin
+					caso = Case.new
+					info_caso = InfoCivil.new
 
-				row.xpath("td").each_with_index do |td,i|
-					if i == 0
-						caso.rol = td.content.strip 
-					elsif i == 1
-						caso.fecha = td.content.strip
-					elsif i == 2
-						caso.caratula = td.content.strip					
-					elsif i ==3
-						caso.tribunal = td.content.strip
+					row.xpath("td").each_with_index do |td,i|
+						if i == 0
+							caso.rol = td.content.strip 
+						elsif i == 1
+							caso.fecha = td.content.strip
+						elsif i == 2
+							caso.caratula = td.content.strip					
+						elsif i ==3
+							caso.tribunal = td.content.strip
+						else
+							palabra += "?: "
+						end
+					end
+
+					puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
+
+					if not tracking
+
+						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :tribunal => caso.tribunal, :info_type => "InfoCivil")
+							puts  "\t \t \t " + '[-] Caso ya Existe'
+				    	else 
+							
+							#Litigantes
+							href = row.xpath("td/a").attr('href')
+							listaLitigantes = getLitigantes(href,case_number)
+							
+							#Colocar Tipo
+							caso.info_type = 'InfoCivil'					
+						
+							saveCase(caso,info_caso,listaLitigantes,3)
+						
+						end
 					else
-						palabra += "?: "
+						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :tribunal => caso.tribunal, :info_type => "InfoCivil")
+							caso = Case.find_by(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :tribunal => caso.tribunal, :info_type => "InfoCivil")
+
+							#Litigantes
+							href = row.xpath("td/a").attr('href')
+							listaLitigantes = getLitigantes(href,case_number)
+
+							updateLitigantes(listaLitigantes,caso,user)
+						end
 					end
-				end
-
-				puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
-
-				#Litigantes
-				href = row.xpath("td/a").attr('href')
-				listaLitigantes = getLitigantes(href,case_number)	
-
-				#Colocar Tipo
-				caso.info_type = 'InfoCivil'
-
-				if not tracking 
-					if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :tribunal => caso.tribunal, :info_type => "InfoCivil")
-						puts  "\t \t \t " + '[-] Caso ya Existe'
-			    	else 
-						saveCase(caso,info_caso,listaLitigantes,3)
-					end
-				else
-					#Tracking
-				end
-			rescue Exception => e
-				puts "[!] Error al intentar hacer consulta: " + e.to_s
-			end	
+				rescue Exception => e
+					puts "[!] Error al intentar hacer consulta: " + e.to_s
+				end	
+			end
 		end
 	end
 

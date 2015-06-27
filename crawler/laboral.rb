@@ -89,15 +89,15 @@ class Laboral < PoderJudicial
 
 					if not tracking
 
-						#Litigantes
-						href = row.xpath("td/a").attr('href')
-						listaLitigantes = getLitigantes(href.to_s,case_number)
-
-						caso.info_type = 'InfoLaboral'
-
 						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula,:tribunal => caso.tribunal,:info_type => "InfoLaboral")
 							puts  "\t \t \t " + '[-] Caso ya Existe'
 				    	else 
+							#Litigantes
+							href = row.xpath("td/a").attr('href')
+							listaLitigantes = getLitigantes(href.to_s,case_number)
+
+							caso.info_type = 'InfoLaboral'
+
 							saveCase(caso,info_caso,listaLitigantes,3)
 						end
 

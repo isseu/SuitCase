@@ -89,16 +89,16 @@ class Corte < PoderJudicial
 
 					if not tracking
 
-						#Litigantes
-						href = row.xpath("td/a").attr('href')
-						listaLitigantes = getLitigantes(href,case_number)
-						
-						#Colocar Tipo
-						caso.info_type = 'InfoCorte'
-					
 						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :info_type => "InfoCorte")
 							puts  "\t \t \t " + '[-] Caso ya Existe'
 				    	else 
+							#Litigantes
+							href = row.xpath("td/a").attr('href')
+							listaLitigantes = getLitigantes(href,case_number)
+							
+							#Colocar Tipo
+							caso.info_type = 'InfoCorte'
+						
 							saveCase(caso,info_caso,listaLitigantes,3)
 						end
 					else

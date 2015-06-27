@@ -107,15 +107,15 @@ class Suprema < PoderJudicial
 
 					if not tracking
 
-						#Litigantes
-						href = row.xpath("td/a").attr('href')
-						listaLitigantes = getLitigantes(href,case_number)
-
-						caso.info_type = 'InfoSuprema'
-
 						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :info_type => "InfoSuprema")
 							puts  "\t \t \t " + '[-] Caso ya Existe'
 				    	else 
+							#Litigantes
+							href = row.xpath("td/a").attr('href')
+							listaLitigantes = getLitigantes(href,case_number)
+
+							caso.info_type = 'InfoSuprema'
+
 							saveCase(caso,info_caso,listaLitigantes,3)
 						end	
 					else

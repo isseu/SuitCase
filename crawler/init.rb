@@ -14,25 +14,22 @@ require_relative 'laboral.rb'
 
 class Busqueda 
 
-	def BusquedaLista(lista, pagina)
+	def searchUser(lista, pagina)
 
-=begin	
 		puts "\t [+] Buscando por Rut" 
 		lista.each_with_index do |user,number|
 			# Por RUT
 			if ['Civil', 'Laboral'].include? pagina.class.name.to_s
 				if user.rut != nil
 					puts "\t \t " + number.to_s + ") " + user.rut.to_s
-
 					begin
-						pagina.Search('',nil,user.rut,'','','',3,"tdNombre",false)
+						pagina.Search('',nil,user.rut,'','','',2,"tdTres",false)
 					rescue Exception => e
 						puts "[!] Error al intentar: " + e.to_s
 					end
 				end
 			end
 		end	
-=end
 
 		puts "\t [+] Buscando por Posibles Nombres"	
 		lista.each_with_index do |user,number|	
@@ -45,19 +42,21 @@ class Busqueda
 				puts "\t \t \t " + j.to_s + ") Nombre: " +  lista.name.to_s + " Apellidos: " + lista.first_lastname + " " + lista.second_lastname.to_s
 				
 				begin
-					if ['Civil'].include? pagina.class.name.to_s
-						#sda
-					elsif ['Corte','Suprema'].include? pagina.class.name.to_s
+					if ['Corte','Suprema'].include? pagina.class.name.to_s
 						pagina.Search('',nil,'',lista.name.to_s,lista.first_lastname,lista.second_lastname.to_s,3,"tdNombre",false)
-					elsif ['Laboral'].include? pagina.class.name.to_s
+					elsif ['Civil','Laboral'].include? pagina.class.name.to_s
 						pagina.Search('',nil,'',lista.name.to_s,lista.first_lastname,lista.second_lastname.to_s,3,"tdCuatro",false)
 					end				
-
 				rescue Exception => e
 					puts "[!] Error al intentar: " + e.to_s
 				end
 			end		
 		end	
+	end
+
+	def searchClient(lista,pagina)
+		puts "\t [+] Buscando por Nombres Clientes"	
+
 	end
 
 	def searchTracking(lista, pagina)
@@ -70,13 +69,9 @@ class Busqueda
 				caso = Case.find(case_record.case_id)		
 				if caso != nil
 					puts "\t \t \t " + j.to_s + ") Caso: " + caso.rol.to_s
-					if caso.info_type == 'InfoCivil'	
-						pagina.Search(caso.rol,user,'',user.name.to_s,user.first_lastname.to_s,user.second_lastname.to_s,1,"",true)
-					elsif caso.info_type == 'InfoCorte'
+					if  caso.info_type == 'InfoCorte' || caso.info_type == 'InfoSuprema'
 						pagina.Search(caso.rol,user,'',user.name.to_s,user.first_lastname.to_s,user.second_lastname.to_s,1,'tdRecurso',true)
-					elsif caso.info_type == 'InfoSuprema'
-						pagina.Search(caso.rol,user,'',user.name.to_s,user.first_lastname.to_s,user.second_lastname.to_s,1,'tdRecurso',true)
-					elsif caso.info_type == 'InfoLaboral'
+					elsif caso.info_type == 'InfoLaboral' || caso.info_type == 'InfoCivil'
 						pagina.Search(caso.rol,user,'',user.name.to_s,user.first_lastname.to_s,user.second_lastname.to_s,1,'tdUno',true)
 					end
 				end			
@@ -113,7 +108,7 @@ while true
 
     #Primero todos los Trackeados
     puts '[+] Trackear Civil'
-    #buscar.searchTracking(listaUsuarios, civil)
+    buscar.searchTracking(listaUsuarios, civil)
 
     puts '[+] Trackear Corte'
     #buscar.searchTracking(listaUsuarios, corte)
@@ -122,35 +117,36 @@ while true
     #buscar.searchTracking(listaUsuarios, laboral)
 
     puts '[+] Trackear Suprema'
-    buscar.searchTracking(listaUsuarios, suprema)
+    #buscar.searchTracking(listaUsuarios, suprema)
 
 	# Primero Buscamos Casos del Usuario 
 	puts '[+] Buscando en Civil -> Usuarios'
-	#buscar.BusquedaLista(listaUsuarios, civil)
+	buscar.searchUser(listaUsuarios, civil)
 
 	puts '[+] Buscando en Corte -> Usuarios'
-	#buscar.BusquedaLista(listaUsuarios, corte)
+	#buscar.searchUser(listaUsuarios, corte)
 
 	puts '[+] Buscando en Laboral -> Usuarios'
-	#buscar.BusquedaLista(listaUsuarios, laboral)
+	#buscar.searchUser(listaUsuarios, laboral)
 
 	puts '[+] Buscando en Suprema -> Usuarios'
-	buscar.BusquedaLista(listaUsuarios, suprema)
+	#buscar.searchUser(listaUsuarios, suprema)
 
 =begin		
 	# Segundo Buscamos Casos de Clientes
 	puts '[+] Buscando en Civil -> Usuarios'
-	buscar.BusquedaLista(listaClientes, civil)
+	buscar.searchClient(listaClientes, civil)
 
 	puts '[+] Buscando en Corte -> Usuarios'
-	buscar.BusquedaLista(listaClientes, corte)
+	buscar.searchClient(listaClientes, corte)
 
 	puts '[+] Buscando en Suprema -> Usuarios'
-	buscar.BusquedaLista(listaClientes, suprema)
+	buscar.searchClient(listaClientes, suprema)
 
 	puts '[+] Buscando en Laboral -> Usuarios'
-	buscar.BusquedaLista(listaClientes, laboral)
+	buscar.searchClient(listaClientes, laboral)
 
 	puts "[+] Iteracion Terminada"
 =end
+
 end
