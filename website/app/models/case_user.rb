@@ -14,5 +14,12 @@ class CaseUser < ActiveRecord::Base
   belongs_to :user
 
   validates :case_id, uniqueness: {scope: :user_id}
+  before_destroy :destroy_case_record
+
+  def destroy_case_record
+    case_record = self.case.case_records.where(user_id: self.user.id).first
+    case_record.destroy if case_record
+    true
+  end
 
 end

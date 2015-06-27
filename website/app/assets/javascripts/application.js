@@ -134,6 +134,10 @@ $(document).on('ready page:load', function () {
         $(this).addClass("hidden")
         var add_form = $(this).siblings(".form-add-user-case")
         add_form.removeClass("hidden")
+        // Si elimino user_case, se elimina record
+        $('.form-remove-record-case').addClass("hidden")
+        var add_form = $(this).siblings(".form-add-record-case")
+        add_form.removeClass("hidden")
     }).on('ajax:error', function(e, xhr, status, error){
         alert("Error al agregar registro de seguimiento")
     });
