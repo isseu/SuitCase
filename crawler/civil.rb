@@ -7,7 +7,7 @@ class Civil < PoderJudicial
 
 	$host_civil = 'http://civil.poderjudicial.cl'
 
-	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
+	def Search(rol,rut,nombre,apellido_paterno,apellido_materno,tip_consulta,tracking)
 		begin
 
 			#Iniciar para Obtener Cookie
@@ -16,15 +16,22 @@ class Civil < PoderJudicial
 			#Setear Camino
 			Get($host_civil +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda Consulta',4)
 
+			#Dividir el Rol
+			aux = rol.split('-')
+			#puts aux[0].to_s.strip + " " + aux[1].to_s.strip + " " + aux[2].to_s.strip
+
+			#Dividir el Rut
+			aux2 = rut.split('-')
+
 			#Consulta a AtPublicoDAction.do
 			respuesta = Post($host_civil + '/CIVILPORWEB/AtPublicoDAction.do',
 				$host_civil +'/CIVILPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera Consulta',
-				{"TIP_Consulta" => 3,
+				{"TIP_Consulta" => tip_consulta,
 					"TIP_Lengueta" => "tdCuatro",
 					"SeleccionL" => 0,
-					"TIP_Causa" => "",
-					"ROL_Causa" => "",
-					"ERA_Causa" => "",
+					"TIP_Causa" => aux[0].to_s.strip,
+					"ROL_Causa" => aux[1].to_s.strip,
+					"ERA_Causa" => aux[2].to_s.strip,
 					"RUC_Era" => "",
 					"RUC_Tribunal" => 3,
 					"RUC_Numero" => "",
@@ -32,66 +39,66 @@ class Civil < PoderJudicial
 					"FEC_Desde" => Time.now.strftime("%d/%m/%Y").to_s,
 					"FEC_Hasta" => Time.now.strftime("%d/%m/%Y").to_s,
 					"SEL_Litigantes" => 0,
-					"RUT_Consulta" => rut.to_s,
-					"RUT_DvConsulta" => rut_dv.to_s,
+					"RUT_Consulta" => aux2[0].to_s.strip,
+					"RUT_DvConsulta" => aux2[1].to_s.strip,
 					"NOM_Consulta" => nombre.upcase,
 					"APE_Paterno" => apellido_paterno.upcase,
 					"APE_Materno" => apellido_materno.upcase,
 					"irAccionAtPublico" => "Consulta" },4)
 
-		return getCases(respuesta)	
+		return getCases(respuesta,tracking)	
 
 		rescue Exception => e 
 			puts "[!] Error al intentar hacer consulta: " + e.to_s
-			exit
 		end
 	end
 
-	def getCases(respuesta)
+	def getCases(respuesta,tracking)
 		
 		doc = Nokogiri::HTML(respuesta)
 		rows = doc.xpath("//*[@id='contentCellsAddTabla']/tbody/tr")		
-		listaCasos = []
 
-		rows[0..20].each_with_index do |row,case_number|
-			caso = Case.new
+		rows.each_with_index do |row,case_number|
+			begin
+				caso = Case.new
+				info_caso = InfoCivil.new
 
-			row.xpath("td").each_with_index do |td,i|
-				if i == 0
-					caso.rol = td.content.strip 
-				elsif i == 1
-					caso.fecha = td.content.strip
-				elsif i == 2
-					caso.caratula = td.content.strip					
-				elsif i ==3
-					caso.tribunal = td.content.strip
-				else
-					palabra += "?: "
+				row.xpath("td").each_with_index do |td,i|
+					if i == 0
+						caso.rol = td.content.strip 
+					elsif i == 1
+						caso.fecha = td.content.strip
+					elsif i == 2
+						caso.caratula = td.content.strip					
+					elsif i ==3
+						caso.tribunal = td.content.strip
+					else
+						palabra += "?: "
+					end
 				end
-			end
 
-			puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
+				puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
 
-			#Litigantes
-			href = row.xpath("td/a").attr('href')
-			listaLitigantes = getLitigantes(href,case_number)
-			
-			listaLitigantes.each do |litigante|
-				l = caso.litigantes.build
-				l.rut = litigante.rut
-				l.persona = litigante.persona
-				l.nombre = litigante.nombre
-				l.participante = litigante.participante
-				l.save
-			end
+				#Litigantes
+				href = row.xpath("td/a").attr('href')
+				listaLitigantes = getLitigantes(href,case_number)	
 
-			caso.info_type = 'Civil'
+				#Colocar Tipo
+				caso.info_type = 'InfoCivil'
 
-			listaCasos << caso
-
+				if not tracking 
+					if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :tribunal => caso.tribunal, :info_type => "InfoCivil")
+						puts  "\t \t \t " + '[-] Caso ya Existe'
+			    	else 
+						saveCase(caso,info_caso,listaLitigantes,3)
+					end
+				else
+					#Tracking
+				end
+			rescue Exception => e
+				puts "[!] Error al intentar hacer consulta: " + e.to_s
+			end	
 		end
-
-		return listaCasos
 	end
 
 	def getLitigantes(href,case_number)
