@@ -8,7 +8,7 @@ class Suprema < PoderJudicial
 
 	$host_suprema = 'http://suprema.poderjudicial.cl'
 
-	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
+	def Search(rol,user,rut,nombre,apellido_paterno,apellido_materno,tip_consulta,tip_lengueta,tracking)
 		begin
 
 			Get($host_suprema + '/SITSUPPORWEB/','Primera',4)
@@ -23,17 +23,23 @@ class Suprema < PoderJudicial
 
 			Get($host_suprema + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta',4)
 
+			#Dividir el Rol
+			aux = rol.split('-')
+		
+			#Dividir el Rut
+			aux2 = rut.split('-')
+
 			#Consulta a AtPublicoDAction.do			
 			respuesta = Post($host_suprema + '/SITSUPPORWEB/AtPublicoDAction.do',
 				$host_suprema + '/SITSUPPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Quinta',
-				{"TIP_Consulta" => 3,
-				 "TIP_Lengueta" => "tdNombre",
+				{"TIP_Consulta" => tip_consulta,
+				 "TIP_Lengueta" => tip_lengueta,
 				 "SeleccionL" => 0,
 				 "COD_Libro" => 0,
 				 "COD_Corte" => 1,
 				 "COD_Corte_AP" => 0,
-				 "ROL_Recurso" => "",
-				 "ERA_Recurso" => "",
+				 "ROL_Recurso" => aux[0].to_s.strip,
+				 "ERA_Recurso" => aux[1].to_s.strip,
 				 "FEC_Desde" => Time.now.strftime("%d/%m/%Y").to_s,
 				 "FEC_Hasta" => Time.now.strftime("%d/%m/%Y").to_s,
 				 "TIP_Litigante" => 999,
@@ -50,13 +56,13 @@ class Suprema < PoderJudicial
 				 "ERA_Causa" => "",
 				 "RUC_Era" => "",
 				 "RUC_Tribunal" => "",
-				 "RUC_Numero" => rut.to_s,
-				 "RUC_Dv" => rut_dv.to_s,
+				 "RUC_Numero" => aux2[0].to_s,
+				 "RUC_Dv" => aux2[1].to_s,
 				 "COD_CorteAP_Pra" => 0,
 				 "GLS_Caratulado_Recurso" => "",
 				 "irAccionAtPublico" =>"Consulta"},4)
 
-			getCase(respuesta)
+		return getCases(respuesta,user,tracking)
 
 		rescue Exception => e 
 			puts "[!] Error al intentar hacer consulta: " + e.to_s
@@ -65,60 +71,70 @@ class Suprema < PoderJudicial
 	end
 
 
-	def getCase(respuesta)
+	def getCases(respuesta,user,tracking)
 		doc = Nokogiri::HTML(respuesta)
 		rows = doc.xpath("//*[@id='contentCells']/tbody/tr")	
-		listaCasos = []
 
-		rows[0..20].each_with_index do |row,case_number|
-			caso = Case.new
-			info_caso = InfoSuprema.new(case_id: caso.id)
+		if rows.size > 0
+			rows[0..-1].each_with_index do |row,case_number|
+				begin
+					caso = Case.new
+					info_caso = InfoSuprema.new
 
-			palabra = "\n " + case_number.to_s + ") "			
-			row.xpath("td").each_with_index do |td,i|
-				
-				if i == 0
-					caso.rol = td.content.strip
-				elsif i == 1
-					info_caso.tipo_recurso = td.content.strip
-				elsif i == 2
-					caso.fecha = td.content.strip
-				elsif i == 3
-					info_caso.ubicacion = td.content.strip
-				elsif i == 4
-					info_caso.fecha_ubicacion = td.content.strip
-				elsif i == 5
-					info_caso.corte = td.content.strip
-				elsif i == 6
-					caso.caratula = td.content.strip
-				else
-					palabra += "?: "
+					palabra = "\n " + case_number.to_s + ") "			
+					row.xpath("td").each_with_index do |td,i|
+						
+						if i == 0
+							caso.rol = td.content.strip
+						elsif i == 1
+							info_caso.tipo_recurso = td.content.strip
+						elsif i == 2
+							caso.fecha = td.content.strip
+						elsif i == 3
+							info_caso.ubicacion = td.content.strip
+						elsif i == 4
+							info_caso.fecha_ubicacion = td.content.strip
+						elsif i == 5
+							info_caso.corte = td.content.strip
+						elsif i == 6
+							caso.caratula = td.content.strip
+						else
+							palabra += "?: "
+						end
+					end
+
+					puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
+
+					if not tracking
+
+						#Litigantes
+						href = row.xpath("td/a").attr('href')
+						listaLitigantes = getLitigantes(href,case_number)
+
+						caso.info_type = 'InfoSuprema'
+
+						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :info_type => "InfoSuprema")
+							puts  "\t \t \t " + '[-] Caso ya Existe'
+				    	else 
+							saveCase(caso,info_caso,listaLitigantes,3)
+						end	
+					else
+						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :info_type => "InfoSuprema")
+							caso = Case.find_by(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :info_type => "InfoSuprema")
+
+							#Litigantes
+							href = row.xpath("td/a").attr('href')
+							listaLitigantes = getLitigantes(href,case_number)
+
+							updateLitigantes(listaLitigantes,caso,user)
+						end
+					end
+
+				rescue Exception => e
+					puts "[!] Error adentro: " + e.to_s
 				end
 			end
-
-			puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
-
-			href = row.xpath("td/a").attr('href')
-			listaLitigantes = getLitigantes(href,case_number)
-			
-			listaLitigantes.each do |litigante|
-				l = caso.litigantes.build
-				l.rut = litigante.rut
-				l.persona = litigante.persona
-				l.nombre = litigante.nombre
-				l.participante = litigante.participante
-				l.save
-			end
-
-			caso.info_type = 'Suprema'
-
-			listaCasos << caso
-
-			GuardarInfoCaso(info_caso, caso,4)
-			
 		end
-
-		return listaCasos
 
 	end
 

@@ -7,7 +7,7 @@ class Corte < PoderJudicial
 
 	$host_corte = 'http://corte.poderjudicial.cl'
 	
-	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
+	def Search(rol,user,rut,nombre,apellido_paterno,apellido_materno,tip_consulta,tip_lengueta,tracking)
 		begin
 			#Iniciar para Obtener Cookie
 			Get($host_corte + "/SITCORTEPORWEB/",'Primera',4)
@@ -17,17 +17,21 @@ class Corte < PoderJudicial
 			#Setear Camino
 			Get($host_corte + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Segunda',4)
 
+			#Dividir el Rol
+			aux = rol.split('-')
+			#puts aux[1].to_s + " " + aux[2].to_s
+
 			#Consulta a AtPublicoDAction.do
 			respuesta = Post($host_corte + '/SITCORTEPORWEB/AtPublicoDAction.do',
 				 $host_corte + '/SITCORTEPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Tercera',
-				{"TIP_Consulta"=> "3", 
-				 "TIP_Lengueta"=> "tdNombre",
+				{"TIP_Consulta"=> tip_consulta, 
+				 "TIP_Lengueta"=> tip_lengueta.to_s,
 				 "TIP_Causa"=> " ",
-				 "COD_Libro"=> "null",
+				 "COD_Libro"=> "",
 				 "COD_Corte"=> "0",
 				 "COD_LibroCmb"=> "",
-				 "ROL_Recurso"=> "",
-				 "ERA_Recurso"=> "",
+				 "ROL_Recurso"=> aux[1].to_s.strip,
+				 "ERA_Recurso"=> aux[2].to_s.strip,
 				 "FEC_Desde"=> Time.now.strftime("%d/%m/%Y").to_s,
 				 "FEC_Hasta"=> Time.now.strftime("%d/%m/%Y").to_s,
 				 "NOM_Consulta"=> nombre.upcase,
@@ -40,9 +44,9 @@ class Corte < PoderJudicial
 				 "RUC_Tribunal"=> "",
 				 "RUC_Numero"=> "",
 				 "RUC_Dv"=> "",
-				 "irAccionAtPublico"=> "Consulta" },4)
+				 "irAccionAtPublico"=> "Consulta"},4)
 
-		return getCases(respuesta)
+		return getCases(respuesta,user,tracking)
 
 
 		rescue Exception => e 
@@ -51,65 +55,68 @@ class Corte < PoderJudicial
 		end
 	end	
 
-	def getCases(respuesta)
+	def getCases(respuesta,user,tracking)
 		doc = Nokogiri::HTML(respuesta)
-		rows = doc.xpath("//*[@id='divRecursos']/table/tbody/tr")		
-		listaCasos = []
-		
+		rows = doc.xpath("//*[@id='divRecursos']/table/tbody/tr")				
+
 		#Primer tr es Encabezado Tabla
-		rows[1..20].each_with_index do |row,case_number|
-			caso = Case.new
-			info_caso = InfoCorte.new(case_id: caso.id)
-			palabra = "\n " + case_number.to_s + ") "			
-			(row.xpath("td"))[0..-1].each_with_index do |td,i|
-				if i == 0
-					caso.rol = td.content.strip
-				elsif i == 1
-					caso.fecha = td.content.strip
-				elsif i == 2
-					info_caso.ubicacion = td.content.strip
-				elsif i == 3
-					info_caso.fecha_ubicacion = td.content.strip
-				elsif i == 4
-					info_caso.corte = td.content.strip
-				elsif i == 5
-					caso.caratula = td.content.strip
-				else
-					palabra += "?: "
+		if rows.size > 1
+			rows[1..-1].each_with_index do |row,case_number|
+				begin
+					caso = Case.new
+					info_caso = InfoCorte.new
+
+					palabra = "\n " + case_number.to_s + ") "			
+					(row.xpath("td"))[0..-1].each_with_index do |td,i|
+						if i == 0
+							caso.rol = td.content.strip
+						elsif i == 1
+							caso.fecha = td.content.strip
+						elsif i == 2
+							info_caso.ubicacion = td.content.strip
+						elsif i == 3
+							info_caso.fecha_ubicacion = td.content.strip
+						elsif i == 4
+							info_caso.corte = td.content.strip
+						elsif i == 5
+							caso.caratula = td.content.strip
+						else
+							palabra += "?: "
+						end
+					end
+
+					puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
+
+					if not tracking
+
+						#Litigantes
+						href = row.xpath("td/a").attr('href')
+						listaLitigantes = getLitigantes(href,case_number)
+						
+						#Colocar Tipo
+						caso.info_type = 'InfoCorte'
+					
+						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :info_type => "InfoCorte")
+							puts  "\t \t \t " + '[-] Caso ya Existe'
+				    	else 
+							saveCase(caso,info_caso,listaLitigantes,3)
+						end
+					else
+						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :info_type => "InfoCorte")
+							caso = Case.find_by(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :info_type => "InfoCorte")
+
+							#Litigantes
+							href = row.xpath("td/a").attr('href')
+							listaLitigantes = getLitigantes(href,case_number)
+
+							updateLitigantes(listaLitigantes,caso,user)
+						end
+					end
+				rescue Exception => e
+					puts "[!] Error adentro: " + e.to_s
 				end
 			end
-
-			puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
-
-			#Litigantes
-			href = row.xpath("td/a").attr('href')
-			listaLitigantes = getLitigantes(href,case_number)
-			
-			listaLitigantes.each do |litigante|
-				l = caso.litigantes.build
-				l.rut = litigante.rut
-				l.persona = litigante.persona
-				l.nombre = litigante.nombre
-				l.participante = litigante.participante
-				l.save
-			end
-
-			##guardar la informacion del caso
-			#info_caso.case_id = caso.id
-			#if InfoCorte.exists?(:ruc => info_caso.ruc)
-			#	puts 'caso existe'
-			#else
-			#	info_caso.save
-			#end
-
-			caso.info_type = 'Corte'
-
-			listaCasos << caso
-
-			GuardarInfoCaso(info_caso, caso,4)
 		end
-
-		return listaCasos
 	end
 
 	def getLitigantes(href,case_number)

@@ -82,35 +82,40 @@ class User < ActiveRecord::Base
   REPLACE = %w[á é í ó ú g j h w z qu]
 
   def create_possible_names
+
     # Algunas combinaciones de nombres
-    self.possible_names.build(
+    aux = self.possible_names.build(
        name: self.name,
        first_lastname: self.first_lastname,
        second_lastname: ''
     )
-    self.possible_names.build(
+    aux.save
+    aux =  self.possible_names.build(
         name: self.name,
         first_lastname: '',
         second_lastname: self.second_lastname
     )
-    self.possible_names.build(
+    aux.save
+    aux = self.possible_names.build(
         name: '',
         first_lastname: self.first_lastname,
         second_lastname: self.second_lastname
     )
 
     # Quitar acentos
-    self.possible_names.build(
+    aux = self.possible_names.build(
         name: clean_accents(self.name),
         first_lastname: clean_accents(self.first_lastname),
         second_lastname: clean_accents(self.second_lastname)
     )
+    aux.save
     # En vez de acentos o JG, poner comodines
-    self.possible_names.build(
+    aux = self.possible_names.build(
         name: replace_words(self.name),
         first_lastname: replace_words(self.first_lastname),
         second_lastname: replace_words(self.second_lastname)
     )
+    aux.save
   end
 
   def replace_words(string)

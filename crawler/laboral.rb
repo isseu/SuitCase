@@ -7,7 +7,7 @@ class Laboral < PoderJudicial
 
 	$host_laboral = 'http://laboral.poderjudicial.cl'
 
-	def Search(rut,rut_dv,nombre,apellido_paterno,apellido_materno)
+	def Search(rol,user,rut,nombre,apellido_paterno,apellido_materno,tip_consulta,tip_lengueta,tracking)
 		begin
 			#Iniciar para Obtener Cookie
 			Post($host_laboral + '/SITLAPORWEB/InicioAplicacionPortal.do',
@@ -18,15 +18,21 @@ class Laboral < PoderJudicial
 			#Get($host_laboral + '/SITLAPORWEB/jsp/Menu/Comun/LAB_MNU_BlancoPortal.jsp','Segunda')
 			Get($host_laboral + '/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1/','Tercera',4)
 
+			#Dividir el Rol
+			aux = rol.split('-')
+		
+			#Dividir el Rut
+			aux2 = rut.split('-')
+
 			#Consulta a AtPublicoDAction.do
 			respuesta = Post($host_laboral + '/SITLAPORWEB/AtPublicoDAction.do',
 				 $host_laboral + '/SITLAPORWEB/AtPublicoViewAccion.do?tipoMenuATP=1','Cuarta',
-				{"TIP_Consulta" => 3,
-				 "TIP_Lengueta" => "tdCuatro",
+				{"TIP_Consulta" => tip_consulta,
+				 "TIP_Lengueta" => tip_lengueta,
 				 "SeleccionL" => 0,
-				 "TIP_Causa" => "",
-				 "ROL_Causa" => "",
-				 "ERA_Causa" => 0,
+				 "TIP_Causa" => aux[0].to_s.strip,
+				 "ROL_Causa" => aux[1].to_s.strip,
+				 "ERA_Causa" => aux[2].to_s.strip,
 				 "RUC_Era" => "",
 				 "RUC_Tribunal" => 4,
 				 "RUC_Numero" => "",
@@ -34,8 +40,8 @@ class Laboral < PoderJudicial
 				 "FEC_Desde" => Time.now.strftime("%d/%m/%Y").to_s,
 				 "FEC_Hasta" => Time.now.strftime("%d/%m/%Y").to_s,
 				 "SEL_Trabajadores" => 0,
-				 "RUT_Consulta" => rut.to_s,
-				 "RUT_DvConsulta" => rut_dv.to_s,
+				 "RUT_Consulta" => aux[0].to_s,
+				 "RUT_DvConsulta" => aux[1].to_s,
 				 "irAccionAtPublico" => "Consulta",
 				 "NOM_Consulta" => nombre.upcase,
 				 "APE_Paterno" => apellido_paterno.upcase,
@@ -43,7 +49,7 @@ class Laboral < PoderJudicial
 				 "GLS_Razon" => "",
 				 "COD_Tribunal" => 0},4) #0 Son todos los Tribunales
 
-		return getCase(respuesta)
+		return getCases(respuesta,user,tracking)
 
 		rescue Exception => e 
 			puts "[!] Error al intentar hacer consulta: " + e.to_s
@@ -51,56 +57,66 @@ class Laboral < PoderJudicial
 		end
 	end
 
-	def getCase(respuesta)
+	def getCases(respuesta,user,tracking)
 		doc = Nokogiri::HTML(respuesta)
 		rows = doc.xpath("//*[@id='filaSel']/tbody/tr")		
-		listaCasos = []
 		
-		rows[0..20].each_with_index do |row,case_number|
-			caso = Case.new
-			info_caso = InfoLaboral.new
+		if rows.size > 0
+			rows[0..-1].each_with_index do |row,case_number|
+				begin	
+					caso = Case.new
+					info_caso = InfoLaboral.new
 
-			palabra = "\n " + case_number.to_s + ") "			
-			row.xpath("td").each_with_index do |td,i|
-				if i == 0
-					info_caso.rit = td.content.strip
-					caso.rol = info_caso.rit
-				elsif i == 1
-					info_caso.ruc = td.content.strip
-				elsif i == 2
-					caso.fecha = td.content.strip
-				elsif i == 3
-					caso.caratula = td.content.strip
-				elsif i == 4
-					caso.tribunal = td.content.strip
-				else
-					palabra += "?: "
+					palabra = "" 	
+					row.xpath("td").each_with_index do |td,i|
+						if i == 0
+							info_caso.rit = td.content.strip
+							caso.rol = info_caso.rit
+						elsif i == 1
+							info_caso.ruc = td.content.strip
+						elsif i == 2
+							caso.fecha = td.content.strip
+						elsif i == 3
+							caso.caratula = td.content.strip
+						elsif i == 4
+							caso.tribunal = td.content.strip
+						else
+							palabra += "?: "
+						end
+					end
+
+					puts "\t \t \t "  + case_number.to_s + ") Rol: " + caso.rol.to_s
+
+					if not tracking
+
+						#Litigantes
+						href = row.xpath("td/a").attr('href')
+						listaLitigantes = getLitigantes(href.to_s,case_number)
+
+						caso.info_type = 'InfoLaboral'
+
+						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula,:tribunal => caso.tribunal,:info_type => "InfoLaboral")
+							puts  "\t \t \t " + '[-] Caso ya Existe'
+				    	else 
+							saveCase(caso,info_caso,listaLitigantes,3)
+						end
+
+					else
+						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula,:tribunal => caso.tribunal,:info_type => "InfoLaboral")
+							caso = Case.find_by(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula,:tribunal => caso.tribunal,:info_type => "InfoLaboral")
+
+							#Litigantes
+							href = row.xpath("td/a").attr('href')
+							listaLitigantes = getLitigantes(href,case_number)
+
+							updateLitigantes(listaLitigantes,caso,user)
+						end
+					end
+				rescue Exception => e
+					puts "[!] Error adentro: " + e.to_s
 				end
 			end
-
-
-			#Litigantes
-			href = row.xpath("td/a").attr('href')
-			listaLitigantes = getLitigantes(href.to_s,case_number)
-			
-			listaLitigantes.each do |litigante|
-				l = caso.litigantes.build
-				l.rut = litigante.rut
-				l.persona = litigante.persona
-				l.nombre = litigante.nombre
-				l.participante = litigante.participante
-				l.save
-			end
-
-			caso.info_type = 'Laboral'
-
-			listaCasos << caso
-
-			GuardarInfoCaso(info_caso, caso,4)
-
 		end
-
-		return listaCasos
 	end
 
 	def getLitigantes(href,case_number)

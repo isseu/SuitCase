@@ -14,51 +14,25 @@ require_relative 'laboral.rb'
 
 class Busqueda 
 
-	def AgregarCasos(listaCasos)		
-		listaCasos.each_with_index do |caso,i|
-	    	if Case.exists?(:rol => caso.rol, :info_type => caso.info_type)
-				puts  "\t \t " + '[-] Caso ya Existe'
-	    	else 
-			   	puts  "\t \t " + '[+] Agregando caso N°' + i.to_s
-		    	
-		    	# Escribir litigantes
-		    	puts  "\t \t \t " + '[+] Agregando Litigantes'
-		    	if caso.litigantes.count > 0 
-			    	caso.litigantes.each_with_index do |litigantes,j|
-			    		puts "\t \t \t \t " + j.to_s + ".- " + litigantes.nombre
-			    	end
-			    else
-			    	puts "\t \t \t [-] No encontro litigantes"
-				end
-				
-				# Guardar Caso
-				puts  "\t \t " + '[+] Guardando Caso'
-	    		caso.save!
-	    	end
-		end
-
-	end
-
 	def BusquedaLista(lista, pagina)
-		
+
+=begin	
 		puts "\t [+] Buscando por Rut" 
 		lista.each_with_index do |user,number|
-			
 			# Por RUT
 			if ['Civil', 'Laboral'].include? pagina.class.name.to_s
 				if user.rut != nil
-					rut = user.rut.split('-')
-					puts "\t \t " + number.to_s + ") " + rut[0].to_s + rut[1].to_s
-					
+					puts "\t \t " + number.to_s + ") " + user.rut.to_s
+
 					begin
-						listaCasos = pagina.Search(rut[0],rut[1],'','','')
-						AgregarCasos(listaCasos)
+						pagina.Search('',nil,user.rut,'','','',3,"tdNombre",false)
 					rescue Exception => e
 						puts "[!] Error al intentar: " + e.to_s
 					end
 				end
 			end
 		end	
+=end
 
 		puts "\t [+] Buscando por Posibles Nombres"	
 		lista.each_with_index do |user,number|	
@@ -71,14 +45,45 @@ class Busqueda
 				puts "\t \t \t " + j.to_s + ") Nombre: " +  lista.name.to_s + " Apellidos: " + lista.first_lastname + " " + lista.second_lastname.to_s
 				
 				begin
-					listaCasos = pagina.Search('','',lista.name.to_s,lista.first_lastname,lista.second_lastname.to_s)
-					AgregarCasos(listaCasos)
+					if ['Civil'].include? pagina.class.name.to_s
+						#sda
+					elsif ['Corte','Suprema'].include? pagina.class.name.to_s
+						pagina.Search('',nil,'',lista.name.to_s,lista.first_lastname,lista.second_lastname.to_s,3,"tdNombre",false)
+					elsif ['Laboral'].include? pagina.class.name.to_s
+						pagina.Search('',nil,'',lista.name.to_s,lista.first_lastname,lista.second_lastname.to_s,3,"tdCuatro",false)
+					end				
+
 				rescue Exception => e
 					puts "[!] Error al intentar: " + e.to_s
 				end
 			end		
 		end	
 	end
+
+	def searchTracking(lista, pagina)
+		
+		puts "\t [+] Trackeando Casos por Usuarios"
+
+		lista.each_with_index do |user,i|	
+			puts "\t \t [+] " + user.name.to_s + " "+  user.first_lastname + " (" + user.rut.to_s + ")"
+			user.case_records.each_with_index do |case_record,j|
+				caso = Case.find(case_record.case_id)		
+				if caso != nil
+					puts "\t \t \t " + j.to_s + ") Caso: " + caso.rol.to_s
+					if caso.info_type == 'InfoCivil'	
+						pagina.Search(caso.rol,user,'',user.name.to_s,user.first_lastname.to_s,user.second_lastname.to_s,1,"",true)
+					elsif caso.info_type == 'InfoCorte'
+						pagina.Search(caso.rol,user,'',user.name.to_s,user.first_lastname.to_s,user.second_lastname.to_s,1,'tdRecurso',true)
+					elsif caso.info_type == 'InfoSuprema'
+						pagina.Search(caso.rol,user,'',user.name.to_s,user.first_lastname.to_s,user.second_lastname.to_s,1,'tdRecurso',true)
+					elsif caso.info_type == 'InfoLaboral'
+						pagina.Search(caso.rol,user,'',user.name.to_s,user.first_lastname.to_s,user.second_lastname.to_s,1,'tdUno',true)
+					end
+				end			
+			end
+		end		
+	end	
+
 end
 
 CRAWLER_PATH = File.dirname(__FILE__) if not defined? CRAWLER_PATH
@@ -106,22 +111,33 @@ while true
       exit
     end
 
+    #Primero todos los Trackeados
+    puts '[+] Trackear Civil'
+    #buscar.searchTracking(listaUsuarios, civil)
+
+    puts '[+] Trackear Corte'
+    #buscar.searchTracking(listaUsuarios, corte)
+
+    puts '[+] Trackear Laboral'
+    #buscar.searchTracking(listaUsuarios, laboral)
+
+    puts '[+] Trackear Suprema'
+    buscar.searchTracking(listaUsuarios, suprema)
+
 	# Primero Buscamos Casos del Usuario 
 	puts '[+] Buscando en Civil -> Usuarios'
-	buscar.BusquedaLista(listaUsuarios, civil)
+	#buscar.BusquedaLista(listaUsuarios, civil)
 
-	
 	puts '[+] Buscando en Corte -> Usuarios'
-	buscar.BusquedaLista(listaUsuarios, corte)
+	#buscar.BusquedaLista(listaUsuarios, corte)
 
+	puts '[+] Buscando en Laboral -> Usuarios'
+	#buscar.BusquedaLista(listaUsuarios, laboral)
 
 	puts '[+] Buscando en Suprema -> Usuarios'
 	buscar.BusquedaLista(listaUsuarios, suprema)
 
-	puts '[+] Buscando en Laboral -> Usuarios'
-	buscar.BusquedaLista(listaUsuarios, laboral)
-
-	
+=begin		
 	# Segundo Buscamos Casos de Clientes
 	puts '[+] Buscando en Civil -> Usuarios'
 	buscar.BusquedaLista(listaClientes, civil)
@@ -136,5 +152,5 @@ while true
 	buscar.BusquedaLista(listaClientes, laboral)
 
 	puts "[+] Iteracion Terminada"
-
+=end
 end
