@@ -14,8 +14,16 @@
 class Notification < ActiveRecord::Base
   belongs_to :user
 
+  after_create :send_notification_mail
+
   def self.get_all_unread(user)
     return Notification.all.where(user_id: user.id, read: false)
+  end
+
+  private
+
+  def send_notification_mail
+    UserMailer.notification(self.user, self)
   end
 
 end

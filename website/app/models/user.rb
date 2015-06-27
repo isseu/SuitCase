@@ -39,7 +39,6 @@ class User < ActiveRecord::Base
   validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
 
   validates :rut, rut: { message: 'no es valido'}
-  validates :role, presence: true
 
   has_many :possible_names, dependent: :destroy
   has_many :notifications, dependent: :destroy
