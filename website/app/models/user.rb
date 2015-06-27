@@ -38,8 +38,12 @@ class User < ActiveRecord::Base
   has_attached_file :avatar, :styles => { :medium => "300x300>", :thumb => "100x100>" }, :default_url => "default-avatar.png"
   validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
 
+  # Posibles roles de cada usuario
+  ROLES = %w[guest secretary lawyer admin]
+  FROLES = { 'guest' => 'Invitado', 'secretary' => 'Secretaria', 'lawyer' => 'Abogado', 'admin' => 'Administrador' }
+
   validates :rut, rut: { message: 'no es valido'}
-  validates :role, presence: true
+  validates :role, inclusion: ROLES
 
   has_many :possible_names, dependent: :destroy
   has_many :notifications, dependent: :destroy
@@ -52,9 +56,6 @@ class User < ActiveRecord::Base
 
   after_create :create_possible_names
 
-  # Posibles roles de cada usuario
-  ROLES = %w[guest secretary lawyer admin]
-  FROLES = { 'guest' => 'Invitado', 'secretary' => 'Secretaria', 'lawyer' => 'Abogado', 'admin' => 'Administrador' }
 
   def role?(base_role)
     ROLES.index(base_role.to_s) == ROLES.index(self.role)
