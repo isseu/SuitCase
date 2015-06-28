@@ -86,12 +86,14 @@ class Civil < PoderJudicial
 							
 							#Litigantes
 							href = row.xpath("td/a").attr('href')
-							listaLitigantes = getLitigantes(href,case_number)
-							
+							resp = getLitigantes(href,case_number)
+							listaLitigantes = resp[0]
+							listaReceptores = resp[1]
+
 							#Colocar Tipo
 							caso.info_type = 'InfoCivil'					
 						
-							saveCase(caso,info_caso,listaLitigantes,3)
+							saveCase(caso,info_caso,listaLitigantes,listaReceptores,3)
 						
 						end
 					else
@@ -100,9 +102,13 @@ class Civil < PoderJudicial
 
 							#Litigantes
 							href = row.xpath("td/a").attr('href')
-							listaLitigantes = getLitigantes(href,case_number)
+
+							resp = getLitigantes(href,case_number)
+							listaLitigantes = resp[0]
+							listaReceptores = resp[1]
 
 							updateLitigantes(listaLitigantes,caso,user)
+							updateReceptores(listaReceptores,caso,user)
 						end
 					end
 				rescue Exception => e
@@ -139,27 +145,40 @@ class Civil < PoderJudicial
 			listaLitigantes << litigante
 		end
 
-
-		#getRetiros(doc) 	
-		return listaLitigantes
+		listaReceptores = getRetiros(doc)
+		return listaLitigantes, listaReceptores
 	end
 
 	def getRetiros(doc)
 		rows = doc.xpath("//*[@id='ReceptorDIV']/table[4]/tbody/tr")
-		puts " Retiros del Receptor: "			
+		listaReceptores = []
+
+		puts "\t \t \t \t Retiros del Receptor: "			
 		rows[0..-1].each_with_index do |row,i|
-			puts "\t \t \t \t Receptor N° " + i.to_s
+			receptor = Receptor.new
+			auxReceptor = true
 			(row.xpath("td")).each_with_index do |td,j| 
-				if j == 0
-					puts "\t\t Cuaderno: " + td.content.strip 
-				elsif j == 1
-					puts "\t\t Datos del Retiro: " + td.content.strip
-				elsif j == 2
-					puts "\t\t Estado: " + td.content.strip	
+				if td.content.strip.include? "no presenta"
+					auxReceptor = false
 				else
-					puts "\t\t ?: " + td.content.strip
+					if j == 0
+						receptor.notebook =  td.content.strip 
+					elsif j == 1
+						receptor.dat =  td.content.strip
+					elsif j == 2
+						receptor.state = td.content.strip	
+					end
 				end
 			end
+
+			if auxReceptor
+				puts "\t \t \t \t \t " + i.to_s + ") " + receptor.dat.to_s + " - " + receptor.state.to_s		
+				listaReceptores << receptor
+			else
+				puts "\t \t \t \t \t No existen Retiros del Receptor" 		
+			end
 		end
+
+		return listaReceptores
 	end
 end

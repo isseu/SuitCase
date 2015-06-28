@@ -18,11 +18,11 @@ User.create!(email: 'bochagavia@uc.cl',
              password_confirmation: 'mamamia123',
              role: :admin)
 
-User.create!(email: 'caguirre@uc.cl',
+User.create!(email: 'claguirre@uc.cl',
              name: 'Carlos',
              first_lastname: 'Aguirre',
              second_lastname: '',
-             rut: '3187061-5',
+             rut: '19135147-9',
              password: 'mamamia123',
              password_confirmation: 'mamamia123',
              role: :admin)

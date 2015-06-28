@@ -98,7 +98,7 @@ class Laboral < PoderJudicial
 
 							caso.info_type = 'InfoLaboral'
 
-							saveCase(caso,info_caso,listaLitigantes,3)
+							saveCase(caso,info_caso,listaLitigantes,nil,3)
 						end
 
 					else

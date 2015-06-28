@@ -68,13 +68,15 @@ class Busqueda
 			user.case_records.each_with_index do |case_record,j|
 				caso = Case.find(case_record.case_id)		
 				if caso != nil
-					puts "\t \t \t " + j.to_s + ") Caso: " + caso.rol.to_s
-					if  caso.info_type == 'InfoCorte' || caso.info_type == 'InfoSuprema'
+					if (caso.info_type == 'InfoCorte' && (['Corte'].include? pagina.class.name.to_s)) || (caso.info_type == 'InfoSuprema'&& (['Suprema'].include? pagina.class.name.to_s))
+						puts "\t \t \t " + j.to_s + ") Caso: " + caso.rol.to_s
 						pagina.Search(caso.rol,user,'',user.name.to_s,user.first_lastname.to_s,user.second_lastname.to_s,1,'tdRecurso',true)
-					elsif caso.info_type == 'InfoLaboral' || caso.info_type == 'InfoCivil'
+					elsif (caso.info_type == 'InfoLaboral' && (['Laboral'].include? pagina.class.name.to_s)) || (caso.info_type == 'InfoCivil' && (['Civil'].include? pagina.class.name.to_s))
+						puts "\t \t \t " + j.to_s + ") Caso: " + caso.rol.to_s
 						pagina.Search(caso.rol,user,'',user.name.to_s,user.first_lastname.to_s,user.second_lastname.to_s,1,'tdUno',true)
 					end
 				end			
+			
 			end
 		end		
 	end	
@@ -111,13 +113,13 @@ while true
     buscar.searchTracking(listaUsuarios, civil)
 
     puts '[+] Trackear Corte'
-    #buscar.searchTracking(listaUsuarios, corte)
+    buscar.searchTracking(listaUsuarios, corte)
 
     puts '[+] Trackear Laboral'
-    #buscar.searchTracking(listaUsuarios, laboral)
+    buscar.searchTracking(listaUsuarios, laboral)
 
     puts '[+] Trackear Suprema'
-    #buscar.searchTracking(listaUsuarios, suprema)
+    buscar.searchTracking(listaUsuarios, suprema)
 
 	# Primero Buscamos Casos del Usuario 
 	puts '[+] Buscando en Civil -> Usuarios'

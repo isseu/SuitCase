@@ -64,44 +64,67 @@ class PoderJudicial
 		end
 	end
 
-	def saveCase(caso,info_caso,listaLitigantes,cant)
+	def saveCase(caso,info_caso,listaLitigantes,listaReceptores,cant)
+	   	probarNotificaciones = false
+		
 		tab = ""
 		cant.times{ tab += "\t "}
-		
 	   	puts  tab + '[+] Agregando caso'
     	
     	# Escribir litigantes
     	puts  tab + "\t " + '[+] Agregando Litigantes'
-    	listaLitigantes.each do |litigante|
-			l = caso.litigantes.build
-			l.rut = litigante.rut
-			l.persona = litigante.persona
-			l.nombre = litigante.nombre
-			l.participante = litigante.participante
-			l.save
+    	if not probarNotificaciones
+    		listaLitigantes.each do |litigante|
+				l = caso.litigantes.build
+				l.rut = litigante.rut
+				l.persona = litigante.persona
+				l.nombre = litigante.nombre
+				l.participante = litigante.participante
+				l.save
+			end
+		else
+			if listaLitigantes.count > 0 
+				litigante = listaLitigantes[0]
+				l = caso.litigantes.build
+				l.rut = litigante.rut
+				l.persona = litigante.persona
+				l.nombre = litigante.nombre
+				l.participante = litigante.participante
+				l.save
+			end
 		end
-
-=begin		
-		if listaLitigantes.count > 0 
-			litigante = listaLitigantes[0]
-			l = caso.litigantes.build
-			l.rut = litigante.rut
-			l.persona = litigante.persona
-			l.nombre = litigante.nombre
-			l.participante = litigante.participante
-			l.save
-		end
-=end
-
 
 		info_caso.save	
 		caso.info_id = info_caso.id
+		
 		# Guardar Caso
-		puts  tab + '[+] Guardando Caso'
 		caso.save!
-
 		info_caso.case_id = caso.id
-		info_caso.save
+		info_caso.save!
+
+		#ColocarReceptores
+		if listaReceptores != nil
+			if not probarNotificaciones
+				listaReceptores.each do |receptor|
+					l = info_caso.receptors.build
+					l.notebook = receptor.notebook 
+					l.dat = receptor.dat
+					l.state = receptor.state
+					l.save
+				end
+			else
+				if listaReceptores.count > 0 
+					receptor = listaReceptores[0]
+					l = info_caso.receptors.build
+					l.notebook = receptor.notebook 
+					l.dat = receptor.dat
+					l.state = receptor.state
+					l.save
+				end
+			end
+		end
+
+		puts  tab + '[+] Caso Guardado'
 	end
 
 	def updateLitigantes(listaLitigantes,caso,user)
@@ -134,14 +157,50 @@ class PoderJudicial
 			end
 
 			if anyNotification
-				sentNotification(user,caso)
+				message = "Nuevos Litigantes \n \t Rol: " + caso.rol.to_s + " \n \t Tribunal: " + caso.tribunal.to_s + " \n \t Tipo: " + caso.info_type.to_s
+				sentNotification(user,caso,message)
 			end
 		end
 	end
 
-	def sentNotification(user,caso)
+	def updateReceptores(listaReceptores,caso,user)
+		info_caso = InfoCivil.find_by(case_id: caso.id)
+
+		if listaReceptores.count > info_caso.receptors.count
+			anyNotification = false
+			if info_caso.receptors.count == 0
+				listaReceptores.each do |receptor|
+					l = info_caso.receptors.build
+					l.notebook = receptor.notebook 
+					l.dat = receptor.dat
+					l.state = receptor.state
+					l.save
+					anyNotification = true
+				end
+			else
+				listaReceptores.each do |newReceptor|
+					info_caso.receptors.each do |oldReceptor|
+						if not (newReceptor.notebook == oldReceptor.notebook && newReceptor.dat == oldReceptor.dat && newReceptor.state == oldReceptor.state)
+							l = info_caso.receptors.build
+							l.notebook = newReceptor.notebook 
+							l.dat = newReceptor.dat
+							l.state = newReceptor.state
+							l.save
+							anyNotification = true
+						end
+					end
+				end
+			end
+
+			if anyNotification
+				message = "Nuevos Receptores en \n \t Rol: " + caso.rol.to_s + " \n \t Tribunal: " + caso.tribunal.to_s + " \n \t Tipo: " + caso.info_type.to_s
+				sentNotification(user,caso,message)
+			end
+		end
+	end
+
+	def sentNotification(user,caso,message)
 		if user != nil
-			message = "Nuevos Litigantes \n \t Rol: " + caso.rol.to_s + " \n \t Tribunal: " + caso.tribunal.to_s + " \n \t Tipo: " + caso.info_type.to_s
 			url = 'cases/' + caso.id.to_s
 			user.notifications.create!(read: false, text: message, url: url.to_s)
 			puts "\t \t \t \t [+] Enviando Notificación"
