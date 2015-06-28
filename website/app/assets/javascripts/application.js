@@ -40,7 +40,7 @@ $.dynatableSetup({
         sorts: null,
         multisort: ['ctrlKey', 'shiftKey', 'metaKey'],
         page: null,
-        queryEvent: 'blur change keyup',
+        queryEvent: 'blur change',
         searchText: 'Buscar: ',
         pageText: 'Paginas: ',
         recordCountTarget: null,

@@ -37,8 +37,8 @@ while true
     puts "[+] Cerrando crawler PID #{Process.pid}"
     exit
   end
-=begin
-  #Primero todos los Trackeados
+
+  # Primero todos los Trackeados
   puts '[+] Trackear Civil'
   buscar.searchTracking(listaUsuarios, civil)
 
@@ -56,15 +56,13 @@ while true
   buscar.searchUser(listaUsuarios, civil)
 
   puts '[+] Buscando en Corte -> Usuarios'
-  #buscar.searchUser(listaUsuarios, corte)
+  buscar.searchUser(listaUsuarios, corte)
 
   puts '[+] Buscando en Laboral -> Usuarios'
-  #buscar.searchUser(listaUsuarios, laboral)
+  buscar.searchUser(listaUsuarios, laboral)
 
   puts '[+] Buscando en Suprema -> Usuarios'
-  #buscar.searchUser(listaUsuarios, suprema)
-
-=end
+  buscar.searchUser(listaUsuarios, suprema)
 
 	# Segundo Buscamos Casos de Clientes
 	puts '[+] Buscando en Civil -> Usuarios'
