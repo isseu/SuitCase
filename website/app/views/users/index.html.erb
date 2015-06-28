@@ -2,6 +2,7 @@
            locals: {
                model_class: User,
                data: @users,
+               hide_add: (not current_user.role? :admin),
                attributes: [:rut, :name, :first_lastname, :second_lastname, :email]
            }
 %>

@@ -49,10 +49,7 @@
         <li <%= print_if_active_page?(cases_path) %>><a href="<%= cases_path %>"><i class="fa fa-briefcase fa-fw"></i>&nbsp;Casos</a></li>
         <li <%= print_if_active_page?(clients_path) %>><a href="<%= clients_path %>"><i class="fa fa-users fa-fw"></i>&nbsp;Clientes</a></li>
         <li <%= print_if_active_page?(possible_names_path) %>><a href="<%= possible_names_path %>"><i class="fa fa-th-list fa-fw"></i>&nbsp;Nombres</a></li>
-        <% if current_user.role? :admin%>
-        <hr>
         <li <%= print_if_active_page?(users_path) %>><a href="<%= users_path %>"><i class="fa fa-user fa-fw"></i>&nbsp;Usuarios</a></li>
-        <% end %>
         <hr>
         <li><%= link_to('<i class="fa fa-sign-out fw"></i>&nbsp;Cerrar Sesión'.html_safe, destroy_user_session_path, :method => :delete)%></li>
       </ul>
