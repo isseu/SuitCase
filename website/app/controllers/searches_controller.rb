@@ -1,5 +1,5 @@
 class SearchesController < ApplicationController
-  before_action :set_case, only: [:show]
+  before_action :set_search, only: [:show]
 
   def new
     @search = Search.new
@@ -11,6 +11,8 @@ class SearchesController < ApplicationController
 
   def create
     @search = Search.new(search_params)
+    @search.state = false
+    # Deberia iniciar busqueda asincronica
 
     respond_to do |format|
       if @search.save

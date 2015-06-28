@@ -9,10 +9,20 @@ class CasesController < ApplicationController
       format.html { @cases = current_user.cases }
       format.json { @cases = Case.all }
     end
+    if params[:only_user]
+      @cases = current_user.cases
+    end
+    if not params[:user_id].blank?
+      @cases = User.find(params[:user_id].to_i).cases
+    end
     @cases = @cases.includes(:case_records, :case_users)
     if not params[:queries].nil? and not params[:queries][:search].nil?
-      #TODO consulta de busqueda
-      @cases = @cases.where('rol LIKE :search', search: '%' + params[:queries][:search] + '%')
+      @cases = @cases.where(
+         'lower(rol)       LIKE :search OR
+          lower(tribunal)  LIKE :search OR
+          lower(caratula)  LIKE :search OR
+          lower(info_type) LIKE :search',
+          search: '%' + params[:queries][:search].downcase + '%')
     end
     if not params[:page].blank? and not params[:per_page].blank?
       @cases = @cases.paginate(:page => params[:page].to_i, :per_page => params[:per_page].to_i)

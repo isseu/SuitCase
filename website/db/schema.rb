@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150623190126) do
+ActiveRecord::Schema.define(version: 20150627230100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -161,8 +161,9 @@ ActiveRecord::Schema.define(version: 20150623190126) do
     t.string   "second_lastname"
     t.string   "rut"
     t.string   "rol"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.boolean  "state",           default: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -194,18 +195,9 @@ ActiveRecord::Schema.define(version: 20150623190126) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
-  add_foreign_key "case_records", "cases"
-  add_foreign_key "case_records", "users"
-  add_foreign_key "case_users", "cases"
-  add_foreign_key "case_users", "users"
-  add_foreign_key "client_users", "clients"
-  add_foreign_key "client_users", "users"
   add_foreign_key "info_civils", "cases"
   add_foreign_key "info_cortes", "cases"
   add_foreign_key "info_laborals", "cases"
   add_foreign_key "info_supremas", "cases"
-  add_foreign_key "litigantes", "cases"
-  add_foreign_key "notifications", "users"
-  add_foreign_key "possible_names", "users"
   add_foreign_key "receptors", "info_civils"
 end

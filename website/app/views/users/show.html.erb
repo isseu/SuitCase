@@ -69,3 +69,35 @@
            }
 %>
 <% end %>
+    <div ng-controller="UserShowController as user_show">
+      <input type="hidden" id="user_show_user_id" value="<%= @user.id %>">
+      <!-- Nav tabs -->
+      <ul class="nav nav-pills nav-justified">
+        <li ng-class="{ active: user_show.isTabActive(0)}"><a href="" ng-click="user_show.tabSelect(0)">Casos</a></li>
+        <li ng-class="{ active: user_show.isTabActive(1)}"><a href="" ng-click="user_show.tabSelect(1)">Nose</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="user-show-tab-content">
+        <div ng-show="user_show.isTabActive(0)">
+          <div ng-controller="UserShowCasesController as user_cases">
+            <table class="table table-striped" id="user_show_cases_table">
+              <thead>
+                  <tr>
+                    <th>Rol</th>
+                    <th>Fecha</th>
+                    <th>Tribunal</th>
+                    <th>Caratula</th>
+                    <th>Portal</th>
+                    <th>Acciones</th>
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div ng-show="user_show.isTabActive(1)">
+        </div>
+      </div>
+    </div>

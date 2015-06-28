@@ -1,1 +1,1 @@
-json.extract! @search, :id
+json.extract! @search, :id, :state, :created_at, :updated_at
