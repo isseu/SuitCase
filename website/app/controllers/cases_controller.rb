@@ -38,6 +38,8 @@ class CasesController < ApplicationController
   # GET /cases/1.json
   def show
     @users = User.all
+    @all_users = User.all
+    @case_user = @case.case_users.build
   end
 
   # GET /cases/new

@@ -28,7 +28,7 @@ class NotificationsController < ApplicationController
 
     respond_to do |format|
       if @notification.save
-        UserMailer.notification_email(@notification).deliver
+        UserMailer.notification_email(@notification).deliver_later
         format.html { redirect_to @notification, notice: 'Notification was successfully created.' }
         format.json { render :show, status: :created, location: @notification }
       else

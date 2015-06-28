@@ -58,6 +58,20 @@
     </div>
   </div>
 </div>
+
+<p>
+  Agregar caso a Usuario:
+  <% form_for(@case) do |f|%>
+      <%= fields_for(@case_user) do |ab| %>
+        <div class="field">
+            <%= ab.label 'All Users' %>
+            <%= collection_select(:users, :name, @all_users, :name, :full_name, {}, {multiple: true}) %>
+      </div>
+    <% end %>
+    <%= f.submit 'Agregar' %>
+<% end %>
+</p>
+
 <div ng-controller="CaseShowController as case_show">
   <input type="hidden" id="case_show_case_id" value="<%= @case.id %>">
   <!-- Nav tabs -->
@@ -67,16 +81,9 @@
     <li ng-class="{ active: case_show.isTabActive(1)}"><a href="" ng-click="case_show.tabSelect(1)">Receptores</a></li>
     <% end %>
     </ul>
-<p>
 
-<% if current_user.role?('Secretary') %>
-      Agregar caso a Usuario:
-      <% form_for @case.case_users.build(case_id: @case.id) do |f|%>
-          <%= select('user', 'id', @users.collect {|p| [ p.full_name, p.id ] }, { include_blank: true }) %>
-          <%= submit_tag 'Agregar' %>
-      <% end %>
-<% end %>
-</p>
+
+
 
   <!-- Tab panes -->
   <div class="case-show-tab-content">
