@@ -17,11 +17,12 @@ class CasesController < ApplicationController
     end
     @cases = @cases.includes(:case_records, :case_users)
     if not params[:queries].nil? and not params[:queries][:search].nil?
-      @cases = @cases.where(
-         'lower(rol)       LIKE :search OR
-          lower(tribunal)  LIKE :search OR
-          lower(caratula)  LIKE :search OR
-          lower(info_type) LIKE :search',
+      @cases = @cases.joins(:litigantes).where(
+         'lower(rol)               LIKE :search OR
+          lower(tribunal)          LIKE :search OR
+          lower(caratula)          LIKE :search OR
+          lower(info_type)         LIKE :search OR
+          lower(litigantes.nombre) LIKE :search',
           search: '%' + params[:queries][:search].downcase + '%')
     end
     if not params[:page].blank? and not params[:per_page].blank?
