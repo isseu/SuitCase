@@ -116,7 +116,7 @@ class Suprema < PoderJudicial
 
 							caso.info_type = 'InfoSuprema'
 
-							saveCase(caso,info_caso,listaLitigantes,3)
+							saveCase(caso,info_caso,listaLitigantes,nil,3)
 						end	
 					else
 						if Case.exists?(:rol => caso.rol, :fecha => caso.fecha, :caratula=> caso.caratula, :info_type => "InfoSuprema")

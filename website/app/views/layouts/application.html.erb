@@ -16,7 +16,7 @@
     <div style="display:none" class="alert_list">
       <ul>
         <% Notification.get_all_unread(current_user).each do |n| %>
-            <li class="alert_li"><%= link_to n.text, n.url %> <br /><div class="clearfix"></div></li>
+            <li class="alert_li"><%= link_to n.text, root_path + n.url %> <br /><div class="clearfix"></div></li>
       <% end %>
       </ul>
     </div>
