@@ -62,6 +62,38 @@ $.dynatableSetup({
 
 (function() {
     var app = angular.module('SuitCase', []);
+    app.controller('UserShowController', function() {
+        var user_show = this;
+        this.tab = 0;
+        this.isTabActive = function(value) {
+            return value === this.tab;
+        };
+        this.tabSelect = function(value) {
+            this.tab = value;
+        };
+    });
+
+    app.controller('UserShowCasesController', function() {
+        this.user_id = $("#user_show_user_id").val();
+        this.table = $('#user_show_cases_table');
+        this.table.dynatable({
+            dataset: {
+                ajax: true,
+                ajaxUrl: '/cases.json?user_id=' + this.user_id,
+                ajaxOnLoad: true,
+                records: [],
+                perPageDefault: 15,
+                perPageOptions: 15
+            }
+        });
+        this.setUserId = function(id) {
+            this.user_id = id;
+        };
+        this.table.on('dynatable:afterUpdate', function() {
+            connect_actions_case_buttons();
+        });
+    });
+
     app.controller('UserCasesController', function() {
         this.table = $('#user_cases_table');
         this.table.dynatable({

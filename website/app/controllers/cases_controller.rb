@@ -12,6 +12,9 @@ class CasesController < ApplicationController
     if params[:only_user]
       @cases = current_user.cases
     end
+    if not params[:user_id].blank?
+      @cases = User.find(params[:user_id].to_i).cases
+    end
     @cases = @cases.includes(:case_records, :case_users)
     if not params[:queries].nil? and not params[:queries][:search].nil?
       @cases = @cases.where(
