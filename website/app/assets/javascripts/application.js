@@ -40,6 +40,8 @@ $.dynatableSetup({
         multisort: ['ctrlKey', 'shiftKey', 'metaKey'],
         page: null,
         queryEvent: 'blur change',
+        searchText: 'Buscar: ',
+        pageText: 'Paginas: ',
         recordCountTarget: null,
         recordCountPlacement: 'after',
         paginationLinkTarget: null,
@@ -53,12 +55,45 @@ $.dynatableSetup({
         perPagePlacement: 'before',
         perPageText: 'Mostrar: ',
         recordCountText: 'Mostrando ',
-        processingText: 'Procesando...'
+        processingText: 'Procesando...',
+        recordCountTextTemplate: '{text} {pageTemplate} {totalTemplate}'
     }
 });
 
 (function() {
     var app = angular.module('SuitCase', []);
+    app.controller('UserCasesController', function() {
+        this.table = $('#user_cases_table');
+        this.table.dynatable({
+            dataset: {
+                ajax: true,
+                ajaxUrl: '/cases.json?only_user=true',
+                ajaxOnLoad: true,
+                records: [],
+                perPageDefault: 15,
+                perPageOptions: 15
+            }
+        });
+        this.table.on('dynatable:afterUpdate', function() {
+            connect_actions_case_buttons();
+        });
+    });
+    app.controller('CasesController', function() {
+        this.table = $('#cases_table');
+        this.table.dynatable({
+            dataset: {
+                ajax: true,
+                ajaxUrl: '/cases.json',
+                ajaxOnLoad: true,
+                records: [],
+                perPageDefault: 15,
+                perPageOptions: 15
+            }
+        });
+        this.table.on('dynatable:afterUpdate', function() {
+            connect_actions_case_buttons();
+        });
+    });
     app.controller('SearchController', function($http) {
         var search = this;
         search.rol = '';
@@ -66,14 +101,37 @@ $.dynatableSetup({
         search.first_lastname = '';
         search.second_lastname = '';
         search.rut = '';
-        search.buttonText = 'Buscar'
+        search.buttonText = 'Buscar';
         search.working = false;
         search.show_table = false;
         search.id = null;
-        search.table = $('.search_table')
-        search.submit = function(){
-            search.buttonText = 'Buscando ...';
+        search.table = $('.search_table');
+        search.updateStatus = function () {
+            $http.get("/searches/" + search.id + ".json")
+                .success(function(response)
+                {
+                    if( response.state )
+                    {
+                        search.dejar_de_trabajar();
+                    } else {
+                        setTimeout(search.updateStatus, 1000 * 2);
+                    }
+                })
+                .error(function() {
+                    setTimeout(search.updateStatus, 1000 * 2);
+                });
+            // Llamamos cada 1 segundo
+        };
+        search.dejar_de_trabajar = function() {
+            search.working = false;
+            search.buttonText = 'Buscar';
+        };
+        search.empezar_a_trabajar = function() {
             search.working = true;
+            search.buttonText = 'Buscando ...';
+        };
+        search.submit = function(){
+            search.empezar_a_trabajar();
             search.table.dynatable({
                 dataset: {
                     ajax: true,
@@ -84,6 +142,9 @@ $.dynatableSetup({
                     perPageOptions: 15
                 }
             });
+            search.table.on('dynatable:afterUpdate', function() {
+                connect_actions_case_buttons();
+            });
             search.show_table = true;
             // Creamos busqueda
             $http.post("/cases/searches.json",
@@ -92,65 +153,70 @@ $.dynatableSetup({
                     name: search.name,
                     first_lastname: search.first_lastname,
                     second_lastname: search.second_lastname,
-                    rut: search.rut
+                    rut: search.rutect_
                 } )
                 .success(function(response) {
-                    // Sacamos id
-                    search.id = response.id
+                    // Sacamos id para revisar estado
+                    search.id = response.id;
+                    search.updateStatus();
                 });
         };
     });
+
+    var connect_actions_case_buttons = function () {
+        $('.form-add-record-case').on('ajax:success', function(e, data, status, xhr){
+            $(this).addClass("hidden");
+            var remove_form = $(this).siblings(".form-remove-record-case");
+            remove_form.removeClass("hidden")
+        }).on('ajax:error', function(e, xhr, status, error){
+            alert("Error al agregar registro de seguimiento")
+        });
+
+        $('.form-remove-record-case').on('ajax:success', function(e, data, status, xhr){
+            $(this).addClass("hidden");
+            var add_form = $(this).siblings(".form-add-record-case");
+            add_form.removeClass("hidden")
+        }).on('ajax:error', function(e, xhr, status, error){
+            alert("Error al agregar registro de seguimiento")
+        });
+
+        $('.form-add-user-case').on('ajax:success', function(e, data, status, xhr){
+            $(this).addClass("hidden");
+            var remove_form = $(this).siblings(".form-remove-user-case");
+            remove_form.removeClass("hidden")
+        }).on('ajax:error', function(e, xhr, status, error){
+            alert("Error al agregar registro de seguimiento")
+        });
+
+        $('.form-remove-user-case').on('ajax:success', function(e, data, status, xhr){
+            $(this).addClass("hidden");
+            var add_form = $(this).siblings(".form-add-user-case");
+            add_form.removeClass("hidden");
+            // Si elimino user_case, se elimina record
+            $('.form-remove-record-case').addClass("hidden");
+            var add_form = $(this).siblings(".form-add-record-case");
+            add_form.removeClass("hidden")
+        }).on('ajax:error', function(e, xhr, status, error){
+            alert("Error al agregar registro de seguimiento")
+        });
+    };
+
+    $(document).on('ready page:load', function () {
+
+        $('.table_generator').dynatable();
+
+        connect_actions_case_buttons();
+
+        $('#client_is_company').change(function() {
+            $("#form-company-disappear").toggle()
+        });
+
+        $("#notifications").popover({
+            'title' : 'Notificaciones',
+            'html' : true,
+            'placement' : 'right',
+            'content' : $(".alert_list").html()
+        });
+    });
 })();
 
-$(document).on('ready page:load', function () {
-
-    $('.table_generator').dynatable();
-
-    $('.form-add-record-case').on('ajax:success', function(e, data, status, xhr){
-        $(this).addClass("hidden")
-        var remove_form = $(this).siblings(".form-remove-record-case")
-        remove_form.removeClass("hidden")
-    }).on('ajax:error', function(e, xhr, status, error){
-        alert("Error al agregar registro de seguimiento")
-    });
-
-    $('.form-remove-record-case').on('ajax:success', function(e, data, status, xhr){
-        $(this).addClass("hidden")
-        var add_form = $(this).siblings(".form-add-record-case")
-        add_form.removeClass("hidden")
-    }).on('ajax:error', function(e, xhr, status, error){
-        alert("Error al agregar registro de seguimiento")
-    });
-
-    $('.form-add-user-case').on('ajax:success', function(e, data, status, xhr){
-        $(this).addClass("hidden")
-        var remove_form = $(this).siblings(".form-remove-user-case")
-        remove_form.removeClass("hidden")
-    }).on('ajax:error', function(e, xhr, status, error){
-        alert("Error al agregar registro de seguimiento")
-    });
-
-    $('.form-remove-user-case').on('ajax:success', function(e, data, status, xhr){
-        $(this).addClass("hidden")
-        var add_form = $(this).siblings(".form-add-user-case")
-        add_form.removeClass("hidden")
-        // Si elimino user_case, se elimina record
-        $('.form-remove-record-case').addClass("hidden")
-        var add_form = $(this).siblings(".form-add-record-case")
-        add_form.removeClass("hidden")
-    }).on('ajax:error', function(e, xhr, status, error){
-        alert("Error al agregar registro de seguimiento")
-    });
-
-    $('#client_is_company').change(function() {
-        $("#form-company-disappear").toggle()
-    });
-
-    $("#notifications").popover({
-        'title' : 'Notificaciones',
-        'html' : true,
-        'placement' : 'right',
-        'content' : $(".alert_list").html()
-    });
-
-})

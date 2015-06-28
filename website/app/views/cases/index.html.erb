@@ -1,8 +1,46 @@
-<%= render partial: 'shared/table_generator',
+<%=
+=begin
+    render partial: 'shared/table_generator',
            locals: {
                model_class: Case,
                data: @cases,
                attributes: [:rol, :fecha, :tribunal, :caratula, :info_type],
                hide_add: true
            }
+=end
 %>
+
+<div ng-controller="UserCasesController as user_cases">
+  <h2>Tus casos</h2>
+  <table class="search_table table table-striped" id="user_cases_table">
+    <thead>
+    <tr>
+      <th>Rol</th>
+      <th>Fecha</th>
+      <th>Tribunal</th>
+      <th>Caratula</th>
+      <th>Portal</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<div ng-controller="CasesController as cases">
+  <h2>Tus casos</h2>
+  <table class="search_table table table-striped" id="cases_table">
+    <thead>
+    <tr>
+      <th>Rol</th>
+      <th>Fecha</th>
+      <th>Tribunal</th>
+      <th>Caratula</th>
+      <th>Portal</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
