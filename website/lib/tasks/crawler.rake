@@ -22,4 +22,14 @@ namespace :crawler do
   	Rake::Task["crawler:start"].invoke
   end
 
+  desc "Inicia la busqueda de un search especifico"
+  task search: :environment do
+    search_id = ENV["SEARCH_ID"]
+    puts "[+] Buscando search con ID: #{search_id}"
+    require CRAWLER_PATH + 'busqueda.rb'
+    b = Busqueda.new
+    b.do_search(search_id)
+  end
+
+
 end

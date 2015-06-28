@@ -41,6 +41,13 @@ class Busqueda
     end
   end
 
+  def do_search(search_id)
+    s = Search.find(search_id)
+
+    # Marcar resultado como listo
+    s.set_ready
+  end
+
   def searchClient(lista, pagina)
     puts "\t [+] Buscando por Clientes"
     lista.each_with_index do |client, number|

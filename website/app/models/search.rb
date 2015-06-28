@@ -14,4 +14,8 @@
 #
 
 class Search < ActiveRecord::Base
+  def set_ready
+    self.state = true
+    self.save
+  end
 end

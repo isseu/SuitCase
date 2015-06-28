@@ -17,4 +17,11 @@ class ApplicationController < ActionController::Base
       redirect_to new_user_session_path
     end
   end
+
+  # Call an asyn rake task
+  def call_rake(task, options = {})
+    options[:rails_env] ||= Rails.env
+    args = options.map { |n, v| "#{n.to_s.upcase}='#{v}'" }
+    system "bundle exec rake #{task} #{args.join(' ')} --trace 2>&1 >> #{Rails.root}/log/rake.log &"
+  end
 end

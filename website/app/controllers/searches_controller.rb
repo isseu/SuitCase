@@ -12,7 +12,6 @@ class SearchesController < ApplicationController
   def create
     @search = Search.new(search_params)
     @search.state = false
-    # Deberia iniciar busqueda asincronica
 
     respond_to do |format|
       if @search.save
@@ -23,6 +22,8 @@ class SearchesController < ApplicationController
         format.json { render json: @search.errors, status: :unprocessable_entity }
       end
     end
+    # Deberia iniciar busqueda asincronica
+    call_rake 'crawler:search', :search_id => @search.id
   end
 
   private
