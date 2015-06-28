@@ -22,7 +22,7 @@
 $.dynatableSetup({
     features: {
         paginate: true,
-        sort: false,
+        sort: true,
         pushState: true,
         search: true,
         recordCount: true,

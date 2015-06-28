@@ -29,7 +29,8 @@ class CasesController < ApplicationController
       @cases = @cases.paginate(:page => params[:page].to_i, :per_page => params[:per_page].to_i)
     end
     if not params[:order].blank?
-      @cases = @cases.order(params[:order])
+      atributo = params[:order].keys[0].to_s == 'portal' ? 'info_type' : params[:order].keys[0].to_s
+      @cases = @cases.order(atributo + ' ' + (params[:order].values[0].to_i == 1 ? 'DESC':'ASC'))
     end
     @cases = @cases.all
   end
