@@ -37,6 +37,7 @@ class CasesController < ApplicationController
   # GET /cases/1
   # GET /cases/1.json
   def show
+    @users = User.all
   end
 
   # GET /cases/new
