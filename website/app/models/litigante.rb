@@ -14,4 +14,11 @@
 
 class Litigante < ActiveRecord::Base
   belongs_to :case
+
+  before_save :to_titleize
+
+  def to_titleize
+    self.nombre = self.nombre.titleize
+    self.save
+  end
 end

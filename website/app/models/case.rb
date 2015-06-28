@@ -20,5 +20,10 @@ class Case < ActiveRecord::Base
   has_many :recording_users, through: :case_records, class_name: User
   has_many :litigantes, dependent: :destroy
   belongs_to :info, polymorphic: true
+  before_save :to_titleize
 
+  def to_titleize
+    self.caratula = self.caratula.titleize
+    self.save
+  end
 end

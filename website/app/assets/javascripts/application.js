@@ -17,6 +17,7 @@
 //= require autocomplete-rails
 //= require twitter/bootstrap
 //= require_tree .
+//= require chartkick
 
 $.dynatableSetup({
     features: {
