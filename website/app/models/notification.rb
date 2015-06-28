@@ -23,7 +23,7 @@ class Notification < ActiveRecord::Base
   private
 
   def send_notification_mail
-    UserMailer.notification(self.user, self)
+    UserMailer.notification_email(self)
   end
 
 end

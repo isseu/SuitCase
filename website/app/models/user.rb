@@ -77,6 +77,10 @@ class User < ActiveRecord::Base
     return self.case_records.where(case_id: id).empty? == false
   end
 
+  def full_name
+    return self.name + ' ' + self.first_lastname + ' ' + self.second_lastname
+  end
+
   private
 
   REPLACE = %w[á é í ó ú g j h w z qu]
