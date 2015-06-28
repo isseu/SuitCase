@@ -55,8 +55,61 @@ class Busqueda
   end
 
   def searchClient(lista, pagina)
-    puts "\t [+] Buscando por Nombres Clientes"
+    puts "\t [+] Buscando por Clientes"
+    lista.each_with_index do |client, number|
 
+      puts "\t \t [+] " + client.name.to_s + " "+ client.first_lastname + " (" + client.rut.to_s + ")"
+      # Por RUT
+      if ['Civil', 'Laboral'].include? pagina.class.name.to_s
+        if client.rut != nil
+          puts "\t \t \t 1.- Rut: " + client.rut.to_s
+          
+          begin
+            pagina.Search('', nil, client.rut, '', '', '', 2, "tdTres", false)
+          rescue Exception => e
+            puts "[!] Error al intentar: " + e.to_s
+          end
+        
+        end
+      end
+
+      #Nombre y Apellido Paterno
+      begin
+        puts "\t \t \t 2.- Nombre: " + client.name.to_s + " Apellido Paterno: " + client.first_lastname          
+        if ['Corte', 'Suprema'].include? pagina.class.name.to_s
+          pagina.Search('', nil, '', client.name.to_s, client.first_lastname,'', 3, "tdNombre", false)
+        elsif ['Civil', 'Laboral'].include? pagina.class.name.to_s
+          pagina.Search('', nil, '', client.name.to_s, client.first_lastname,'', 3, "tdCuatro", false)
+        end
+      rescue Exception => e
+        puts "[!] Error al intentar: " + e.to_s
+      end
+
+      #Nombre y Apellido Materno
+      begin
+        puts "\t \t \t 3.- Nombre: " + client.name.to_s + " Apellido Materno: " + client.second_lastname          
+        if ['Corte', 'Suprema'].include? pagina.class.name.to_s
+          pagina.Search('', nil, '', client.name.to_s,'', client.second_lastname.to_s, 3, "tdNombre", false)
+        elsif ['Civil', 'Laboral'].include? pagina.class.name.to_s
+          pagina.Search('', nil, '', client.name.to_s,'', client.second_lastname.to_s, 3, "tdCuatro", false)
+        end
+      rescue Exception => e
+        puts "[!] Error al intentar: " + e.to_s
+      end
+
+      #Apellido Paterno y Materno
+      begin
+        puts "\t \t \t 4.- Apellidos: " + client.first_lastname.to_s + " " + client.second_lastname          
+        if ['Corte', 'Suprema'].include? pagina.class.name.to_s
+          pagina.Search('', nil, '','', client.first_lastname, client.second_lastname.to_s, 3, "tdNombre", false)
+        elsif ['Civil', 'Laboral'].include? pagina.class.name.to_s
+          pagina.Search('', nil, '','', client.first_lastname, client.second_lastname.to_s, 3, "tdCuatro", false)
+        end
+      rescue Exception => e
+        puts "[!] Error al intentar: " + e.to_s
+      end
+
+    end    
   end
 
   def searchTracking(lista, pagina)
@@ -107,7 +160,7 @@ while true
     puts "[+] Cerrando crawler PID #{Process.pid}"
     exit
   end
-
+=begin
   #Primero todos los Trackeados
   puts '[+] Trackear Civil'
   buscar.searchTracking(listaUsuarios, civil)
@@ -134,7 +187,8 @@ while true
   puts '[+] Buscando en Suprema -> Usuarios'
   #buscar.searchUser(listaUsuarios, suprema)
 
-=begin		
+=end
+
 	# Segundo Buscamos Casos de Clientes
 	puts '[+] Buscando en Civil -> Usuarios'
 	buscar.searchClient(listaClientes, civil)
@@ -149,6 +203,5 @@ while true
 	buscar.searchClient(listaClientes, laboral)
 
 	puts "[+] Iteracion Terminada"
-=end
 
 end
