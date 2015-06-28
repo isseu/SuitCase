@@ -24,6 +24,5 @@ class Case < ActiveRecord::Base
 
   def to_titleize
     self.caratula = self.caratula.titleize
-    self.save
   end
 end

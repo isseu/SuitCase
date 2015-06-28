@@ -16,6 +16,36 @@
       <dd><%= @case.caratula %></dd>
       <dt><strong>Portal:</strong></dt>
       <dd><%= @case.info_type %></dd>
+      <% if not @case.info_id.nil? %>
+        <% info_class_name = @case.info_type %>
+        <% if info_class_name == InfoCivil.to_s %>
+        <% elsif info_class_name == InfoCorte.to_s %>
+          <dt><strong><%= info_class.human_attribute_name(:numero_ingreso) %>:</strong></dt>
+          <dd><%= @case.info.numero_ingreso %></dd>
+          <dt><strong><%= info_class.human_attribute_name(:corte) %>:</strong></dt>
+          <dd><%= @case.info.corte %></dd>
+          <dt><strong><%= info_class.human_attribute_name(:ubicacion) %>:</strong></dt>
+          <dd><%= @case.info.ubicacion %></dd>
+          <dt><strong><%= info_class.human_attribute_name(:fecha_ubicacion) %>:</strong></dt>
+          <dd><%= date_format(@case.info.fecha_ubicacion) %></dd>
+        <% end %>
+      <% elsif info_class_name == InfoLaboral.to_s %>
+      <dt><strong><%= info_class.human_attribute_name(:rit) %>:</strong></dt>
+      <dd><%= @case.info.rit %></dd>
+      <dt><strong><%= info_class.human_attribute_name(:ruc) %>:</strong></dt>
+      <dd><%= @case.info.ruc %></dd>
+      <% elsif info_class_name == InfoSuprema.to_s %>
+          <dt><strong><%= info_class.human_attribute_name(:numero_ingreso) %>:</strong></dt>
+          <dd><%= @case.info.numero_ingreso %></dd>
+          <dt><strong><%= info_class.human_attribute_name(:tipo_recurso) %>:</strong></dt>
+          <dd><%= @case.info.tipo_recurso %></dd>
+          <dt><strong><%= info_class.human_attribute_name(:ubicacion) %>:</strong></dt>
+          <dd><%= @case.info.ubicacion %></dd>
+          <dt><strong><%= info_class.human_attribute_name(:fecha_ubicacion) %>:</strong></dt>
+          <dd><%= date_format(@case.info.fecha_ubicacion) %></dd>
+          <dt><strong><%= info_class.human_attribute_name(:corte) %>:</strong></dt>
+          <dd><%= @case.info.corte %></dd>
+      <% end %>
     </dl>
   </div>
   <div class="col-md-2">

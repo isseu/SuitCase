@@ -19,6 +19,5 @@ class Litigante < ActiveRecord::Base
 
   def to_titleize
     self.nombre = self.nombre.titleize
-    self.save
   end
 end

@@ -75,7 +75,7 @@
       <!-- Nav tabs -->
       <ul class="nav nav-pills nav-justified">
         <li ng-class="{ active: user_show.isTabActive(0)}"><a href="" ng-click="user_show.tabSelect(0)">Casos</a></li>
-        <li ng-class="{ active: user_show.isTabActive(1)}"><a href="" ng-click="user_show.tabSelect(1)">Nose</a></li>
+        <li ng-class="{ active: user_show.isTabActive(1)}"><a href="" ng-click="user_show.tabSelect(1)">Nombres</a></li>
       </ul>
 
       <!-- Tab panes -->
@@ -99,6 +99,14 @@
           </div>
         </div>
         <div ng-show="user_show.isTabActive(1)">
+          <%= render partial: 'shared/table_generator',
+                     locals: {
+                             model_class: PossibleName,
+                             data: @user.possible_names,
+                             only_table: true,
+                             attributes: [:name, :first_lastname , :second_lastname]
+                     }
+          %>
         </div>
       </div>
     </div>
