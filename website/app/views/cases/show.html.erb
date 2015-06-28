@@ -14,9 +14,7 @@
       <dd><%= @case.tribunal %></dd>
       <dt><strong><%= model_class.human_attribute_name(:caratula) %>:</strong></dt>
       <dd><%= @case.caratula %></dd>
-      <dt><strong><%= model_class.human_attribute_name(:info_id) %>:</strong></dt>
-      <dd><%= @case.info_id %></dd>
-      <dt><strong><%= model_class.human_attribute_name(:info_type) %>:</strong></dt>
+      <dt><strong>Portal:</strong></dt>
       <dd><%= @case.info_type %></dd>
     </dl>
   </div>
@@ -30,15 +28,43 @@
     </div>
   </div>
 </div>
+<div ng-controller="CaseShowController as case_show">
+  <input type="hidden" id="case_show_case_id" value="<%= @case.id %>">
+  <!-- Nav tabs -->
+  <ul class="nav nav-pills nav-justified">
+    <li ng-class="{ active: case_show.isTabActive(0)}"><a href="" ng-click="case_show.tabSelect(0)">Litigantes</a></li>
+    <% if @case.info_type == 'Civil' and not @case.info_id.nil?%>
+    <li ng-class="{ active: case_show.isTabActive(1)}"><a href="" ng-click="case_show.tabSelect(1)">Receptores</a></li>
+    <% end %>
+    </ul>
 
-  <h2>Litigantes</h2>
-  <%= render partial: 'shared/table_generator',
-             locals: {
-                     model_class: Litigante,
-                     data: @case.litigantes,
-                     attributes: [:rut, :persona, :nombre, :participante],
-                     only_table: true,
-                     hide_actions: true
-             }
-  %>
+  <!-- Tab panes -->
+  <div class="case-show-tab-content">
+    <div ng-show="case_show.isTabActive(0)">
+      <div ng-controller="UserShowCasesController as user_cases">
+        <%= render partial: 'shared/table_generator',
+                   locals: {
+                           model_class: Litigante,
+                           data: @case.litigantes,
+                           attributes: [:rut, :persona, :nombre, :participante],
+                           only_table: true,
+                           hide_actions: true
+                   }
+        %>
+      </div>
+    </div>
+    <% if @case.info_type == 'Civil' and not @case.info_id.nil? %>
+    <div ng-show="case_show.isTabActive(1)">
+      <%= render partial: 'shared/table_generator',
+                 locals: {
+                         model_class: Receptor,
+                         data: @case.info.receptores,
+                         attributes: [:rut, :persona, :nombre, :participante],
+                         only_table: true,
+                         hide_actions: true
+                 }
+      %>
+    </div>
+    <% end %>
+  </div>
 </div>

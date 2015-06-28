@@ -73,6 +73,17 @@ $.dynatableSetup({
         };
     });
 
+    app.controller('CaseShowController', function() {
+        var case_show = this;
+        this.tab = 0;
+        this.isTabActive = function(value) {
+            return value === this.tab;
+        };
+        this.tabSelect = function(value) {
+            this.tab = value;
+        };
+    });
+
     app.controller('UserShowCasesController', function() {
         this.user_id = $("#user_show_user_id").val();
         this.table = $('#user_show_cases_table');
@@ -86,13 +97,11 @@ $.dynatableSetup({
                 perPageOptions: 15
             }
         });
-        this.setUserId = function(id) {
-            this.user_id = id;
-        };
         this.table.on('dynatable:afterUpdate', function() {
             connect_actions_case_buttons();
         });
     });
+
 
     app.controller('UserCasesController', function() {
         this.table = $('#user_cases_table');
@@ -225,7 +234,7 @@ $.dynatableSetup({
             var add_form = $(this).siblings(".form-add-user-case");
             add_form.removeClass("hidden");
             // Si elimino user_case, se elimina record
-            $('.form-remove-record-case').addClass("hidden");
+            $(this).siblings('.form-remove-record-case').addClass("hidden");
             var add_form = $(this).siblings(".form-add-record-case");
             add_form.removeClass("hidden")
         }).on('ajax:error', function(e, xhr, status, error){

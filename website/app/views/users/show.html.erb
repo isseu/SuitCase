@@ -68,7 +68,7 @@
                only_table: true
            }
 %>
-<% end %>
+<% else %>
     <div ng-controller="UserShowController as user_show">
       <input type="hidden" id="user_show_user_id" value="<%= @user.id %>">
       <!-- Nav tabs -->
@@ -101,3 +101,4 @@
         </div>
       </div>
     </div>
+<% end %>

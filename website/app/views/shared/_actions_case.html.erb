@@ -3,6 +3,7 @@
     data: dato de tipo Case
 =end
 %>
+<div class="actions-buttons">
 <%= form_for current_user.case_users.build(case_id: data.id),
            html: {
                    class: 'form-add-user-case' + (current_user.following_case?(data.id) ? ' hidden' : ''),
@@ -60,3 +61,4 @@
       <i class="fa fa-circle"></i> No trackear
   <% end %>
 <% end %>
+</div>
