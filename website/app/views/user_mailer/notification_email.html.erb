@@ -4,12 +4,12 @@
   <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
 </head>
 <body>
-<h1>Nueva notificacion en suitcase.com, <%= @user.name %></h1>
+<h1>Nueva notificación en SuitCase, <%= @user.name %></h1>
 <p>
-  Notificacion: <%= @notification.text %>
+  Notificación: <%= @notification.text %>
 </p>
 <p>
-  Para mas informacion: <%= @notification.url %>.
+  Para más información: <%= link_to @notification.text, root_path + @notification.url %>.
 </p>
 <p>Que tenga un buen dia!</p>
 </body>

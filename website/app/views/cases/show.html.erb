@@ -61,7 +61,7 @@
 
 <p>
   Agregar caso a Usuario:
-  <% form_for(@case) do |f|%>
+  <%= form_for(@case) do |f|%>
       <%= fields_for(@case_user) do |ab| %>
         <div class="field">
             <%= ab.label 'All Users' %>

@@ -23,7 +23,8 @@ class Notification < ActiveRecord::Base
   private
 
   def send_notification_mail
-    UserMailer.notification_email(self)
+    UserMailer.notification_email(self).deliver_later
+    return true
   end
 
 end
