@@ -16,13 +16,27 @@ class CasesController < ApplicationController
       @cases = User.find(params[:user_id].to_i).cases
     end
     @cases = @cases.includes(:case_records, :case_users)
-    if not params[:queries].nil? and not params[:queries][:search].nil?
+    # Busqueda en search
+    if not params[:rol].nil?  and
+       not params[:name].nil? and
+       not params[:rut].nil?
+      @cases = @cases.joins(:litigantes)
+                   .where( 'lower(rol)               LIKE ? AND
+                            lower(litigantes.nombre) LIKE ? AND
+                            lower(caratula)          LIKE ? AND
+                            lower(litigantes.rut)    LIKE ?',
+                            '%' + params[:rol].downcase + '%', '%' + params[:name].downcase + '%',
+                            '%' + params[:name].downcase + '%', '%' + params[:rut].downcase + '%'
+      )
+    # Busqueda por dynatable
+    elsif not params[:queries].nil? and not params[:queries][:search].nil?
       @cases = @cases.joins(:litigantes).where(
          'lower(rol)               LIKE :search OR
           lower(tribunal)          LIKE :search OR
           lower(caratula)          LIKE :search OR
           lower(info_type)         LIKE :search OR
-          lower(litigantes.nombre) LIKE :search',
+          lower(litigantes.nombre) LIKE :search OR
+          lower(litigantes.rut) LIKE :search',
           search: '%' + params[:queries][:search].downcase + '%')
     end
     if not params[:page].blank? and not params[:per_page].blank?

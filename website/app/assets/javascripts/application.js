@@ -140,8 +140,6 @@ $.dynatableSetup({
         var search = this;
         search.rol = '';
         search.name = '';
-        search.first_lastname = '';
-        search.second_lastname = '';
         search.rut = '';
         search.buttonText = 'Buscar';
         search.working = false;
@@ -169,15 +167,23 @@ $.dynatableSetup({
             search.buttonText = 'Buscar';
         };
         search.empezar_a_trabajar = function() {
+            if (search.working) {
+                search.dejar_de_trabajar();
+            }
             search.working = true;
             search.buttonText = 'Buscando ...';
+            if(search.table.data('dynatable')) {
+                search.table.data('dynatable').process();
+                search.table.data('dynatable').settings.dataset.ajaxUrl = '/cases.json?name=' + search.name + '&rol='+ search.rol + '&rut=' + search.rut;
+
+            }
         };
         search.submit = function(){
             search.empezar_a_trabajar();
             search.table.dynatable({
                 dataset: {
                     ajax: true,
-                    ajaxUrl: '/cases.json',
+                    ajaxUrl: '/cases.json?name=' + search.name + '&rol='+ search.rol + '&rut=' + search.rut,
                     ajaxOnLoad: true,
                     records: [],
                     perPageDefault: 15,
@@ -205,6 +211,13 @@ $.dynatableSetup({
         };
     });
 
+    var update_in_cases = function() {
+        if($("#user_cases_table").data('dynatable') && $("#cases_table").data('dynatable') ){
+            $("#user_cases_table").data('dynatable').process();
+            $("#cases_table").data('dynatable').process();
+        }
+    }
+
     var connect_actions_case_buttons = function () {
         $('.form-add-record-case').on('ajax:success', function(e, data, status, xhr){
             $(this).addClass("hidden");
@@ -225,7 +238,8 @@ $.dynatableSetup({
         $('.form-add-user-case').on('ajax:success', function(e, data, status, xhr){
             $(this).addClass("hidden");
             var remove_form = $(this).siblings(".form-remove-user-case");
-            remove_form.removeClass("hidden")
+            remove_form.removeClass("hidden");
+            update_in_cases();
         }).on('ajax:error', function(e, xhr, status, error){
             alert("Error al agregar registro de seguimiento")
         });
@@ -237,7 +251,8 @@ $.dynatableSetup({
             // Si elimino user_case, se elimina record
             $(this).siblings('.form-remove-record-case').addClass("hidden");
             var add_form = $(this).siblings(".form-add-record-case");
-            add_form.removeClass("hidden")
+            add_form.removeClass("hidden");
+            update_in_cases();
         }).on('ajax:error', function(e, xhr, status, error){
             alert("Error al agregar registro de seguimiento")
         });
