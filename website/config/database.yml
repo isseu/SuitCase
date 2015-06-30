@@ -26,5 +26,10 @@ test:
   database: db/test.sqlite3
 
 production:
-  <<: *default
-  database: db/production.sqlite3
+  adapter: postgresql
+  encoding: utf8
+  database: suitcase
+  pool: 5
+  username: <%= ENV["POSTGRE_USER"] %>
+  password: <%= ENV["POSTGRE_PASS"] %>
+  host: localhost
