@@ -9,19 +9,19 @@ class CasesController < ApplicationController
       format.html { @cases = current_user.cases }
       format.json { @cases = Case.all }
     end
+
     if params[:only_user]
       @cases = current_user.cases
     end
     if not params[:user_id].blank?
       @cases = User.find(params[:user_id].to_i).cases
     end
+
     @cases = @cases.includes(:case_records, :case_users)
+
     # Busqueda en search
     if not params[:rol].nil?
-      @cases = @cases.joins(:litigantes)
-                   .where( 'lower(rol)               LIKE ?',
-                            '%' + params[:rol].downcase + '%'
-      )
+      @cases = @cases.joins(:litigantes).where('lower(rol) LIKE ?', '%' + params[:rol].downcase + '%').uniq
     # Busqueda por dynatable
     elsif not params[:queries].nil? and not params[:queries][:search].nil?
       @cases = @cases.joins(:litigantes).where(
@@ -31,7 +31,7 @@ class CasesController < ApplicationController
           lower(info_type)         LIKE :search OR
           lower(litigantes.nombre) LIKE :search OR
           lower(litigantes.rut) LIKE :search',
-          search: '%' + params[:queries][:search].downcase + '%')
+          search: '%' + params[:queries][:search].downcase + '%').uniq
     end
     if not params[:page].blank? and not params[:per_page].blank?
       @cases = @cases.paginate(:page => params[:page].to_i, :per_page => params[:per_page].to_i)

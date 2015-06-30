@@ -176,9 +176,8 @@ $.dynatableSetup({
             search.working = true;
             search.buttonText = 'Buscando ...';
             if(search.table.data('dynatable')) {
-                search.table.data('dynatable').process();
                 search.table.data('dynatable').settings.dataset.ajaxUrl = '/cases.json?&rol='+ search.rol;
-
+                search.table.data('dynatable').process();
             }
         };
         search.submit = function(){
