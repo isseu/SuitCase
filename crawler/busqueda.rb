@@ -60,9 +60,9 @@ class Busqueda
       puts "\t[+] Buscando en \n" + pagina.class.to_s
       begin
         if ['Corte', 'Suprema'].include? pagina.class.name.to_s
-          pagina.Search(s.rol, nil, '', '', '', '', 1, 'tdRecurso', true)
+          pagina.Search(s.rol, nil, '', '', '', '', 1, 'tdRecurso', false)
         elsif ['Civil', 'Laboral'].include? pagina.class.name.to_s
-          pagina.Search(s.rol, nil, '', '', '', '', 1, 'tdUno', true)
+          pagina.Search(s.rol, nil, '', '', '', '', 1, 'tdUno', false)
         end
       rescue Exception => e
         puts "[!] Error al intentar: " + e.to_s
