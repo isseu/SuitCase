@@ -1,3 +1,10 @@
+require 'nokogiri'
+require 'rest-client'
+require_relative 'civil.rb'
+require_relative 'corte.rb'
+require_relative 'suprema.rb'
+require_relative 'laboral.rb'
+require_relative 'busqueda.rb'
 
 class Busqueda
 
@@ -42,14 +49,26 @@ class Busqueda
   end
 
   def do_search(search_id)
+    puts "\t[+] Buscando:  \n"
     s = Search.find(search_id)
-    listaClientes = Client.all
-    listaUsuarios = User.all
     civil = Civil.new
     corte = Corte.new
     suprema = Suprema.new
     laboral = Laboral.new
     # Marcar resultado como listo
+    [civil, corte, suprema, laboral].each do |pagina|
+      puts "\t[+] Buscando en \n" + pagina.class.to_s
+      begin
+        if ['Corte', 'Suprema'].include? pagina.class.name.to_s
+          pagina.Search(s.rol, nil, '', '', '', '', 1, 'tdRecurso', true)
+        elsif ['Civil', 'Laboral'].include? pagina.class.name.to_s
+          pagina.Search(s.rol, nil, '', '', '', '', 1, 'tdUno', true)
+        end
+      rescue Exception => e
+        puts "[!] Error al intentar: " + e.to_s
+      end
+      s.touch(:updated_at)
+    end
     s.set_ready
   end
 

@@ -26,9 +26,10 @@ namespace :crawler do
   task search: :environment do
     search_id = ENV["SEARCH_ID"]
     puts "[+] Buscando search con ID: #{search_id}"
-    require CRAWLER_PATH + 'busqueda.rb'
+    load CRAWLER_PATH + 'busqueda.rb'
     b = Busqueda.new
     b.do_search(search_id)
+    puts "[+] Search con #{search_id} terminado"
   end
 
 

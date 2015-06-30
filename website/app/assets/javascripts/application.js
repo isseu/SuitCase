@@ -139,17 +139,20 @@ $.dynatableSetup({
     app.controller('SearchController', function($http) {
         var search = this;
         search.rol = '';
-        search.name = '';
-        search.rut = '';
         search.buttonText = 'Buscar';
         search.working = false;
         search.show_table = false;
         search.id = null;
         search.table = $('.search_table');
+        search.updated_at = '';
         search.updateStatus = function () {
             $http.get("/searches/" + search.id + ".json")
-                .success(function(response)
-                {
+                .success(function(response) {
+                    if (response.updated_at != search.updated_at) {
+                        // Actualizamos tabla
+                        search.table.data('dynatable').process();
+                        search.updated_at = response.updated_at;
+                    }
                     if( response.state )
                     {
                         search.dejar_de_trabajar();
@@ -174,7 +177,7 @@ $.dynatableSetup({
             search.buttonText = 'Buscando ...';
             if(search.table.data('dynatable')) {
                 search.table.data('dynatable').process();
-                search.table.data('dynatable').settings.dataset.ajaxUrl = '/cases.json?name=' + search.name + '&rol='+ search.rol + '&rut=' + search.rut;
+                search.table.data('dynatable').settings.dataset.ajaxUrl = '/cases.json?&rol='+ search.rol;
 
             }
         };
@@ -183,7 +186,7 @@ $.dynatableSetup({
             search.table.dynatable({
                 dataset: {
                     ajax: true,
-                    ajaxUrl: '/cases.json?name=' + search.name + '&rol='+ search.rol + '&rut=' + search.rut,
+                    ajaxUrl: '/cases.json?&rol='+ search.rol,
                     ajaxOnLoad: true,
                     records: [],
                     perPageDefault: 15,
