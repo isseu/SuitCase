@@ -77,7 +77,7 @@
   <!-- Nav tabs -->
   <ul class="nav nav-pills nav-justified">
     <li ng-class="{ active: case_show.isTabActive(0)}"><a href="" ng-click="case_show.tabSelect(0)">Litigantes</a></li>
-    <% if @case.info_type == 'Civil' and not @case.info_id.nil?%>
+    <% if @case.info_type == InfoCivil.to_s and not @case.info_id.nil?%>
     <li ng-class="{ active: case_show.isTabActive(1)}"><a href="" ng-click="case_show.tabSelect(1)">Receptores</a></li>
     <% end %>
     </ul>
@@ -100,15 +100,16 @@
         %>
       </div>
     </div>
-    <% if @case.info_type == 'Civil' and not @case.info_id.nil? %>
+    <% if @case.info_type == InfoCivil.to_s and not @case.info_id.nil? %>
     <div ng-show="case_show.isTabActive(1)">
       <%= render partial: 'shared/table_generator',
                  locals: {
                          model_class: Receptor,
-                         data: @case.info.receptores,
-                         attributes: [:rut, :persona, :nombre, :participante],
+                         data: @case.info.receptors,
+                         attributes: [:notebook, :dat, :state],
                          only_table: true,
-                         hide_actions: true
+                         hide_actions: true,
+                         hide_link: true
                  }
       %>
     </div>

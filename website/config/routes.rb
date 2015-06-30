@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'receptores/index'
+
   resources :case_records
 
   resources :case_users
@@ -18,6 +20,7 @@ Rails.application.routes.draw do
     end
     resource :case_record, only: [:destroy]
     resource :case_user, only: [:destroy]
+    resources :receptores, only: [:index]
   end
   resources :searches, only: [:show]
 

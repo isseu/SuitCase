@@ -43,7 +43,12 @@ class Busqueda
 
   def do_search(search_id)
     s = Search.find(search_id)
-
+    listaClientes = Client.all
+    listaUsuarios = User.all
+    civil = Civil.new
+    corte = Corte.new
+    suprema = Suprema.new
+    laboral = Laboral.new
     # Marcar resultado como listo
     s.set_ready
   end
